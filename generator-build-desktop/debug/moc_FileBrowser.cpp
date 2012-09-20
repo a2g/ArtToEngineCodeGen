@@ -10,7 +10,7 @@
 #include "../../FileBrowser.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'FileBrowser.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 62
+#elif Q_MOC_OUTPUT_REVISION != 80
 #error "This file was generated using the moc from 4.7.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"

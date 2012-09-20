@@ -5,3 +5,5 @@
 #pragma once
 
 static const QString FIRST = "First";// camel case because most common usage is class name 
+
+

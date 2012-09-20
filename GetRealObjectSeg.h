@@ -10,3 +10,4 @@ static QString GetRealObjectSeg(QString objectSeg)
     QString realObjectSeg = objectSeg.mid(4);
     return realObjectSeg;
 }
+

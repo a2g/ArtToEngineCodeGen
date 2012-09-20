@@ -8,3 +8,5 @@
 #include <QPoint>
 
 QPoint Crop(QString folder, QString loadFrom, QString saveTo, QRgb colorForZBuffer);
+
+

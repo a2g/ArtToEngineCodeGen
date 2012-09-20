@@ -209,7 +209,7 @@ namespace com
                         double fincrement = total/numberOfBundles; 
                         double fend = fincrement;
                         int start = 0;
-                        int end = fend;
+                        int end = static_cast<int>(fend);
                         if(total < maximumFeasibleSceneObjects)
                         {
                             numberOfBundles = 1;
@@ -287,7 +287,7 @@ namespace com
                             list.push_back(std::pair<int,QString>(end-start, longName));
                             fend = fend + fincrement;
                             start = end;
-                            end = fend;
+                            end = static_cast<int>(fend);
                         }
 
                         // now to write the loader
@@ -386,3 +386,4 @@ namespace com
         }
     }
 }
+

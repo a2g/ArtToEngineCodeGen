@@ -3,5 +3,5 @@
 *  DISCLAIMER: THE WORKS ARE WITHOUT WARRANTY.
 */
 #pragma once
-
+#include <QString>
 static const QString INITIAL = "Initial";// camel case because most common usage is class name 

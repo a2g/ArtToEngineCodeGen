@@ -4,7 +4,7 @@
 */
 #include <QtGui/QApplication>
 #include <QMainWindow>
-#include "FileBrowser.h"
+//#include "FileBrowser.h"
 #include "FolderTraverser.h"
 
 using namespace com::github::a2g::generator;
@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
         output.writeAll();
         return 0;
     }
+    /*
     QMainWindow x;
     
     QString filter = "*.htm *.html *.txt *.xml";
@@ -80,6 +81,7 @@ int main(int argc, char *argv[])
     x.setCentralWidget(win);
     x.show();
     return app.exec();
+    */
 }
 
 

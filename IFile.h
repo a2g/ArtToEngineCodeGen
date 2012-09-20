@@ -27,12 +27,12 @@ namespace com
 
                 public:
                     IFile()
-                        : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED){}
+                            : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED){}
                     IFile(const QString& sceneFolder, const QString& maxFileSeg, const QString& package) 
-                        : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED)
-                        , maxFileSeg(maxFileSeg)
-                        , package(package)
-                        , sceneFolder(sceneFolder)
+                            : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED)
+                            , maxFileSeg(maxFileSeg)
+                            , package(package)
+                            , sceneFolder(sceneFolder)
                     {
                     }
 
@@ -44,7 +44,7 @@ namespace com
 
                     ~IFile()
                     {
-                     //   writeToFile();
+                        //   writeToFile();
                     }
                 private:
                     bool writeToFile()
@@ -80,4 +80,9 @@ namespace com
         }
     }
 }
+
+
+
+
+
 

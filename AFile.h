@@ -30,9 +30,9 @@ namespace com
                 public:
                     AFile(){}
                     AFile(const QString& currentPath, const QString& animFolder, const QString& package) 
-                        : m_currentPath(currentPath)
-                        , m_animFolder(animFolder)
-                        , package(package)
+                            : m_currentPath(currentPath)
+                            , m_animFolder(animFolder)
+                            , package(package)
                     {
                     }
                     int getNumberOfEntries()
@@ -46,7 +46,7 @@ namespace com
                     }
                     ~AFile()
                     {
-                       // writeToFile();
+                        // writeToFile();
                     }
                 private:
                     bool writeToFile()
@@ -81,3 +81,11 @@ namespace com
         }
     }
 }
+
+
+
+
+
+
+
+

@@ -24,7 +24,7 @@ namespace com
                     int currentSeed;
                 public:
                     IdGenerator(int seed)
-                        :currentSeed(seed)
+                            :currentSeed(seed)
                     {
                     }
 
@@ -42,3 +42,9 @@ namespace com
         }
     }
 }
+
+
+
+
+
+

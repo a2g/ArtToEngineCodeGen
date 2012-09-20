@@ -228,11 +228,11 @@ namespace com
 
                             f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n"); 
                             f << ("\n");
-                            f << ("import com.google.gwt.core.client.GWT;\n");
-                            f << ("import com.google.gwt.resources.client.ClientBundle;\n");
-                            f << ("import com.google.gwt.resources.client.ImageResource;\n");
+                            f << ("import com.github.a2g.core.bridge.GWT;\n");
+                            f << ("import com.github.a2g.core.bridge.ClientBundle;\n");
+                            f << ("import com.github.a2g.core.bridge.ImageResource;\n");
+                            f << ("import com.github.a2g.core.bridge.LoadHandler;\n");
                             f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
-                            f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                             if(animFolder!=NULL)
                                 f << ("import "+package+"." + animFolder +".a;\n");
                             f << ("\n");
@@ -299,12 +299,13 @@ namespace com
                         QTextStream f(&loader);
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n"); 
                         f << ("\n");
-                        f << ("import com.google.gwt.core.client.GWT;\n");
-                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
-                        f << ("import com.google.gwt.core.client.RunAsyncCallback;\n");
-                        f << ("import com.google.gwt.core.client.Scheduler;\n");
-                        f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
+                        f << ("import com.github.a2g.core.bridge.GWT;\n");
+                        f << ("import com.github.a2g.core.bridge.RunAsyncCallback;\n");
+                        f << ("import com.github.a2g.core.bridge.Scheduler;\n");
+                        f << ("import com.github.a2g.core.bridge.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
+                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
+                       
 
                         f << ("\n");
                         f << ("public class "+javaClassName+" implements ImageBundleLoaderAPI\n");

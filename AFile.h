@@ -49,10 +49,13 @@ namespace com
                         // writeToFile();
                     }
                 private:
-                    bool writeToFile()
+                    bool writeToFile(QString find, QString replace)
                     {
-                        QDir folder(m_currentPath);
-                        folder.mkdir(m_animFolder);
+                        m_currentPath = m_currentPath.replace(find, replace);
+                        package = package.replace(find,replace);
+
+                        QDir dir;
+                        dir.mkpath(m_currentPath+"/" + m_animFolder);
                         QFile file(m_currentPath+"/" + m_animFolder + "/a.java");
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;

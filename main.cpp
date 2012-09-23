@@ -59,20 +59,24 @@ int main(int argc, char *argv[])
 {
     InstallDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
     QApplication app(argc, argv);
+    QString arg = "D:\Conan\Swing\src";
     if(argc>1)
     {
-        OutputFiles output;
-        {
-            FileSystem fileSystem;
-            PopulateFileSystemFromRealSystemRecursively(&fileSystem, argv[1]);
-            {
-                FolderTraverser trav(fileSystem, output);
-                trav.SearchForRootOfResourcesAndGenerateIfFound(argv[1]);
-            }
-        }
-        output.writeAll();
-        return 0;
+        arg = argv[1];
     }
+    OutputFiles output;
+    {
+        FileSystem fileSystem;
+        PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
+        {
+            FolderTraverser trav(fileSystem, output);
+            trav.SearchForRootOfResourcesAndGenerateIfFound(arg);
+        }
+    }
+
+    output.writeAll("raw", "resource");
+    return 0;
+
     /*
     QMainWindow x;
     
@@ -82,6 +86,7 @@ int main(int argc, char *argv[])
     x.show();
     return app.exec();
     */
+    return 0;
 }
 
 

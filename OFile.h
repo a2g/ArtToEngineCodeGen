@@ -8,6 +8,7 @@
 #include <QTextStream>
 #include <QMap>
 #include <QString>
+#include <QDir>
 #include "IdGenerator.h"
 
 namespace com
@@ -33,7 +34,7 @@ namespace com
                     }
 
 
-                    OFile(const QString& sceneFolder, QString maxFileSeg, const QString& package) 
+                    OFile(QString sceneFolder, QString maxFileSeg, const QString& package)
                         : IdGenerator(ConsecutiveOddSystem::STARTING_LOCAL_SEED)
                         , m_sceneFolder( sceneFolder)
                         , m_sceneSeg( maxFileSeg)
@@ -53,8 +54,13 @@ namespace com
                      //   writeToFile();
                     }
                 private:
-                    bool writeToFile()
+                    bool writeToFile(QString find, QString replace)
                     {
+                        m_sceneFolder = m_sceneFolder.replace(find, replace);
+                        package = package.replace(find,replace);
+
+                        QDir dir;
+                        dir.mkpath(m_sceneFolder);
                         QFile file(m_sceneFolder+"\\o.java");
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;

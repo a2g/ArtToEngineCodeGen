@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMap>
+#include <QDir>
 #include "IdGenerator.h"
 
 namespace com
@@ -28,7 +29,7 @@ namespace com
                 public:
                     IFile()
                             : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED){}
-                    IFile(const QString& sceneFolder, const QString& maxFileSeg, const QString& package) 
+                    IFile(QString sceneFolder, QString maxFileSeg, QString package)
                             : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED)
                             , maxFileSeg(maxFileSeg)
                             , package(package)
@@ -47,8 +48,13 @@ namespace com
                         //   writeToFile();
                     }
                 private:
-                    bool writeToFile()
+                    bool writeToFile(QString find, QString replace)
                     {
+                        sceneFolder = sceneFolder.replace(find, replace);
+                        package = package.replace(find,replace);
+
+                        QDir dir;
+                        dir.mkpath(sceneFolder);
                         QFile file(sceneFolder+"\\i.java");
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;

@@ -7,6 +7,6 @@
 #include <QRgb>
 #include <QPoint>
 
-QPoint Crop(QString folder, QString loadFrom, QString saveTo, QRgb colorForZBuffer);
+QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer);
 
 

@@ -9,7 +9,7 @@
 #include <locale>
 #include <QRgb>
 #include <QImage>
-
+#include <QMessageBox>
 #include <QImage>
 #include <QRect>
 #include <QSet>
@@ -92,26 +92,33 @@ QImage GenerateZBufferRepresentation(QImage image, QRgb zbufferColor)
     return alphed;
 }
 
-QPoint Crop(QString folder, QString loadFrom, QString saveTo, QRgb colorForZBuffer)
+QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer)
 {
-    QDir loadMe(loadFrom);
+    QDir dir;
+    bool isOK = dir.mkpath(fullPathToSaveTo);
+    if(!isOK)
+    {
+        QMessageBox::warning(NULL, "Dir of this file can't be created", fullPathToSaveTo);
+    }
 
-
-    QString loadPath = loadMe.canonicalPath();
-    QString saveAsCroppedPath = folder + "/" + saveTo;
-
+    QDir dir2;
+    bool isOK2 = dir2.rmdir(fullPathToSaveTo);
+    if(!isOK2)
+    {
+        QMessageBox::warning(NULL, "Created folder but couldnt remove", fullPathToSaveTo);
+    }
     int x = 0;
     int y = 0;
     QImage image;
     QImage zbuf;
     bool isLoaded = false;
-    QFile xmlFile(loadPath+".xml");
+    QFile xmlFile(fullPathToSaveTo+".xml");
 
 
     if(!isLoaded)
     {
         QImage temp;
-        isLoaded = temp.load(loadPath);
+        isLoaded = temp.load(fullPathToLoadFrom);
 
         // we need to set black in all the four corners because of createHeiristicMask
         // which is used in GenerateZBufferRepresentation, this takes a color key from the four corners.
@@ -124,8 +131,7 @@ QPoint Crop(QString folder, QString loadFrom, QString saveTo, QRgb colorForZBuff
         A2GASSERT(isLoaded);
         if(isLoaded)
         {
-            QString croppedZBufferFilename = loadPath.left(loadPath.length() -4) + "_CroppedZBuffer.bmp";
-            QString croppedFilename = saveAsCroppedPath;
+            QString croppedZBufferFilename = fullPathToLoadFrom.left(fullPathToLoadFrom.length() -4) + "_CroppedZBuffer.bmp";
             QRect rect = GetBoundingNonBlackRectangle(temp);
 
             if(rect.bottomRight().x() == -1)
@@ -148,15 +154,19 @@ QPoint Crop(QString folder, QString loadFrom, QString saveTo, QRgb colorForZBuff
             {
                 QImage image2 = image;
 
-                bool isOK1 = image2.save(croppedFilename,"png");
+                bool isOK1 = image2.save(fullPathToSaveTo,"png");
                 (isOK1 = isOK1);
-                A2GASSERT(isOK1);
+                 if(!isOK1)
+                    QMessageBox::warning(NULL, "Failed to save",fullPathToSaveTo);
+
                 zbuf = GenerateZBufferRepresentation(image, colorForZBuffer);
                 QImage zbuf2 = zbuf;
 
                 bool isOK2 = zbuf2.save(croppedZBufferFilename,"bmp");
                 (isOK2 = isOK2);
-                A2GASSERT(isOK2);
+                if(!isOK2)
+                    QMessageBox::warning(NULL, "Failed to save",croppedZBufferFilename);
+
 
                 image = image2;
                 zbuf = zbuf2;
@@ -170,7 +180,7 @@ QPoint Crop(QString folder, QString loadFrom, QString saveTo, QRgb colorForZBuff
             root.setAttribute(STR_IMAGE, croppedZBufferFilename );
             root.setAttribute(STR_ZBUFFER, croppedZBufferFilename );
 
-            if (xmlFile.open(QFile::WriteOnly | QFile::Truncate)) 
+            if (0 && xmlFile.open(QFile::WriteOnly | QFile::Truncate))
             {
                 QTextStream out(&xmlFile);
                 out << doc.toString() << endl;

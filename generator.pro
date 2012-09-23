@@ -2,9 +2,9 @@
 # Project created by QtCreator 2011-12-17T14:30:32
 # -------------------------------------------------
 QT += xml
-TARGET = CodeGeneratorWithCropping
+TARGET = generator
 TEMPLATE = app
-SOURCES +=   AFile.cpp \
+SOURCES += AFile.cpp \
     FileSystem.cpp \
     FileSystemFolder.cpp \
     FolderTraverser.cpp \
@@ -13,4 +13,5 @@ SOURCES +=   AFile.cpp \
     main.cpp \
     OFile.cpp \
     LoaderAndResFilePair.cpp \
+    OutputFiles.cpp\
     Crop.cpp

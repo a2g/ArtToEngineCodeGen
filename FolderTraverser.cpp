@@ -67,7 +67,23 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
             {
                 QString objectSeg = QDir(*objectFolder).dirName();
 
-                if(!isInAnInventoryFolder)
+                if(isInAnInventoryFolder)
+                {
+                    QStringList PNGs = files.getSubFiles(*objectFolder);
+                    for(int i=0;i<PNGs.size();i++)
+                    {
+                        QString pngPath = PNGs[i];
+                        if(pngPath.right(4) != ".png")
+                            continue;
+                        QString invSeg = objectSeg;
+                        int idForInv = iStream.getIdForName(invSeg);
+
+                        resStream.addInvImage(pngPath, idForInv);
+
+                        break;//only take the first png in each folder
+                    }
+                }
+                else
                 {
                     int idForObj = oStream.getIdForName(GetRealObjectSeg(objectSeg));
 
@@ -85,6 +101,7 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
                         {   
                             if(pngLoadMe->right(4) != ".png")
                                 continue;
+
                             if(!pngLoadMe->contains("/orig_"))
                                 continue;
 
@@ -98,21 +115,6 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
                             }
                         }
 
-                    }
-                }else
-                {
-                    QStringList PNGs = files.getSubFiles(*objectFolder);
-                    for(int i=0;i<PNGs.size();i++)
-                    {
-                        QString pngPath = PNGs[i];
-                        if(pngPath.right(4) != ".png")
-                            continue;
-                        QString invSeg = objectSeg;
-                        int idForInv = iStream.getIdForName(invSeg);
-
-                        resStream.addInvImage(pngPath, idForInv);
-
-                        break;//only take the first png in each folder
                     }
                 }
             }
@@ -152,11 +154,12 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
         output.addAFile(aFile);
     }
 }	
+
 void FolderTraverser::SearchForRootOfResourcesAndGenerateIfFound(QString startingPath)
 {
     startingPath.replace("\\","/");
     QString startTargetFolder = "com";
-    QString endTargetFolder = "resource";
+    QString endTargetFolder = "raw";
     return SearchRecursively(startingPath, startTargetFolder, endTargetFolder);
 }
 

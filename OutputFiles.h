@@ -62,31 +62,31 @@ namespace com
                         allLasts.push_back(file);
                     }
 
-                    void writeAll()
+                    void writeAll(QString find, QString replace)
                     {
                         for(int i=0;i<allAFiles.count();i++)
                         {
-                            allAFiles[i].writeToFile();
+                            allAFiles[i].writeToFile(find , replace);
                         }
                         for(int i=0;i<allIFiles.count();i++)
                         {
-                            allIFiles[i].writeToFile();
+                            allIFiles[i].writeToFile(find , replace);
                         }
                         for(int i=0;i<allOFiles.count();i++)
                         {
-                            allOFiles[i].writeToFile();
+                            allOFiles[i].writeToFile(find, replace);
                         }
                         for(int i=0;i<allOnlys.count();i++)
                         {
-                            allOnlys[i].writeToFile();
+                            allOnlys[i].writeToFile(find, replace);
                         }
                         for(int i=0;i<allFirsts.count();i++)
                         {
-                            allFirsts[i].writeToFile();
+                            allFirsts[i].writeToFile(find , replace);
                         }
                         for(int i=0;i<allLasts.count();i++)
                         {
-                            allLasts[i].writeToFile();
+                            allLasts[i].writeToFile(find, replace);
                         }
                     }
                 };

@@ -101,11 +101,14 @@ QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
         QMessageBox::warning(NULL, "Dir of this file can't be created", fullPathToSaveTo);
     }
 
-    QDir dir2;
-    bool isOK2 = dir2.rmdir(fullPathToSaveTo);
-    if(!isOK2)
+    QDir dir2(fullPathToSaveTo);
+    if(dir2.exists())
     {
-        QMessageBox::warning(NULL, "Created folder but couldnt remove", fullPathToSaveTo);
+        bool isOK2 = dir2.rmdir(fullPathToSaveTo);
+        if(!isOK2)
+        {
+            QMessageBox::warning(NULL, " couldnt remove", fullPathToSaveTo);
+        }
     }
     int x = 0;
     int y = 0;
@@ -159,6 +162,7 @@ QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
                  if(!isOK1)
                     QMessageBox::warning(NULL, "Failed to save",fullPathToSaveTo);
 
+                 /*
                 zbuf = GenerateZBufferRepresentation(image, colorForZBuffer);
                 QImage zbuf2 = zbuf;
 
@@ -170,8 +174,9 @@ QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
 
                 image = image2;
                 zbuf = zbuf2;
+                */
             }
-
+/*
             QDomDocument doc("MyML");
             QDomElement root = doc.createElement("MyML");
             doc.appendChild(root);
@@ -186,6 +191,7 @@ QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
                 out << doc.toString() << endl;
             }
             xmlFile.close();
+            */
         }
     }
 

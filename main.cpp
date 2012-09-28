@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 {
     InstallDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
     QApplication app(argc, argv);
-    QString arg = "D:\Conan\Swing\src";
+    QString arg = "D:/Conan/Swing/src";
     if(argc>1)
     {
         arg = argv[1];

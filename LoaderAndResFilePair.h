@@ -116,8 +116,8 @@ namespace com
                             int idForObject    = pair.second;
                             
 
-
-                            QString pngSaveTo = animFolder +"/" + "cropped_" + QDir(pngPath).dirName();
+                            QString pngByItself = "cropped_" + QDir(pngPath).dirName();
+                            QString pngSaveTo = animFolder +"/" + pngByItself;
                             pngSaveTo = pngSaveTo.replace(find,replace);
                             // do the cropping
 
@@ -183,8 +183,8 @@ namespace com
 
                     void AddImageResourceForAnim(QString maxFileSeg, QString pixelSeg, QString objectSeg, QString animSeg, QString pngSaveTo, QString resourceName)
                     {	
-                        QString relativePath = QString(MakePath(package)+"/%1/%2/%3/%4/%5").arg(maxFileSeg).arg(pixelSeg).arg(objectSeg).arg(animSeg).arg(pngSaveTo);
-                        resourceDeclarations[resourceName] = relativePath;
+                        //QString relativePath = QString(MakePath(package)+"/%1/%2/%3/%4/%5").arg(maxFileSeg).arg(pixelSeg).arg(objectSeg).arg(animSeg).arg(pngSaveTo);
+                        resourceDeclarations[resourceName] = pngSaveTo;
                     }
 
                     void AddCaseStatementForAnim(QString objectSeg, QPoint offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
@@ -204,30 +204,33 @@ namespace com
                         caseStatements.push_back(caseStatement);
                     }
 
-                    void writeSwingBundle(QTextStream& f, int start, int end)
+                    void writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
                     {
 
                             f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                             f << ("\n");
-                            f << ("import com.github.a2g.core.bridge.GWT;\n");
-                            f << ("import com.github.a2g.core.bridge.ClientBundle;\n");
-                            f << ("import com.github.a2g.core.bridge.ImageResource;\n");
-                            f << ("import com.github.a2g.core.bridge.LoadHandler;\n");
+                            f << ("import com.github.a2g.bridge.ImageResource;\n");
+                            f << ("import com.github.a2g.bridge.LoadHandler;\n");
                             f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                             if(animFolder!=NULL)
                                 f << ("import "+package+"." + animFolder +".a;\n");
                             f << ("\n");
-                            f << ("public class "+javaClassName+"\n");
+                            f << ("public class "+bundleJavaClassName+"\n");
                             f << ("{\n");
+                            f << ("    public static class MyRes");
+                            f << ("    {\n");
+                            f << ("        public static final MyRes RESOURCE = new MyRes();");
+                            f << ("        \n");
 
                             for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
                             {
                                 QString resourceName = iter.key();
                                 QString relativePath = iter.value();
-                                f << ("        ImageResource "+resourceName+"(){ return new ImageResource(" + relativePath + ");}");
+                                f << ("        public ImageResource "+resourceName+"{ return new ImageResource(\"" + relativePath + "\");}\n");
                             }
+                            f << "    }"                                                                                "\n";
 
-                            f << "    public static boolean addResources(LoadHandler lh, InternalAPI api, int i)"                     "\n";
+                            f << "    public static boolean addResources(LoadHandler lh, InternalAPI api, int i)"      "\n";
                             f << "    {"                                                                               "\n";
                             f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
                             f << "        switch(i){"                                                                  "\n";
@@ -263,24 +266,24 @@ namespace com
 
                     }
 
-                    void writeGwtBundle(QTextStream& f, int start, int end)
+                    void writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
                     {
 
                             f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                             f << ("\n");
-                            f << ("import com.github.a2g.core.bridge.GWT;\n");
-                            f << ("import com.github.a2g.core.bridge.ClientBundle;\n");
-                            f << ("import com.github.a2g.core.bridge.ImageResource;\n");
-                            f << ("import com.github.a2g.core.bridge.LoadHandler;\n");
+                            f << ("import com.github.a2g.bridge.GWT;\n");
+                            f << ("import com.github.a2g.bridge.ClientBundle;\n");
+                            f << ("import com.github.a2g.bridge.ImageResource;\n");
+                            f << ("import com.github.a2g.bridge.LoadHandler;\n");
                             f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                             if(animFolder!=NULL)
                                 f << ("import "+package+"." + animFolder +".a;\n");
                             f << ("\n");
-                            f << ("public class "+javaClassName+"\n");
+                            f << ("public class "+bundleJavaClassName+"\n");
                             f << ("{\n");
                             f << ("    public interface MyRes extends ClientBundle");
                             f << ("    {\n");
-                            f << ("        public static final "+javaClassName+".MyRes RESOURCE =  GWT.create("+javaClassName+".MyRes.class);\n");
+                            f << ("        public static final "+bundleJavaClassName+".MyRes RESOURCE =  GWT.create("+bundleJavaClassName+".MyRes.class);\n");
                             f << ("        \n");
                             for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
                             {
@@ -328,20 +331,20 @@ namespace com
 
                     }
 
-                    bool writeGwtLoader(QTextStream& f, const std::vector<std::pair<int,QString> >&  list)
+                    bool writeGwtLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
                     {
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-                        f << ("import com.github.a2g.core.bridge.GWT;\n");
-                        f << ("import com.github.a2g.core.bridge.RunAsyncCallback;\n");
-                        f << ("import com.github.a2g.core.bridge.Scheduler;\n");
-                        f << ("import com.github.a2g.core.bridge.LoadHandler;\n");
+                        f << ("import com.github.a2g.core.GWT;\n");
+                        f << ("import com.github.a2g.core.RunAsyncCallback;\n");
+                        f << ("import com.github.a2g.core.Scheduler;\n");
+                        f << ("import com.github.a2g.core.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
 
 
                         f << ("\n");
-                        f << ("public class "+javaClassName+" implements ImageBundleLoaderAPI\n");
+                        f << ("public class "+loaderJavaClassName+" implements ImageBundleLoaderAPI\n");
                         f << ("{\n");
                         f << ("  @Override\n");
                         f << QString("  public boolean isInventory(){ return %1;}\n").arg(IsInventory()? "true" : "false");
@@ -413,21 +416,22 @@ namespace com
                         return true;
                     }
 
-                    bool writeSwingLoader(QTextStream& f, const std::vector<std::pair<int,QString> >&  list)
+                    bool writeSwingLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
                     {
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-                        f << ("import com.github.a2g.core.bridge.GWT;\n");
-                        f << ("import com.github.a2g.core.bridge.RunAsyncCallback;\n");
-                        f << ("import com.github.a2g.core.bridge.Scheduler;\n");
-                        f << ("import com.github.a2g.core.bridge.LoadHandler;\n");
+                        f << ("import javax.swing.Timer;\n");
+                        f << ("import java.awt.event.ActionEvent;\n");
+                        f << ("import java.awt.event.ActionListener;\n");
+                        f << ("import com.github.a2g.bridge.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
 
 
                         f << ("\n");
-                        f << ("public class "+javaClassName+" implements ImageBundleLoaderAPI\n");
+                        f << ("public class "+loaderJavaClassName+" implements ImageBundleLoaderAPI\n");
                         f << ("{\n");
+                        f << ("  Timer timer;\n");
                         f << ("  @Override\n");
                         f << QString("  public boolean isInventory(){ return %1;}\n").arg(IsInventory()? "true" : "false");
                         f << ("  @Override\n");
@@ -455,40 +459,26 @@ namespace com
                         for(unsigned int i=0;i<list.size();i++)
                         {
                             f << QString("    case %1: \n").arg(i);
-                            f << QString("GWT.runAsync\n");
-                            f << QString("(\n");
-                            f << QString("  new RunAsyncCallback()\n");
-                            f << QString("  {\n");
-                            f << QString("      public void onSuccess()\n");
-                            f << QString("      {\n");
-                            //f << QString("		  lh.onLoad(null);\n");
-                            f << QString("        // Schedule the IncrementalCommand instance to run when\n");
-                            f << QString("        // control returns to the event loop by returning 'true'\n");
-                            f << QString("        Scheduler.get().scheduleFixedDelay\n");
-                            f << QString("        (\n");
-                            f << QString("          new Scheduler.RepeatingCommand()\n");
+                            f << QString("      timer = new Timer\n");
+                            f << QString("      (\n");
+                            f << QString("        milliseconds \n");
+                            f << QString("        , new ActionListener()\n");
+                            f << QString("        {\n");
+                            f << QString("          int counter= 0;\n");
+                            f << QString("          @Override\n");
+                            f << QString("          public void actionPerformed(ActionEvent e)\n");
                             f << QString("          {\n");
-                            f << QString("            int counter= %1;\n").arg(counter);
-                            f << QString("            @Override\n");
-                            f << QString("              public boolean execute()\n");
-                            f << QString("              {\n");
-                            f << QString(" %1.setCounter(counter);\n").arg(list[i].second);
-                            f << QString(" boolean stillRemaining = %1.extractNext(lh, CHUNK, api);\n").arg(list[i].second);
-                            f << QString("                counter+=CHUNK;\n");
-                            //   f << QString("		          if(!stillRemaining){ lh.onLoad(null);}\n");
-                            f << QString("                return stillRemaining;\n");
-                            f << QString("              }\n");
+                            f << QString("            %1.setCounter(counter);\n").arg(list[i].second);
+                            f << QString("            boolean stillRemaining = %1.extractNext(lh, CHUNK, api);\n").arg(list[i].second);
+                            f << QString("            counter+=CHUNK;\n");
+                            f << QString("            if(!stillRemaining)\n");
+                            f << QString("               timer.stop();\n");
                             f << QString("          }\n");
-                            f << QString("          ,milliseconds\n");
-                            f << QString("        );\n");
-                            f << QString("      }\n");
-                            f << QString("      public void onFailure(Throwable caught)\n");
-                            f << QString("      {\n");
-                            f << QString("		   lh.onLoad(null);\n");
-                            f << QString("      }\n");
-                            f << QString("    }\n");
-                            f << QString(");\n");
-                            f << QString("return 0;\n");
+                            f << QString("        }\n");
+                            f << QString("      );\n");
+                            f << QString("      timer.setInitialDelay(milliseconds);\n");
+                            f << QString("      timer.start();\n");
+                            f << QString("      return 0;\n");
                             counter += list[i].first;
                         }
                         f << ("    }\n");
@@ -524,21 +514,24 @@ namespace com
                         for(int i=0;i<numberOfBundles;i++)
                         {
                             //QString prefix = theJavaClassNamePrefix==FIRST
-                            QString javaClassName = theJavaClassNamePrefix + names[i];
+                            QString bundleJavaClassName = theJavaClassNamePrefix + names[i];
                             QDir dir;
                             dir.mkpath(sceneFolder+"/"+ pixelSeg);
-                            QFile file(sceneFolder+"/"     + pixelSeg + "/" + javaClassName + ".java");
+                            QFile file(sceneFolder+"/"     + pixelSeg + "/" + bundleJavaClassName + ".java");
                             if (!file.open(QFile::WriteOnly | QFile::Truncate))
                                 return false;
 
                             QTextStream f(&file);
                             if(isGwt)
-                                writeGwtBundle(f, start, end);
-                             else
-                                writeSwingBundle(f, start, end);                                                                                   "\n";
-
+                            {
+                                writeGwtBundle(f, bundleJavaClassName, start, end);
+                            }
+                            else
+                            {
+                                writeSwingBundle(f, bundleJavaClassName, start, end);                                                                                   "\n";
+                            }
                             file.close();
-                            QString longName = package+"." + maxFileSeg +"." + pixelSeg+"."+javaClassName;
+                            QString longName = package+"." + maxFileSeg +"." + pixelSeg+"."+bundleJavaClassName;
                             list.push_back(std::pair<int,QString>(end-start, longName));
                             fend = fend + fincrement;
                             start = end;
@@ -546,15 +539,15 @@ namespace com
                         }
 
                         // now to write the loader
-                        QString javaClassName = theJavaClassNamePrefix + "Loader";
+                        QString loaderJavaClassName = theJavaClassNamePrefix + "Loader";
                         QDir dir;
                         dir.mkpath(sceneFolder+"/"+ pixelSeg);
-                        QFile loader( sceneFolder+"/"+ pixelSeg+"/"+javaClassName + ".java");
+                        QFile loader( sceneFolder+"/"+ pixelSeg+"/"+loaderJavaClassName + ".java");
                         if (!loader.open(QFile::WriteOnly | QFile::Truncate))
                             return false;
 
                         QTextStream f(&loader);
-                        bool result = isGwt? writeGwtLoader(f, list) : writeSwingLoader(f, list);
+                        bool result = isGwt? writeGwtLoader(f, loaderJavaClassName, list) : writeSwingLoader(f, loaderJavaClassName, list);
                         (result=!!result);
                         loader.close();
 

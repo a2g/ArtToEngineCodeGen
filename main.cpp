@@ -4,7 +4,6 @@
 */
 #include <QtGui/QApplication>
 #include <QMainWindow>
-//#include "FileBrowser.h"
 #include "FolderTraverser.h"
 
 using namespace com::github::a2g::generator;

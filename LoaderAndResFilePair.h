@@ -8,6 +8,7 @@
 #include <QTextStream>
 #include <QPoint>
 #include <QVector>
+#include <iostream>
 #include <QMessageBox>
 #include <QDir>
 #include <QMap>
@@ -16,6 +17,7 @@
 #include "GetObjectPlusAnim.h"
 #include "GetRealObjectSeg.h"
 #include <QPair>
+#include <algorithm>
 
 namespace com
 {
@@ -48,12 +50,12 @@ namespace com
                 public:
                     LoaderAndResFilePair(){};
                     LoaderAndResFilePair(const QString& sceneFolder, const QString& pixelSeg, const QString maxFileSeg, QString animFolder, const QString package) 
-                        : package(package)
-                        , maxFileSeg(maxFileSeg)
-                        , pixelSeg(pixelSeg)
-                        , sceneFolder(sceneFolder)
-                        , animFolder(animFolder)
-                        , isGwt(false)
+                            : package(package)
+                            , maxFileSeg(maxFileSeg)
+                            , pixelSeg(pixelSeg)
+                            , sceneFolder(sceneFolder)
+                            , animFolder(animFolder)
+                            , isGwt(false)
                     {
 
                     }
@@ -127,14 +129,16 @@ namespace com
                             // add case and resource
                             QString objectPlusAnim = GetObjectPlusAnim(objectSeg, animSeg);
                             QString resourceName = QString("%1__%2_%3()").arg(GetRealObjectSeg(objectSeg)).arg(animSeg).arg(caseTally++);
-                            AddImageResourceForAnim(maxFileSeg, pixelSeg, objectSeg, animSeg, pngSaveTo, resourceName);
+                            resourceDeclarations[resourceName] = pngSaveTo;
                             AddCaseStatementForAnim(objectSeg, offset, GetRealObjectSeg(objectSeg), animSeg, idForObject, objectPlusAnim, resourceName);
                         }
 
                         for(int j=0;j<invImages.size();j++)
                         {
                             QPair<QString, int> pair = invImages[j];
-                            QStringList list = pair.first.split("/");
+                            QString pngPath    = pair.first;
+                            pngPath = pngPath.replace(find,replace);
+                            QStringList list = pngPath.split("/");
                             QString root;
                             int i=0;
                             for(;i<list.count()-1;i++)
@@ -146,12 +150,18 @@ namespace com
                             QString maxFileSeg = list[i-3];
                             QString pixelSeg   = list[i-2];
                             QString objectSeg  = list[i-1];
-                            QString pngPath    = pair.first;
+
                             int idForObject    = pair.second;
                             
                             QString justThePNG = QDir(pngPath).dirName();
                             QString resourceName = QString("inv_%1()").arg(objectSeg);
-                            AddImageResourceForInv(maxFileSeg, pixelSeg, objectSeg, justThePNG, resourceName);
+
+                            QDir dir(pngPath);
+
+                            bool isDirMade = dir.mkpath(root);
+
+                            bool isCopyOk = QFile::copy(pair.first, pngPath);
+                            resourceDeclarations[resourceName] = pngPath;
                             AddCaseStatementForInv(objectSeg, idForObject, resourceName);
                         }
                     }
@@ -175,17 +185,16 @@ namespace com
                         return isInventory;
                     }
 
-                    void AddImageResourceForInv(QString maxFileSeg, QString pixelSeg, QString objectSeg, QString png, QString resourceName)
-                    {
-                        QString relativePath = QString(MakePath(package)+"/%1/%2/%3/%4").arg(maxFileSeg).arg(pixelSeg).arg(objectSeg).arg(png);
-                        resourceDeclarations[resourceName] = relativePath;
-                    }
+                    //void AddPackagedImageForInv(QString maxFileSeg, QString pixelSeg, QString objectSeg, QString png, QString resourceName)
+                    //{
+                    //    QString relativePath = QString(MakePath(package)+"/%1/%2/%3/%4").arg(maxFileSeg).arg(pixelSeg).arg(objectSeg).arg(png);
+                    //    resourceDeclarations[resourceName] = relativePath;
+                    //}
 
-                    void AddImageResourceForAnim(QString maxFileSeg, QString pixelSeg, QString objectSeg, QString animSeg, QString pngSaveTo, QString resourceName)
-                    {	
-                        //QString relativePath = QString(MakePath(package)+"/%1/%2/%3/%4/%5").arg(maxFileSeg).arg(pixelSeg).arg(objectSeg).arg(animSeg).arg(pngSaveTo);
-                        resourceDeclarations[resourceName] = pngSaveTo;
-                    }
+                    //void AddPackagedImageForAnim(QString maxFileSeg, QString pixelSeg, QString objectSeg, QString animSeg, QString pngSaveTo, QString resourceName)
+                    //{
+                    //    resourceDeclarations[resourceName] = pngSaveTo;
+                    //}
 
                     void AddCaseStatementForAnim(QString objectSeg, QPoint offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
                     {
@@ -194,140 +203,75 @@ namespace com
                         int x = offset.x();
                         int y = offset.y();
                         QString oPlusA = objectPlusAnim.toUpper();
-                        QString caseStatement = QString("case %9: return api.addImageForASceneObject(lh, %1,%2,%3, \"%4\",\"%5\",(short)%6,a.%7, res.%8	);\n").arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(resourceName).arg(caseStatements.size());
+                        QString caseStatement = QString("case %9: return api.addImageForASceneObject(lh, %1,%2,%3, \"%4\",\"%5\",(short)%6,a.%7, new PackagedImage(res.%8));\n").arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(resourceName).arg(caseStatements.size());
                         caseStatements.push_back(caseStatement);
                     }
 
                     void AddCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
                     {
-                        QString caseStatement = QString("case %9: return api.addImageForAnInventoryItem(lh, \"%1\",%2,res.%3);\n").arg(invSeg.toUpper()).arg(idForInv).arg(resourceName).arg(caseStatements.size());
+                        QString caseStatement = QString("case %9: return api.addImageForAnInventoryItem(lh, \"%1\",%2,new PackagedImage(res.%3));\n").arg(invSeg.toUpper()).arg(idForInv).arg(resourceName).arg(caseStatements.size());
                         caseStatements.push_back(caseStatement);
-                    }
-
-                    void writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
-                    {
-
-                            f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
-                            f << ("\n");
-                            f << ("import com.github.a2g.bridge.ImageResource;\n");
-                            f << ("import com.github.a2g.bridge.LoadHandler;\n");
-                            f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
-                            if(animFolder!=NULL)
-                                f << ("import "+package+"." + animFolder +".a;\n");
-                            f << ("\n");
-                            f << ("public class "+bundleJavaClassName+"\n");
-                            f << ("{\n");
-                            f << ("    public static class MyRes");
-                            f << ("    {\n");
-                            f << ("        public static final MyRes RESOURCE = new MyRes();");
-                            f << ("        \n");
-
-                            for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
-                            {
-                                QString resourceName = iter.key();
-                                QString relativePath = iter.value();
-                                f << ("        public ImageResource "+resourceName+"{ return new ImageResource(\"" + relativePath + "\");}\n");
-                            }
-                            f << "    }"                                                                                "\n";
-
-                            f << "    public static boolean addResources(LoadHandler lh, InternalAPI api, int i)"      "\n";
-                            f << "    {"                                                                               "\n";
-                            f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
-                            f << "        switch(i){"                                                                  "\n";
-                            for(int j=start;j<end;j++)
-                            {
-                                f << caseStatements[j];
-                            }
-                            f << "        }"                                                                           "\n";
-                            f << "        return false;"                                                               "\n";
-                            f << "    }"                                                                               "\n";
-
-                            f << "     static int counter = 0;"                                                        "\n";
-                            f << "     public static void setCounter(int i){ counter = i;}"                            "\n";
-                            f << "     public static void extractAllNow(LoadHandler lh, InternalAPI api)"                            "\n";
-                            f << "     {"                                                                              "\n";
-                            f << "         setCounter(0);"                                                             "\n";
-                            f << "         extractNext(lh, Integer.MAX_VALUE, api);"                                       "\n";
-                            f << "     }"                                                                              "\n";
-                            f << "     public static boolean extractNext(final LoadHandler lh, final int CHUNK, InternalAPI api)"          "\n";
-                            f << "     {"                                                                              "\n";
-                            f << "         boolean stillRemaining = true;"                                             "\n";
-                            f << ""                                                                                    "\n";
-                            f << "         for (int i=0;i<CHUNK && stillRemaining==true;i++)"                          "\n";
-                            f << "         {"                                                                          "\n";
-                            f << "             stillRemaining = addResources(lh, api,counter);"                            "\n";
-                            f << "             counter++;"                                                             "\n";
-                            f << "             if(stillRemaining==false)"                                              "\n";
-                            f << "                 break;"                                                             "\n";
-                            f << "         }"                                                                          "\n";
-                            f << "         return stillRemaining;"                                                     "\n";
-                            f << "     }"                                                                              "\n";
-                            f << "}"                                                                                   "\n";
-
                     }
 
                     void writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
                     {
+                        QStringList packageSegs = package.split(".");
 
-                            f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
-                            f << ("\n");
-                            f << ("import com.github.a2g.bridge.GWT;\n");
-                            f << ("import com.github.a2g.bridge.ClientBundle;\n");
-                            f << ("import com.github.a2g.bridge.ImageResource;\n");
-                            f << ("import com.github.a2g.bridge.LoadHandler;\n");
-                            f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
-                            if(animFolder!=NULL)
-                                f << ("import "+package+"." + animFolder +".a;\n");
-                            f << ("\n");
-                            f << ("public class "+bundleJavaClassName+"\n");
-                            f << ("{\n");
-                            f << ("    public interface MyRes extends ClientBundle");
-                            f << ("    {\n");
-                            f << ("        public static final "+bundleJavaClassName+".MyRes RESOURCE =  GWT.create("+bundleJavaClassName+".MyRes.class);\n");
-                            f << ("        \n");
-                            for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
+                        f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
+                        f << ("\n");
+                        f << ("import com.github.a2g.bridge.image.ClientBundle;\n");
+                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
+                        f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
+                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
+                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
+                        f << ("import com.google.gwt.core.client.GWT;\n");
+                        f << ("import com.google.gwt.resources.client.ImageResource;\n");
+                        if(animFolder!=NULL)
+                            f << ("import "+package+"." + animFolder +".a;\n");
+                        f << ("\n");
+                        f << ("public class "+bundleJavaClassName+"\n");
+                        f << ("{\n");
+                        f << ("    public interface MyRes extends ClientBundle");
+                        f << ("    {\n");
+                        f << ("        public static final "+bundleJavaClassName+".MyRes RESOURCE =  GWT.create("+bundleJavaClassName+".MyRes.class);\n");
+                        f << ("        \n");
+                        for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
+                        {
+                            QString resourceName = iter.key();
+                            QString fullPath = iter.value();
+                            QStringList pngSegs = fullPath.split("/");
+                            QString relativePath = packageSegs[0];
+                            QStringList::iterator iter = std::find(pngSegs.begin(), pngSegs.end(), packageSegs[1]);
+                            if(iter!=pngSegs.end())
                             {
-                                QString resourceName = iter.key();
-                                QString relativePath = iter.value();
+                                while(iter!=pngSegs.end())
+                                {
+                                    relativePath+="/" + *iter;
+                                    iter++;
+                                }
                                 QString resrc = ("        @Source(\"" + relativePath + "\")\n");
                                 resrc = resrc + ("        abstract ImageResource "+resourceName+";\n");
 
                                 f << resrc;
                             }
-                            f << "    }"                                                                               "\n";
-                            f << "    public static boolean addResources(LoadHandler lh, InternalAPI api, int i)"                     "\n";
-                            f << "    {"                                                                               "\n";
-                            f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
-                            f << "        switch(i){"                                                                  "\n";
-                            for(int j=start;j<end;j++)
+                            else
                             {
-                                f << caseStatements[j];
+                                std::cout << "\n " + package.toStdString() + "this path doesn't contain package" + fullPath.toStdString() ;
                             }
-                            f << "        }"                                                                           "\n";
-                            f << "        return false;"                                                               "\n";
-                            f << "    }"                                                                               "\n";
-
-                            f << "     static int counter = 0;"                                                        "\n";
-                            f << "     public static void setCounter(int i){ counter = i;}"                            "\n";
-                            f << "     public static void extractAllNow(LoadHandler lh, InternalAPI api)"                            "\n";
-                            f << "     {"                                                                              "\n";
-                            f << "         setCounter(0);"                                                             "\n";
-                            f << "         extractNext(lh, Integer.MAX_VALUE, api);"                                       "\n";
-                            f << "     }"                                                                              "\n";
-                            f << "     public static boolean extractNext(final LoadHandler lh, final int CHUNK, InternalAPI api)"          "\n";
-                            f << "     {"                                                                              "\n";
-                            f << "         boolean stillRemaining = true;"                                             "\n";
-                            f << ""                                                                                    "\n";
-                            f << "         for (int i=0;i<CHUNK && stillRemaining==true;i++)"                          "\n";
-                            f << "         {"                                                                          "\n";
-                            f << "             stillRemaining = addResources(lh, api,counter);"                            "\n";
-                            f << "             counter++;"                                                             "\n";
-                            f << "             if(stillRemaining==false)"                                              "\n";
-                            f << "                 break;"                                                             "\n";
-                            f << "         }"                                                                          "\n";
-                            f << "         return stillRemaining;"                                                     "\n";
-                            f << "     }"                                                                              "\n";
-                            f << "}"                                                                                   "\n";
+                        }
+                        f << "    }"                                                                               "\n";
+                        f << QString("    public static boolean addImage(ImageAddAPI api, LoadHandler lh, int i)\n");
+                        f << "    {"                                                                               "\n";
+                        f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
+                        f << "        switch(i){"                                                                  "\n";
+                        for(int j=start;j<end;j++)
+                        {
+                            f << caseStatements[j];
+                        }
+                        f << "        }"                                                                           "\n";
+                        f << "        return false;"                                                               "\n";
+                        f << "    }"                                                                               "\n";
+                        f << "}"                                                                                   "\n";
 
                     }
 
@@ -335,12 +279,13 @@ namespace com
                     {
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-                        f << ("import com.github.a2g.core.GWT;\n");
-                        f << ("import com.github.a2g.core.RunAsyncCallback;\n");
-                        f << ("import com.github.a2g.core.Scheduler;\n");
-                        f << ("import com.github.a2g.core.LoadHandler;\n");
+                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
+                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
+                        f << ("import com.google.gwt.core.client.GWT;\n");
+                        f << ("import com.google.gwt.core.client.RunAsyncCallback;\n");
+                        f << ("import com.google.gwt.core.client.Scheduler;\n");
 
 
                         f << ("\n");
@@ -369,7 +314,7 @@ namespace com
                         f << ("  {\n");
                         f << ("    switch(bundleNumber)\n");
                         f << ("    {\n");
-                        int counter = 0;
+                        int offset = 0;
                         for(unsigned int i=0;i<list.size();i++)
                         {
                             f << QString("    case %1: \n").arg(i);
@@ -379,22 +324,18 @@ namespace com
                             f << QString("  {\n");
                             f << QString("      public void onSuccess()\n");
                             f << QString("      {\n");
-                            //f << QString("		  lh.onLoad(null);\n");
                             f << QString("        // Schedule the IncrementalCommand instance to run when\n");
                             f << QString("        // control returns to the event loop by returning 'true'\n");
                             f << QString("        Scheduler.get().scheduleFixedDelay\n");
                             f << QString("        (\n");
                             f << QString("          new Scheduler.RepeatingCommand()\n");
                             f << QString("          {\n");
-                            f << QString("            int counter= %1;\n").arg(counter);
+                            f << QString("            int counter= 0;\n");
                             f << QString("            @Override\n");
                             f << QString("              public boolean execute()\n");
                             f << QString("              {\n");
-                            f << QString(" %1.setCounter(counter);\n").arg(list[i].second);
-                            f << QString(" boolean stillRemaining = %1.extractNext(lh, CHUNK, api);\n").arg(list[i].second);
-                            f << QString("                counter+=CHUNK;\n");
-                            //   f << QString("		          if(!stillRemaining){ lh.onLoad(null);}\n");
-                            f << QString("                return stillRemaining;\n");
+                            f << QString(" %1.addImage(api, lh, counter+%2);\n").arg(list[i].second).arg(offset);
+                            f << QString("                return (++counter<%1);\n").arg(list[i].first);
                             f << QString("              }\n");
                             f << QString("          }\n");
                             f << QString("          ,milliseconds\n");
@@ -406,14 +347,56 @@ namespace com
                             f << QString("      }\n");
                             f << QString("    }\n");
                             f << QString(");\n");
+                            f << QString("}\n");
                             f << QString("return 0;\n");
-                            counter += list[i].first;
+                            offset += list[i].first;
                         }
-                        f << ("    }\n");
-                        f << ("    return 0;\n");
-                        f << ("  }\n");
+                        f << ("}\n");
                         f << ("}\n");
                         return true;
+                    }
+
+
+                    void writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
+                    {
+                        f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
+                        f << ("\n");
+                        f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
+                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
+                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
+                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
+                        if(animFolder!=NULL)
+                            f << ("import "+package+"." + animFolder +".a;\n");
+                        f << ("\n");
+                        f << ("public class "+bundleJavaClassName+"\n");
+                        f << ("{\n");
+                        f << ("    public static class MyRes");
+                        f << ("    {\n");
+                        f << ("        public static final MyRes RESOURCE = new MyRes();");
+                        f << ("        \n");
+
+                        for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
+                        {
+                            QString resourceName = iter.key();
+                            QString fullPath = iter.value();
+
+                            f << ("        public String "+resourceName+"{ return \"" + fullPath + "\";}\n");
+                        }
+                        f << "    }"                                                                                "\n";
+
+                        f << "    public static boolean addImage(ImageAddAPI api, LoadHandler lh, int i)"      "\n";
+                        f << "    {"                                                                               "\n";
+                        f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
+                        f << "        switch(i){"                                                                  "\n";
+                        for(int j=start;j<end;j++)
+                        {
+                            f << caseStatements[j];
+                        }
+                        f << "        }"                                                                           "\n";
+                        f << "        return false;"                                                               "\n";
+                        f << "    }"                                                                               "\n";
+                        f << "}"                                                                                   "\n";
+
                     }
 
                     bool writeSwingLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
@@ -423,8 +406,9 @@ namespace com
                         f << ("import javax.swing.Timer;\n");
                         f << ("import java.awt.event.ActionEvent;\n");
                         f << ("import java.awt.event.ActionListener;\n");
-                        f << ("import com.github.a2g.bridge.LoadHandler;\n");
+                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
+                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
 
 
@@ -455,7 +439,7 @@ namespace com
                         f << ("  {\n");
                         f << ("    switch(bundleNumber)\n");
                         f << ("    {\n");
-                        int counter = 0;
+                        int offset = 0;
                         for(unsigned int i=0;i<list.size();i++)
                         {
                             f << QString("    case %1: \n").arg(i);
@@ -468,10 +452,9 @@ namespace com
                             f << QString("          @Override\n");
                             f << QString("          public void actionPerformed(ActionEvent e)\n");
                             f << QString("          {\n");
-                            f << QString("            %1.setCounter(counter);\n").arg(list[i].second);
-                            f << QString("            boolean stillRemaining = %1.extractNext(lh, CHUNK, api);\n").arg(list[i].second);
-                            f << QString("            counter+=CHUNK;\n");
-                            f << QString("            if(!stillRemaining)\n");
+                            f << QString("            %1.addImage(api, lh, counter+%2);\n").arg(list[i].second).arg(offset);
+                            f << QString("            counter++;\n");
+                            f << QString("            if(counter==%1)\n").arg(list[i].first);
                             f << QString("               timer.stop();\n");
                             f << QString("          }\n");
                             f << QString("        }\n");
@@ -479,11 +462,13 @@ namespace com
                             f << QString("      timer.setInitialDelay(milliseconds);\n");
                             f << QString("      timer.start();\n");
                             f << QString("      return 0;\n");
-                            counter += list[i].first;
+                            offset += list[i].first;
                         }
                         f << ("    }\n");
                         f << ("    return 0;\n");
                         f << ("  }\n");
+
+
                         f << ("}\n");
                         return true;
                     }

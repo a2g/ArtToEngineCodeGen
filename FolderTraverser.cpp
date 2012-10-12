@@ -30,45 +30,9 @@ using namespace com::github::a2g::generator;
 
 const char* _00_ANIMATIONS = "_00_Animations";
 
-/*
-int getIndexOfFirstElementHigherThan(int numberPrefix)
-{
-    int numberOfImages = -1;
-    ArrayList<SceneObject> list = this.scene.objectCollection().getSortedList();
 
-    Iterator<SceneObject> it = list.iterator();
-
-    while (it.hasNext()) {
-        SceneObject o = it.next();
-
-        if (o.getCodePrefix()
-            > numberPrefix) {
-            return numberOfImages;
-        }
-
-        for (int i = 0; i
-             < o.animations().getCount(); i++) {
-            Animation a = o.animations().at(
-                    i);
-            ImageCollection frames = a.getFrames();
-
-            for (int j = 0; j
-                 < frames.count(); j++) {
-                Image image = frames.at(j);
-
-                assert(image != null);
-                numberOfImages++;
-            }
-        }
-    }
-    return numberOfImages;
-}
-*/
 void FolderTraverser::Generate(QString rootFolder, QString package)
 {
-
-
-
     QString bad = "?"; //this is a char that will invalidate a filename, and thus any XFile class if used as param1
 
 

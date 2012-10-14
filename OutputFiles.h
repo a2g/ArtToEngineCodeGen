@@ -62,7 +62,7 @@ namespace com
                         allLasts.push_back(file);
                     }
 
-                    void writeAll(QString find, QString replace)
+                    void writeAll(QString find, QString replace, bool isGwt)
                     {
                         for(int i=0;i<allAFiles.count();i++)
                         {
@@ -78,15 +78,15 @@ namespace com
                         }
                         for(int i=0;i<allOnlys.count();i++)
                         {
-                            allOnlys[i].writeToFile(find, replace);
+                            allOnlys[i].writeToFile(find, replace, isGwt);
                         }
                         for(int i=0;i<allFirsts.count();i++)
                         {
-                            allFirsts[i].writeToFile(find , replace);
+                            allFirsts[i].writeToFile(find , replace, isGwt);
                         }
                         for(int i=0;i<allLasts.count();i++)
                         {
-                            allLasts[i].writeToFile(find, replace);
+                            allLasts[i].writeToFile(find, replace, isGwt);
                         }
                     }
                 };

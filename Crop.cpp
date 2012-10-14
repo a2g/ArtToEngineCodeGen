@@ -161,37 +161,7 @@ QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
                 (isOK1 = isOK1);
                  if(!isOK1)
                     QMessageBox::warning(NULL, "Failed to save",fullPathToSaveTo);
-
-                 /*
-                zbuf = GenerateZBufferRepresentation(image, colorForZBuffer);
-                QImage zbuf2 = zbuf;
-
-                bool isOK2 = zbuf2.save(croppedZBufferFilename,"bmp");
-                (isOK2 = isOK2);
-                if(!isOK2)
-                    QMessageBox::warning(NULL, "Failed to save",croppedZBufferFilename);
-
-
-                image = image2;
-                zbuf = zbuf2;
-                */
             }
-/*
-            QDomDocument doc("MyML");
-            QDomElement root = doc.createElement("MyML");
-            doc.appendChild(root);
-            root.setAttribute("x", QVariant(x).toString() );
-            root.setAttribute("y", QVariant(y).toString() );
-            root.setAttribute(STR_IMAGE, croppedZBufferFilename );
-            root.setAttribute(STR_ZBUFFER, croppedZBufferFilename );
-
-            if (0 && xmlFile.open(QFile::WriteOnly | QFile::Truncate))
-            {
-                QTextStream out(&xmlFile);
-                out << doc.toString() << endl;
-            }
-            xmlFile.close();
-            */
         }
     }
 

@@ -153,12 +153,10 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
     }
 }	
 
-void FolderTraverser::SearchForRootOfResourcesAndGenerateIfFound(QString startingPath)
+void FolderTraverser::SearchForRootOfResourcesAndGenerateIfFound(QString startingPath, QString startTarget, QString endTarget)
 {
     startingPath.replace("\\","/");
-    QString startTargetFolder = "com";
-    QString endTargetFolder = "raw";
-    return SearchRecursively(startingPath, startTargetFolder, endTargetFolder);
+    return SearchRecursively(startingPath, startTarget, endTarget);
 }
 
 void FolderTraverser::SearchRecursively(QString folder, QString startTargetFolder, QString endTargetFolder)

@@ -63,17 +63,34 @@ int main(int argc, char *argv[])
     {
         arg = argv[1];
     }
-    OutputFiles output;
     {
-        FileSystem fileSystem;
-        PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
+        bool isGwt= true;
+        OutputFiles output;
         {
-            FolderTraverser trav(fileSystem, output);
-            trav.SearchForRootOfResourcesAndGenerateIfFound(arg);
+            FileSystem fileSystem;
+            PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
+            {
+                FolderTraverser trav(fileSystem, output);
+                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "awtraw");
+            }
         }
-    }
 
-    output.writeAll("raw", "resource");
+        output.writeAll("raw", "resource", isGwt);
+    }
+    {
+        bool isGwt= false;
+        OutputFiles output;
+        {
+            FileSystem fileSystem;
+            PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
+            {
+                FolderTraverser trav(fileSystem, output);
+                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "gwtraw");
+            }
+        }
+
+        output.writeAll("raw", "resource", isGwt);
+    }
     return 0;
 
     /*

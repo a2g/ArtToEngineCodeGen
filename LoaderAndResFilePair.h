@@ -40,7 +40,7 @@ namespace com
 
                     QString casesConcatenated;
                     QString resourcesConcatenated;
-                    bool isGwt;
+
 
                     QVector<QString> caseStatements;
                     QMap<QString, QString> resourceDeclarations;
@@ -48,14 +48,14 @@ namespace com
                     QVector<QPair<QString, int> > invImages;
 
                 public:
-                    LoaderAndResFilePair(){};
-                    LoaderAndResFilePair(const QString& sceneFolder, const QString& pixelSeg, const QString maxFileSeg, QString animFolder, const QString package) 
+                    LoaderAndResFilePair(){}
+                    LoaderAndResFilePair(const QString& sceneFolder, const QString& pixelSeg, const QString maxFileSeg, QString animFolder, const QString package)
                             : package(package)
                             , maxFileSeg(maxFileSeg)
                             , pixelSeg(pixelSeg)
                             , sceneFolder(sceneFolder)
                             , animFolder(animFolder)
-                            , isGwt(false)
+
                     {
 
                     }
@@ -220,10 +220,10 @@ namespace com
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
                         f << ("import com.github.a2g.bridge.image.ClientBundle;\n");
-                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
+                        f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
                         f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
-                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
+                       // f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
                         f << ("import com.google.gwt.resources.client.ImageResource;\n");
                         if(animFolder!=NULL)
@@ -279,9 +279,9 @@ namespace com
                     {
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
+                        f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
-                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
+                      //  f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
                         f << ("import com.google.gwt.core.client.RunAsyncCallback;\n");
@@ -362,7 +362,7 @@ namespace com
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
                         f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
-                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
+                        f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                         if(animFolder!=NULL)
@@ -406,7 +406,7 @@ namespace com
                         f << ("import javax.swing.Timer;\n");
                         f << ("import java.awt.event.ActionEvent;\n");
                         f << ("import java.awt.event.ActionListener;\n");
-                        f << ("import com.github.a2g.bridge.image.LoadHandler;\n");
+                        f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
@@ -473,7 +473,7 @@ namespace com
                         return true;
                     }
 
-                    bool writeToFile(QString find, QString replace)
+                    bool writeToFile(QString find, QString replace, bool isGwt)
                     {
                         CropImagesAndConstructDeclarations(find, replace);
 

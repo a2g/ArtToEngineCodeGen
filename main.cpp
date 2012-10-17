@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
             PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
             {
                 FolderTraverser trav(fileSystem, output);
-                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "awtraw");
+                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "rawawt");
             }
         }
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
             PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
             {
                 FolderTraverser trav(fileSystem, output);
-                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "gwtraw");
+                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "rawgwt");
             }
         }
 

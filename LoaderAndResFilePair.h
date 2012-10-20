@@ -364,7 +364,6 @@ namespace com
                         f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
-                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                         if(animFolder!=NULL)
                             f << ("import "+package+"." + animFolder +".a;\n");
                         f << ("\n");
@@ -408,7 +407,6 @@ namespace com
                         f << ("import java.awt.event.ActionListener;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
-                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
 
 

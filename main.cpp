@@ -53,6 +53,20 @@ void PopulateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
     }
 }
 
+void ProcessRawFilesToResources(QString arg, QString findMe, bool isGwt)
+{
+    OutputFiles output;
+    {
+        FileSystem fileSystem;
+        PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
+        {
+            FolderTraverser trav(fileSystem, output);
+            trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", findMe);
+        }
+    }
+
+    output.writeAll(findMe, "resource", isGwt);
+}
 
 int main(int argc, char *argv[])
 {
@@ -64,32 +78,8 @@ int main(int argc, char *argv[])
         arg = argv[1];
     }
     {
-        bool isGwt= true;
-        OutputFiles output;
-        {
-            FileSystem fileSystem;
-            PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
-            {
-                FolderTraverser trav(fileSystem, output);
-                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "rawawt");
-            }
-        }
-
-        output.writeAll("raw", "resource", isGwt);
-    }
-    {
-        bool isGwt= false;
-        OutputFiles output;
-        {
-            FileSystem fileSystem;
-            PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
-            {
-                FolderTraverser trav(fileSystem, output);
-                trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", "rawgwt");
-            }
-        }
-
-        output.writeAll("raw", "resource", isGwt);
+        ProcessRawFilesToResources(arg, "rawgwt", true);
+        ProcessRawFilesToResources(arg, "rawawt", false);
     }
     return 0;
 

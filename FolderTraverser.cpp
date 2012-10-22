@@ -43,7 +43,7 @@ using namespace com::github::a2g::generator;
 const char* _00_ANIMATIONS = "_00_Animations";
 
 
-void FolderTraverser::Generate(QString rootFolder, QString package)
+void FolderTraverser::generate(QString rootFolder, QString package)
 {
     QString bad = "?"; //this is a char that will invalidate a filename, and thus any XFile class if used as param1
 
@@ -95,16 +95,16 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
                 }
                 else
                 {
-                    int idForObj = oStream.getIdForName(GetRealObjectSeg(objectSeg));
+                    int idForObj = oStream.getIdForName(getRealObjectSeg(objectSeg));
 
                     QStringList animFolders = files.getSubFolders(*objectFolder);
                     for(QStringList::iterator animFolder = animFolders.begin();animFolder!=animFolders.end();animFolder++)
                     {
                         QString animSeg = QDir(*animFolder).dirName().toLower();
 
-                        int idForObjPlusAnim = GetObjectPlusAnimHash(objectSeg,animSeg);
+                        int idForObjPlusAnim = getObjectPlusAnimHash(objectSeg,animSeg);
 
-                        aFile.insert(GetObjectPlusAnim(objectSeg,animSeg).toStdString(), idForObjPlusAnim);
+                        aFile.insert(getObjectPlusAnim(objectSeg,animSeg).toStdString(), idForObjPlusAnim);
                         QStringList PNGs = files.getSubFiles(*animFolder);
 
                         for(QStringList::iterator pngLoadMe = PNGs.begin();pngLoadMe!=PNGs.end();pngLoadMe++)
@@ -132,17 +132,17 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
             // set the names in one place;
             // if both the streams have content, and thus will write a valid file, then "first"+"last"
             // but if either is empty, and thus only one file then "only"
-            if(initialStream.IsEmpty() || resStream.IsEmpty())
+            if(initialStream.isEmpty() || resStream.isEmpty())
             {
-                initialStream.SetJavaClassNamePrefix("Only");
-                resStream.SetJavaClassNamePrefix("Only");
+                initialStream.setJavaClassNamePrefix("Only");
+                resStream.setJavaClassNamePrefix("Only");
                 output.addOnly(initialStream);
                 output.addOnly(resStream);
             }
             else
             {
-                initialStream.SetJavaClassNamePrefix("First");
-                resStream.SetJavaClassNamePrefix("Last");
+                initialStream.setJavaClassNamePrefix("First");
+                resStream.setJavaClassNamePrefix("Last");
                 output.addFirst(initialStream);
                 output.addLast(resStream);
             }
@@ -165,13 +165,13 @@ void FolderTraverser::Generate(QString rootFolder, QString package)
     }
 }	
 
-void FolderTraverser::SearchForRootOfResourcesAndGenerateIfFound(QString startingPath, QString startTarget, QString endTarget)
+void FolderTraverser::searchForRootOfResourcesAndGenerateIfFound(QString startingPath, QString startTarget, QString endTarget)
 {
     startingPath.replace("\\","/");
-    return SearchRecursively(startingPath, startTarget, endTarget);
+    return searchRecursively(startingPath, startTarget, endTarget);
 }
 
-void FolderTraverser::SearchRecursively(QString folder, QString startTargetFolder, QString endTargetFolder)
+void FolderTraverser::searchRecursively(QString folder, QString startTargetFolder, QString endTargetFolder)
 {
     QStringList subFolders = files.getSubFolders(folder);
     for(int i=0;i<subFolders.count();i++)
@@ -195,7 +195,7 @@ void FolderTraverser::SearchRecursively(QString folder, QString startTargetFolde
                 QString folderSeg = QDir(subsubFolder).dirName();
                 QString package = subsubFolder.mid(start,end+endTargetFolder.length()+folderSeg.length()+1 );    
                 package.replace('/','.');
-                Generate(subsubFolder, package);
+                generate(subsubFolder, package);
             }
             // since we've processed all the subfolders at our target, then we return
             // otherwise it will keep recursing through subdirs, and these will keep matching..
@@ -204,7 +204,7 @@ void FolderTraverser::SearchRecursively(QString folder, QString startTargetFolde
             return;
         }
         //recurse
-        SearchRecursively(subFolder, startTargetFolder, endTargetFolder);
+        searchRecursively(subFolder, startTargetFolder, endTargetFolder);
     }
 }
 

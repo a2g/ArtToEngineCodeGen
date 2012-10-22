@@ -16,7 +16,7 @@
 
 #pragma once
 
-static QString GetRealObjectSeg(QString objectSeg)
+static QString getRealObjectSeg(QString objectSeg)
 {
    // remove the prefix ie "_80_"
     QString realObjectSeg = objectSeg.mid(4);

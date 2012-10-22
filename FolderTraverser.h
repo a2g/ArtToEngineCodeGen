@@ -36,10 +36,10 @@ namespace com
                         , output(output)
                     {  }
 
-                    void SearchForRootOfResourcesAndGenerateIfFound(QString startingPath,QString startTarget,QString endTarget);
+                    void searchForRootOfResourcesAndGenerateIfFound(QString startingPath,QString startTarget,QString endTarget);
                 private:
-                    void SearchRecursively(QString subfolder, QString startTargetFolder, QString endTargetFolder);
-                    void Generate(QString rootFolder, QString package);
+                    void searchRecursively(QString subfolder, QString startTargetFolder, QString endTargetFolder);
+                    void generate(QString rootFolder, QString package);
                 };
             }
         }

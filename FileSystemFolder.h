@@ -40,33 +40,33 @@ namespace com
                         return isValid;
                     }
 
-                    std::string GetAllPathSegments()
+                    std::string getAllPathSegments()
                     {
                         return fullFolderPath;
                     }
-                    std::string GetEndSegment()
+                    std::string getEndSegment()
                     {
                         QDir dir(fullFolderPath);
                         QString endSegment = dir.dirName();
                         return endSegment;
                     }
-					int GetNumberOfSubFolders()
+					int getNumberOfSubFolders()
                     {
-                        int numberOfSubFolders = fileSystem.GetNumberOfSubFoldersInFolder(fullFolderPath);
+                        int numberOfSubFolders = fileSystem.getNumberOfSubFoldersInFolder(fullFolderPath);
                     }
-					FileSystemFolder GetSubFolder(int i)
+					FileSystemFolder getSubFolder(int i)
                     {
-                        String s = fileSystem.GetSubFolderOfFolder(i, fullFolderPath);
+                        String s = fileSystem.getSubFolderOfFolder(i, fullFolderPath);
                         return s;
                     }
-					int GetNumberOfFiles()
+					int getNumberOfFiles()
                     {
-                        int numberOfFiles = fileSystem.GetNumberOfFilesInFolder(fullFolderPath);
+                        int numberOfFiles = fileSystem.getNumberOfFilesInFolder(fullFolderPath);
                         return numberOfFiles;
                     }
-					std::string GetFile(int i)
+					std::string getFile(int i)
                     {
-                        String s = fileSystem.GetFileOfFolder(i, fullFolderPath);
+                        String s = fileSystem.getFileOfFolder(i, fullFolderPath);
                         return s;
                     }
                 };

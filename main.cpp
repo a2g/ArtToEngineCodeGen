@@ -20,7 +20,7 @@
 
 using namespace com::github::a2g::generator;
 
-static void MessageFilterForSuppressingQtMessages(QtMsgType type, const char * msg)
+static void messageFilterForSuppressingQtMessages(QtMsgType type, const char * msg)
 {
     switch (type) {
     case QtDebugMsg:
@@ -38,11 +38,11 @@ static void MessageFilterForSuppressingQtMessages(QtMsgType type, const char * m
     }
 }
 
-void InstallDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput()
+void installDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput()
 {
-    qInstallMsgHandler(MessageFilterForSuppressingQtMessages);
+    qInstallMsgHandler(messageFilterForSuppressingQtMessages);
 }
-void PopulateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
+void populateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
 {
     // the only filter that would be useful here would be ".png" AND folders - but it's not possible.f
     QStringList dirs = QDir(path).entryList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot);
@@ -56,7 +56,7 @@ void PopulateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
         if(isFolder)
         {
             fs->add(name);   
-            PopulateFileSystemFromRealSystemRecursively(fs, name);
+            populateFileSystemFromRealSystemRecursively(fs, name);
         }
         else if(isPNG)
         {
@@ -65,24 +65,24 @@ void PopulateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
     }
 }
 
-void ProcessRawFilesToResources(QString arg, QString findMe, bool isGwt)
+void processRawFilesToResources(QString arg, QString findMe, bool isGwt)
 {
     OutputFiles output;
     {
         FileSystem fileSystem;
-        PopulateFileSystemFromRealSystemRecursively(&fileSystem,arg );
+        populateFileSystemFromRealSystemRecursively(&fileSystem,arg );
         {
             FolderTraverser trav(fileSystem, output);
-            trav.SearchForRootOfResourcesAndGenerateIfFound(arg, "com", findMe);
+            trav.searchForRootOfResourcesAndGenerateIfFound(arg, "com", findMe);
         }
     }
 
-    output.writeAll(findMe, "resource", isGwt);
+    output.writeAll(findMe, "visuals", isGwt);
 }
 
 int main(int argc, char *argv[])
 {
-    InstallDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
+    installDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
     QApplication app(argc, argv);
     QString arg = "D:/Conan/Swing/src";
     if(argc>1)
@@ -90,8 +90,8 @@ int main(int argc, char *argv[])
         arg = argv[1];
     }
     {
-        ProcessRawFilesToResources(arg, "rawgwt", true);
-        ProcessRawFilesToResources(arg, "rawawt", false);
+        processRawFilesToResources(arg, "sourcegwt", true);
+        processRawFilesToResources(arg, "sourceawt", false);
     }
     return 0;
 

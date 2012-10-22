@@ -43,7 +43,7 @@ const char* STR_ZBUFFER = "croppedZBuffer";
 using namespace com::github::a2g::generator;
 
 
-QRect GetBoundingNonBlackRectangle(QImage image)
+QRect getBoundingNonBlackRectangle(QImage image)
 {
     int max = image.width() > image.height()? image.width() : image.height();
     int top = 0;
@@ -94,7 +94,7 @@ QRect GetBoundingNonBlackRectangle(QImage image)
 }
 
 
-QImage GenerateZBufferRepresentation(QImage image, QRgb zbufferColor)
+QImage generateZBufferRepresentation(QImage image, QRgb zbufferColor)
 {
     QImage zbuf = image.createHeuristicMask(false);
     zbuf.invertPixels();
@@ -104,7 +104,7 @@ QImage GenerateZBufferRepresentation(QImage image, QRgb zbufferColor)
     return alphed;
 }
 
-QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer)
+QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer)
 {
     QDir dir;
     bool isOK = dir.mkpath(fullPathToSaveTo);
@@ -147,7 +147,7 @@ QPoint Crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
         if(isLoaded)
         {
             QString croppedZBufferFilename = fullPathToLoadFrom.left(fullPathToLoadFrom.length() -4) + "_CroppedZBuffer.bmp";
-            QRect rect = GetBoundingNonBlackRectangle(temp);
+            QRect rect = getBoundingNonBlackRectangle(temp);
 
             if(rect.bottomRight().x() == -1)
             {

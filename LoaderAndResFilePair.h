@@ -76,22 +76,22 @@ namespace com
                         //  writeToFile();
                     }
 
-                    void SetJavaClassNamePrefix(QString theJavaClassNamePrefix)
+                    void setJavaClassNamePrefix(QString theJavaClassNamePrefix)
                     {
                         this->theJavaClassNamePrefix = theJavaClassNamePrefix;
                     }
 
-                    QString GetJavaClassNamePrefix()
+                    QString getJavaClassNamePrefix()
                     {
                         return theJavaClassNamePrefix;
                     }
 
-                    QString GetJavaClassName()
+                    QString getJavaClassName()
                     {
                         return javaClassName;
                     }
 
-                    QString MakePath(QString fullOfSlashes)
+                    QString makePath(QString fullOfSlashes)
                     {
                         fullOfSlashes.replace('.','/');
                         return fullOfSlashes;
@@ -107,7 +107,7 @@ namespace com
                         invImages.push_back(QPair<QString,int>(pngPath,idForInv));
                     }
 
-                    void CropImagesAndConstructDeclarations(QString find, QString replace)
+                    void cropImagesAndConstructDeclarations(QString find, QString replace)
                     {
                         int caseTally = 0;
                         for(int j=0;j<animImages.size();j++)
@@ -136,13 +136,13 @@ namespace com
                             // do the cropping
 
 
-                            QPoint offset = Crop(pngPath, pngSaveTo, Qt::red);
+                            QPoint offset = crop(pngPath, pngSaveTo, Qt::red);
 
                             // add case and resource
-                            QString objectPlusAnim = GetObjectPlusAnim(objectSeg, animSeg);
-                            QString resourceName = QString("%1__%2_%3()").arg(GetRealObjectSeg(objectSeg)).arg(animSeg).arg(caseTally++);
+                            QString objectPlusAnim = getObjectPlusAnim(objectSeg, animSeg);
+                            QString resourceName = QString("%1__%2_%3()").arg(getRealObjectSeg(objectSeg)).arg(animSeg).arg(caseTally++);
                             resourceDeclarations[resourceName] = pngSaveTo;
-                            AddCaseStatementForAnim(objectSeg, offset, GetRealObjectSeg(objectSeg), animSeg, idForObject, objectPlusAnim, resourceName);
+                            addCaseStatementForAnim(objectSeg, offset, getRealObjectSeg(objectSeg), animSeg, idForObject, objectPlusAnim, resourceName);
                         }
 
                         for(int j=0;j<invImages.size();j++)
@@ -174,24 +174,24 @@ namespace com
 
                             bool isCopyOk = QFile::copy(pair.first, pngPath);
                             resourceDeclarations[resourceName] = pngPath;
-                            AddCaseStatementForInv(objectSeg, idForObject, resourceName);
+                            addCaseStatementForInv(objectSeg, idForObject, resourceName);
                         }
                     }
 
-                    bool IsEmpty()
+                    bool isEmpty()
                     {
                         bool isEmpty = animImages.size()==0 && invImages.size()==0;
                         return isEmpty;
                     }
 
                 private: 
-                    bool IsNeeded()
+                    bool isNeeded()
                     {
                         bool isNeeded = (maxFileSeg.contains("_Objects")|| javaClassName!=FIRST);
                         return isNeeded;
                     }
 
-                    bool IsInventory()
+                    bool isInventory()
                     {
                         bool isInventory = (maxFileSeg.contains("_Inventory"));
                         return isInventory;
@@ -208,7 +208,7 @@ namespace com
                     //    resourceDeclarations[resourceName] = pngSaveTo;
                     //}
 
-                    void AddCaseStatementForAnim(QString objectSeg, QPoint offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
+                    void addCaseStatementForAnim(QString objectSeg, QPoint offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
                     {
                         int prefix = objectSeg.mid(1,2).toInt();
 
@@ -219,7 +219,7 @@ namespace com
                         caseStatements.push_back(caseStatement);
                     }
 
-                    void AddCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
+                    void addCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
                     {
                         QString caseStatement = QString("case %9: return api.addImageForAnInventoryItem(lh, \"%1\",%2,new PackagedImage(res.%3));\n").arg(invSeg.toUpper()).arg(idForInv).arg(resourceName).arg(caseStatements.size());
                         caseStatements.push_back(caseStatement);
@@ -231,11 +231,10 @@ namespace com
 
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-                        f << ("import com.github.a2g.bridge.image.ClientBundle;\n");
+                        f << ("import com.google.gwt.resources.client.ClientBundle;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
                         f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
-                       // f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
                         f << ("import com.google.gwt.resources.client.ImageResource;\n");
                         if(animFolder!=NULL)
@@ -304,7 +303,7 @@ namespace com
                         f << ("public class "+loaderJavaClassName+" implements ImageBundleLoaderAPI\n");
                         f << ("{\n");
                         f << ("  @Override\n");
-                        f << QString("  public boolean isInventory(){ return %1;}\n").arg(IsInventory()? "true" : "false");
+                        f << QString("  public boolean isInventory(){ return %1;}\n").arg(isInventory()? "true" : "false");
                         f << ("  @Override\n");
                         f << QString("  public int getNumberOfBundles(){ return %1;}\n").arg(list.size());
                         f << ("  \n");
@@ -427,7 +426,7 @@ namespace com
                         f << ("{\n");
                         f << ("  Timer timer;\n");
                         f << ("  @Override\n");
-                        f << QString("  public boolean isInventory(){ return %1;}\n").arg(IsInventory()? "true" : "false");
+                        f << QString("  public boolean isInventory(){ return %1;}\n").arg(isInventory()? "true" : "false");
                         f << ("  @Override\n");
                         f << QString("  public int getNumberOfBundles(){ return %1;}\n").arg(list.size());
                         f << ("  \n");
@@ -485,7 +484,7 @@ namespace com
 
                     bool writeToFile(QString find, QString replace, bool isGwt)
                     {
-                        CropImagesAndConstructDeclarations(find, replace);
+                        cropImagesAndConstructDeclarations(find, replace);
 
                         if(caseStatements.size()==0)
                             return false;

@@ -58,6 +58,8 @@ namespace com
                     QMap<QString, QString> resourceDeclarations;
                     QVector<QPair<QString, int> > animImages;
                     QVector<QPair<QString, int> > invImages;
+			
+			bool isGwt;
 
                 public:
                     LoaderAndResFilePair(){}
@@ -67,6 +69,7 @@ namespace com
                             , pixelSeg(pixelSeg)
                             , sceneFolder(sceneFolder)
                             , animFolder(animFolder)
+			    , isGwt(false)
 
                     {
 
@@ -197,17 +200,6 @@ namespace com
                         return isInventory;
                     }
 
-                    //void AddPackagedImageForInv(QString maxFileSeg, QString pixelSeg, QString objectSeg, QString png, QString resourceName)
-                    //{
-                    //    QString relativePath = QString(MakePath(package)+"/%1/%2/%3/%4").arg(maxFileSeg).arg(pixelSeg).arg(objectSeg).arg(png);
-                    //    resourceDeclarations[resourceName] = relativePath;
-                    //}
-
-                    //void AddPackagedImageForAnim(QString maxFileSeg, QString pixelSeg, QString objectSeg, QString animSeg, QString pngSaveTo, QString resourceName)
-                    //{
-                    //    resourceDeclarations[resourceName] = pngSaveTo;
-                    //}
-
                     void addCaseStatementForAnim(QString objectSeg, QPoint offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
                     {
                         int prefix = objectSeg.mid(1,2).toInt();
@@ -215,13 +207,13 @@ namespace com
                         int x = offset.x();
                         int y = offset.y();
                         QString oPlusA = objectPlusAnim.toUpper();
-                        QString caseStatement = QString("case %9: return api.addImageForASceneObject(lh, %1,%2,%3, \"%4\",\"%5\",(short)%6,a.%7, new PackagedImage(res.%8));\n").arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(resourceName).arg(caseStatements.size());
+                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8, new %9PackagedImage(res.%10));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
                         caseStatements.push_back(caseStatement);
                     }
 
                     void addCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
                     {
-                        QString caseStatement = QString("case %9: return api.addImageForAnInventoryItem(lh, \"%1\",%2,new PackagedImage(res.%3));\n").arg(invSeg.toUpper()).arg(idForInv).arg(resourceName).arg(caseStatements.size());
+                        QString caseStatement = QString("case %1: return api.addImageForAnInventoryItem(lh, \"%2\",%3,new %4PackagedImage(res.%5));\n").arg(caseStatements.size()).arg(invSeg.toUpper()).arg(idForInv).arg(isGwt? "GWT" : "Swing").arg(resourceName);
                         caseStatements.push_back(caseStatement);
                     }
 
@@ -231,10 +223,11 @@ namespace com
 
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-                        f << ("import com.google.gwt.resources.client.ClientBundle;\n");
+                        
+                        f << ("import com.github.a2g.core.gwt.factory.GWTPackagedImage;\n");
+                        f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
+			f << ("import com.google.gwt.resources.client.ClientBundle;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
-                        f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
-                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
                         f << ("import com.google.gwt.resources.client.ImageResource;\n");
                         if(animFolder!=NULL)
@@ -290,17 +283,16 @@ namespace com
                     {
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
+			f << ("import com.github.a2g.core.interfaces.LoadAPI;\n");
+                        f << ("import com.github.a2g.core.interfaces.InternalAPI;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
-                        f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
-                      //  f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
-                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
                         f << ("import com.google.gwt.core.client.RunAsyncCallback;\n");
                         f << ("import com.google.gwt.core.client.Scheduler;\n");
 
 
                         f << ("\n");
-                        f << ("public class "+loaderJavaClassName+" implements ImageBundleLoaderAPI\n");
+                        f << ("public class "+loaderJavaClassName+" implements LoadAPI\n");
                         f << ("{\n");
                         f << ("  @Override\n");
                         f << QString("  public boolean isInventory(){ return %1;}\n").arg(isInventory()? "true" : "false");
@@ -372,9 +364,9 @@ namespace com
                     {
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-                        f << ("import com.github.a2g.bridge.image.PackagedImage;\n");
+			f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
+                        f << ("import com.github.a2g.core.swing.factory.SwingPackagedImage;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
-                        f << ("import com.github.a2g.core.authoredscene.ImageAddAPI;\n");
                         if(animFolder!=NULL)
                             f << ("import "+package+"." + animFolder +".a;\n");
                         f << ("\n");
@@ -417,12 +409,12 @@ namespace com
                         f << ("import java.awt.event.ActionEvent;\n");
                         f << ("import java.awt.event.ActionListener;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
-                        f << ("import com.github.a2g.core.loader.ImageBundleLoaderAPI;\n");
-                        f << ("import com.github.a2g.core.authoredscene.InternalAPI;\n");
+                        f << ("import com.github.a2g.core.interfaces.LoadAPI;\n");
+                        f << ("import com.github.a2g.core.interfaces.InternalAPI;\n");
 
 
                         f << ("\n");
-                        f << ("public class "+loaderJavaClassName+" implements ImageBundleLoaderAPI\n");
+                        f << ("public class "+loaderJavaClassName+" implements LoadAPI\n");
                         f << ("{\n");
                         f << ("  Timer timer;\n");
                         f << ("  @Override\n");
@@ -484,6 +476,7 @@ namespace com
 
                     bool writeToFile(QString find, QString replace, bool isGwt)
                     {
+			this->isGwt=isGwt;
                         cropImagesAndConstructDeclarations(find, replace);
 
                         if(caseStatements.size()==0)
@@ -507,7 +500,6 @@ namespace com
                         const char* names[10]={"0","1","2","3","4","5","6","7","8","9"};
                         for(int i=0;i<numberOfBundles;i++)
                         {
-                            //QString prefix = theJavaClassNamePrefix==FIRST
                             QString bundleJavaClassName = theJavaClassNamePrefix + names[i];
                             QDir dir;
                             dir.mkpath(sceneFolder+"/"+ pixelSeg);

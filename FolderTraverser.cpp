@@ -51,26 +51,26 @@ void FolderTraverser::generate(QString rootFolder, QString package)
     QString animFolder = _00_ANIMATIONS;
     AFile aFile(rootFolder, animFolder, package);
 
-    QStringList foldersOfMaxFile = files.getSubFolders(rootFolder);
-    for(QStringList::iterator maxFileFolder=foldersOfMaxFile.begin();maxFileFolder!=foldersOfMaxFile.end();maxFileFolder++)
+    QStringList foldersOfPsdFile = files.getSubFolders(rootFolder);
+    for(QStringList::iterator psdFileFolder=foldersOfPsdFile.begin();psdFileFolder!=foldersOfPsdFile.end();psdFileFolder++)
     {
-        QString maxFileSeg = QDir(*maxFileFolder).dirName();
-        if(maxFileSeg == "_00_Animations")
+        QString psdFileSeg = QDir(*psdFileFolder).dirName();
+        if(psdFileSeg == "_00_Animations")
             continue;
-        bool isInAnObjectsFolder = maxFileSeg.contains("_Main");
-        bool isInAnInventoryFolder = maxFileSeg.contains("_Inventory");
+        bool isInAnObjectsFolder = psdFileSeg.contains("_Main");
+        bool isInAnInventoryFolder = psdFileSeg.contains("_Inventory");
 
-        OFile oStream(isInAnObjectsFolder? *maxFileFolder : bad, maxFileSeg, package);
-        IFile iStream(isInAnInventoryFolder? *maxFileFolder: bad, maxFileSeg, package);
+        OFile oStream(isInAnObjectsFolder? *psdFileFolder : bad, psdFileSeg, package);
+        IFile iStream(isInAnInventoryFolder? *psdFileFolder: bad, psdFileSeg, package);
 
-        QStringList pixelFolders = files.getSubFolders(*maxFileFolder);
+        QStringList pixelFolders = files.getSubFolders(*psdFileFolder);
         for(QStringList::iterator pixelFolder=pixelFolders.begin();pixelFolder!=pixelFolders.end();pixelFolder++)
         {			
             QString pixelSeg = QDir(*pixelFolder).dirName();
 
 
-            LoaderAndResFilePair resStream( *maxFileFolder, pixelSeg, maxFileSeg, isInAnInventoryFolder? NULL: animFolder, package);
-            LoaderAndResFilePair initialStream( *maxFileFolder, pixelSeg, maxFileSeg, isInAnInventoryFolder? NULL: animFolder, package);
+            LoaderAndResFilePair resStream( *psdFileFolder, pixelSeg, psdFileSeg, isInAnInventoryFolder? NULL: animFolder, package);
+            LoaderAndResFilePair initialStream( *psdFileFolder, pixelSeg, psdFileSeg, isInAnInventoryFolder? NULL: animFolder, package);
 
             std::list<QString> objectFolders = files.getSubFolders(*pixelFolder).toStdList();
             for(std::list<QString>::reverse_iterator objectFolder=objectFolders.rbegin();objectFolder!=objectFolders.rend();objectFolder++)

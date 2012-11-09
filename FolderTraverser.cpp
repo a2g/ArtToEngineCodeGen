@@ -47,7 +47,6 @@ void FolderTraverser::generate(QString rootFolder, QString package)
 {
     QString bad = "?"; //this is a char that will invalidate a filename, and thus any XFile class if used as param1
 
-
     QString animFolder = _00_ANIMATIONS;
     AFile aFile(rootFolder, animFolder, package);
 
@@ -110,9 +109,6 @@ void FolderTraverser::generate(QString rootFolder, QString package)
                         for(QStringList::iterator pngLoadMe = PNGs.begin();pngLoadMe!=PNGs.end();pngLoadMe++)
                         {   
                             if(pngLoadMe->right(4) != ".png")
-                                continue;
-
-                            if(!pngLoadMe->contains("/orig_"))
                                 continue;
 
                             if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"))

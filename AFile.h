@@ -60,7 +60,16 @@ namespace com
                     {
                         // writeToFile();
                     }
-                private:
+                private://to prevent unit test to add
+                    void deleteMasterFolder(QString find, QString replace)
+                    {
+                        m_currentPath = m_currentPath.replace(find, replace);
+                        package = package.replace(find,replace);
+
+                        QDir dir(package);
+                        bool wasDeleted = dir.rmdir(package);
+                        (wasDeleted);
+                    }
                     bool writeToFile(QString find, QString replace)
                     {
                         m_currentPath = m_currentPath.replace(find, replace);

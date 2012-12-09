@@ -76,8 +76,10 @@ namespace com
 
                     void writeAll(QString find, QString replace, bool isGwt)
                     {
+
                         for(int i=0;i<allAFiles.count();i++)
                         {
+                            allAFiles[i].deleteMasterFolder(find, replace);
                             allAFiles[i].writeToFile(find , replace);
                         }
                         for(int i=0;i<allIFiles.count();i++)

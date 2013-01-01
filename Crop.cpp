@@ -26,6 +26,7 @@
 #include <QRect>
 #include <QSet>
 #include <QList>
+#include <QtGui/qrgb.h>
 #include <QDomDocument>
 #include <QTextStream>
 #include <QTextBrowser>
@@ -45,6 +46,24 @@ using namespace com::github::a2g::generator;
 
 QRect getBoundingNonBlackRectangle(QImage image)
 {
+    int lastCol = image.width()-1;
+    int lastRow = image.height()-1;
+
+
+    // back up corner pixels
+    QRgb bottomRightPixel = image.pixel(lastCol,lastRow);
+    QRgb topRightPixel = image.pixel(lastCol,0);
+    QRgb bottomLeftPixel = image.pixel(0,lastRow);
+    QRgb topLeftPixel = image.pixel(0,0);
+
+    // set corners pixels to black
+    // we need to set black in all the four corners because of createHeiristicMask
+    // which is used in GenerateZBufferRepresentation, this takes a color key from the four corners.
+    image.setPixel(lastCol,lastRow,0);
+    image.setPixel(lastCol,0,0);
+    image.setPixel(0,lastRow,0);
+    image.setPixel(0,0,0);
+
     int max = image.width() > image.height()? image.width() : image.height();
     int top = 0;
     int left = 0;
@@ -90,6 +109,12 @@ QRect getBoundingNonBlackRectangle(QImage image)
 
     QRect toReturn(topLeft, bottomRight);
 
+    // put corners pixels back
+    image.setPixel(lastCol,lastRow,bottomRightPixel);
+    image.setPixel(lastCol,0,topRightPixel);
+    image.setPixel(0,lastRow,bottomLeftPixel);
+    image.setPixel(0,0,topLeftPixel);
+
     return toReturn;
 }
 
@@ -122,33 +147,23 @@ QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
             QMessageBox::warning(NULL, " couldnt remove", fullPathToSaveTo);
         }
     }
-    int x = 0;
-    int y = 0;
-    QImage image;
-    QImage zbuf;
-    bool isLoaded = false;
-    QFile xmlFile(fullPathToSaveTo+".xml");
 
-
-    if(!isLoaded)
+    int x=0;
+    int y=0;
+    bool isCropping = false;
+    if(isCropping)
     {
         QImage temp;
-        isLoaded = temp.load(fullPathToLoadFrom);
+        bool isLoaded = temp.load(fullPathToLoadFrom);
 
-        // we need to set black in all the four corners because of createHeiristicMask
-        // which is used in GenerateZBufferRepresentation, this takes a color key from the four corners.
-        int lastCol = temp.width()-1;
-        int lastRow = temp.height()-1;
-        temp.setPixel(lastCol,lastRow,0);
-        temp.setPixel(lastCol,0,0);
-        temp.setPixel(0,lastRow,0);
-        temp.setPixel(0,0,0);
         A2GASSERT(isLoaded);
         if(isLoaded)
         {
             QString croppedZBufferFilename = fullPathToLoadFrom.left(fullPathToLoadFrom.length() -4) + "_CroppedZBuffer.bmp";
             QRect rect = getBoundingNonBlackRectangle(temp);
 
+            QImage image;
+            QImage zbuf;
             if(rect.bottomRight().x() == -1)
             {
                 image = QImage(1,1,QImage::Format_ARGB32_Premultiplied);
@@ -175,6 +190,11 @@ QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
                     QMessageBox::warning(NULL, "Failed to save",fullPathToSaveTo);
             }
         }
+    }else
+    {
+        QFile::copy(fullPathToLoadFrom, fullPathToSaveTo);
+        x=0;
+        y=0;
     }
 
     return QPoint(x,y);

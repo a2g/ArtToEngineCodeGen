@@ -174,8 +174,9 @@ namespace com
                             QDir dir(pngPath);
 
                             bool isDirMade = dir.mkpath(root);
-
+                            isDirMade=isDirMade;
                             bool isCopyOk = QFile::copy(pair.first, pngPath);
+                            isCopyOk = isCopyOk;
                             resourceDeclarations[resourceName] = pngPath;
                             addCaseStatementForInv(objectSeg, idForObject, resourceName);
                         }

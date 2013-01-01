@@ -40,7 +40,7 @@ namespace com
                     QVector<LoaderAndResFilePair> allLasts;
 
                 public:
-                    OutputFiles(){};
+                    OutputFiles(){}
 
                     QVector<AFile> getAFiles(){ return allAFiles; }
                     QVector<IFile> getIFiles(){ return allIFiles; }

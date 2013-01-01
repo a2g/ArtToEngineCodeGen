@@ -68,7 +68,7 @@ namespace com
 
                         QDir dir(package);
                         bool wasDeleted = dir.rmdir(package);
-                        (wasDeleted);
+                        wasDeleted = wasDeleted;
                     }
                     bool writeToFile(QString find, QString replace)
                     {

@@ -150,10 +150,10 @@ QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
 
     int x=0;
     int y=0;
-    bool isCropping = false;
+    bool isCropping = true;
     if(isCropping)
     {
-        QImage temp;
+         QImage temp;
         bool isLoaded = temp.load(fullPathToLoadFrom);
 
         A2GASSERT(isLoaded);
@@ -192,6 +192,7 @@ QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
         }
     }else
     {
+        QFile::remove(fullPathToSaveTo);
         QFile::copy(fullPathToLoadFrom, fullPathToSaveTo);
         x=0;
         y=0;

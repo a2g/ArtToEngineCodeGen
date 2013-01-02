@@ -17,7 +17,7 @@
 #include <QtGui/QApplication>
 #include <QMainWindow>
 #include "FolderTraverser.h"
-
+#include "TLD.h"
 using namespace com::github::a2g::generator;
 
 static void messageFilterForSuppressingQtMessages(QtMsgType type, const char * msg)
@@ -73,7 +73,7 @@ void processRawFilesToResources(QString arg, QString findMe, bool isGwt)
         populateFileSystemFromRealSystemRecursively(&fileSystem,arg );
         {
             FolderTraverser trav(fileSystem, output);
-            trav.searchForRootOfResourcesAndGenerateIfFound(arg, "com", findMe);
+            trav.searchForRootOfResourcesAndGenerateIfFound(arg, TLD, findMe);
         }
     }
 

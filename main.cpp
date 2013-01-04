@@ -73,7 +73,7 @@ void processRawFilesToResources(QString arg, QString findMe, bool isGwt)
         populateFileSystemFromRealSystemRecursively(&fileSystem,arg );
         {
             FolderTraverser trav(fileSystem, output);
-            trav.searchForRootOfResourcesAndGenerateIfFound(arg, TLD, findMe);
+            trav.searchForAllSubFoldersContainingKeyFolderAndGenerateIfFound(arg, findMe);
         }
     }
 
@@ -90,8 +90,8 @@ int main(int argc, char *argv[])
         arg = argv[1];
     }
     {
-        processRawFilesToResources(arg, "sourcegwt", true);
-        processRawFilesToResources(arg, "sourceawt", false);
+        processRawFilesToResources(arg, "gwt-resource", true);
+        processRawFilesToResources(arg, "swing-resource", false);
     }
     return 0;
 

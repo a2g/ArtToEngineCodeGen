@@ -161,13 +161,13 @@ void FolderTraverser::generate(QString rootFolder, QString package)
     }
 }	
 
-void FolderTraverser::searchForRootOfResourcesAndGenerateIfFound(QString startingPath, QString startTarget, QString endTarget)
+void FolderTraverser::searchForAllSubFoldersContainingKeyFolderAndGenerateIfFound(QString startingPath, QString targetPathSegment)
 {
     startingPath.replace("\\","/");
-    return searchRecursively(startingPath, startTarget, endTarget);
+    return searchRecursively(startingPath, targetPathSegment);
 }
 
-void FolderTraverser::searchRecursively(QString folder, QString startTargetFolder, QString endTargetFolder)
+void FolderTraverser::searchRecursively(QString folder, QString targetPathSegment)
 {
     QStringList subFolders = files.getSubFolders(folder);
     for(int i=0;i<subFolders.count();i++)
@@ -176,9 +176,13 @@ void FolderTraverser::searchRecursively(QString folder, QString startTargetFolde
         if(subFolder.contains(_00_ANIMATIONS))
             continue;//
 
-        int start = subFolder.lastIndexOf(startTargetFolder);
-        int end = subFolder.lastIndexOf(endTargetFolder);
-        if(start!=-1 && end!=-1 && start<=end)
+
+        QString sourceFolderSeg = "src";
+
+
+        int startOfSRC = subFolder.lastIndexOf(sourceFolderSeg);
+        int end = subFolder.lastIndexOf(targetPathSegment);
+        if(startOfSRC!=-1 && end!=-1 && startOfSRC<=end)
         {
             // we've found the target level, as prescribed by the start and end folders
             QStringList subsubFolders = files.getSubFolders(subFolder);
@@ -189,7 +193,9 @@ void FolderTraverser::searchRecursively(QString folder, QString startTargetFolde
                     continue;// ..or else we keep generating animations folders in animations folders..
 
                 QString folderSeg = QDir(subsubFolder).dirName();
-                QString package = subsubFolder.mid(start,end+endTargetFolder.length()+folderSeg.length()+1 );    
+                int offset = sourceFolderSeg.length() + 1; // src.com, the '+1' is to skip past the dot
+                int startOfTLD = startOfSRC + offset;//       ^   ^
+                QString package = subsubFolder.mid(startOfTLD,end+targetPathSegment.length()+folderSeg.length()+1 );
                 package.replace('/','.');
                 generate(subsubFolder, package);
             }
@@ -200,7 +206,7 @@ void FolderTraverser::searchRecursively(QString folder, QString startTargetFolde
             return;
         }
         //recurse
-        searchRecursively(subFolder, startTargetFolder, endTargetFolder);
+        searchRecursively(subFolder,  targetPathSegment);
     }
 }
 

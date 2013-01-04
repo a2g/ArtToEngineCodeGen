@@ -36,9 +36,9 @@ namespace com
                         , output(output)
                     {  }
 
-                    void searchForRootOfResourcesAndGenerateIfFound(QString startingPath,QString startTarget,QString endTarget);
-                private:
-                    void searchRecursively(QString subfolder, QString startTargetFolder, QString endTargetFolder);
+                    void searchForAllSubFoldersContainingKeyFolderAndGenerateIfFound(QString startingPath, QString targetPathSegment);
+                private:                    
+                    void searchRecursively(QString folder, QString targetPathSegment);
                     void generate(QString rootFolder, QString package);
                 };
             }

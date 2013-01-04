@@ -91,7 +91,6 @@ namespace com
                     
                     int getNumberOfItems(){ return m_list.count(); }
                     QString getItem(int i){ return m_list.at(i);}
-                    void populateFromRealSystem(QString rootOfRealFileSystem){}
                 };
             }
         }

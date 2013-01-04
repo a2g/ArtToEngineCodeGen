@@ -184,21 +184,15 @@ void FolderTraverser::searchRecursively(QString folder, QString targetPathSegmen
         int end = subFolder.lastIndexOf(targetPathSegment);
         if(startOfSRC!=-1 && end!=-1 && startOfSRC<=end)
         {
-            // we've found the target level, as prescribed by the start and end folders
-            QStringList subsubFolders = files.getSubFolders(subFolder);
-            for(int j=0;j<subsubFolders.count();j++)
-            {
-                QString subsubFolder = subsubFolders.at(j);
-                if(subsubFolder.contains(_00_ANIMATIONS))
-                    continue;// ..or else we keep generating animations folders in animations folders..
 
-                QString folderSeg = QDir(subsubFolder).dirName();
+                //if(subsubFolder.contains(_00_ANIMATIONS))
+                  ///  continue;// ..or else we keep generating animations folders in animations folders..
+
                 int offset = sourceFolderSeg.length() + 1; // src.com, the '+1' is to skip past the dot
                 int startOfTLD = startOfSRC + offset;//       ^   ^
-                QString package = subsubFolder.mid(startOfTLD,end+targetPathSegment.length()+folderSeg.length()+1 );
+                QString package = subFolder.mid(startOfTLD,end+targetPathSegment.length() );
                 package.replace('/','.');
-                generate(subsubFolder, package);
-            }
+                generate(subFolder, package);
             // since we've processed all the subfolders at our target, then we return
             // otherwise it will keep recursing through subdirs, and these will keep matching..
             // ...since they contain both the start and the end.

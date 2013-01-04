@@ -74,6 +74,38 @@ namespace com
                         allLasts.push_back(file);
                     }
 
+                    int getNumberOfEntriesInAllIFiles()
+                    {
+                        int allIEntries = 0;
+                        for(int i=0;i<allIFiles.count();i++)
+                        {
+                            allIEntries += allIFiles[i].getNumberOfEntries();
+                        }
+                        return allIEntries;
+                    }
+
+
+                    int getNumberOfEntriesInAllOFiles()
+                    {
+                        int allOEntries = 0;
+                        for(int i=0;i<allOFiles.count();i++)
+                        {
+                            allOEntries += allOFiles[i].getNumberOfEntries();
+                        }
+                        return allOEntries;
+                    }
+
+
+                    int getNumberOfEntriesInAllAFiles()
+                    {
+                        int allAEntries = 0;
+                        for(int i=0;i<allAFiles.count();i++)
+                        {
+                            allAEntries += allAFiles[i].getNumberOfEntries();
+                        }
+                        return allAEntries;
+                    }
+
                     void writeAll(QString find, QString replace, bool isGwt)
                     {
 

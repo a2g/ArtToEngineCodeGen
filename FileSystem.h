@@ -30,6 +30,19 @@ namespace com
                 private:
                     QStringList m_list;
                 public:
+
+                    bool isGwt()
+                    {
+                        if(m_list.size()>0)
+                        {
+                            if(m_list.at(0).toUpper().contains("SWING"))
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+
                     void clear()
                     {
                         m_list.clear();
@@ -39,6 +52,7 @@ namespace com
                     {
                         // make sure all the paths we are adding are forward-slashed (not back-slashed)
                         path.replace("\\","/");
+                        path = path.toLower();
 
                         int numberOfSlashes = path.count("/")+1;
                         for(int i=0;i<numberOfSlashes;i++)
@@ -65,6 +79,7 @@ namespace com
                     QStringList getFilesForTrueFoldersForFalse(QString fullFolderPath, bool isLookingForFiles)
                     {
                         fullFolderPath.replace("\\", "/");
+                        fullFolderPath = fullFolderPath.toLower();
                         bool isLookingForFolders = !isLookingForFiles;
                         int numberOfForwardSlashesNeeded = fullFolderPath.count("/") + 1;
                         QStringList toReturn;

@@ -15,4 +15,4 @@
  */
 
 #pragma once
-static const char* TLD = "com";
+static const char* SOURCEIM = "SOURCEIM";

@@ -36,10 +36,13 @@ namespace com
                         , output(output)
                     {  }
 
-                    void searchForAllSubFoldersContainingKeyFolderAndGenerateIfFound(QString startingPath, QString targetPathSegment);
+                    void generateFilesFromSourceFolderOrASubFolderThereof(QString startingPath);
                 private:                    
                     void searchRecursively(QString folder, QString targetPathSegment);
                     void generate(QString rootFolder, QString package);
+                    void processAllSubFolders(QString folder);
+                    void processJustThisSubFolder(QString subFolder);
+
                 };
             }
         }

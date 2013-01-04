@@ -35,7 +35,8 @@
 #include "LoaderAndResFilePair.h"
 #include "AFile.h"
 #include "GetObjectPlusAnimHash.h"
-//#include "SaveDelayLoadRes.h"
+#include "SOURCEIM.h"
+#include "SRC.h"
 
 
 using namespace com::github::a2g::generator;
@@ -54,10 +55,10 @@ void FolderTraverser::generate(QString rootFolder, QString package)
     for(QStringList::iterator psdFileFolder=foldersOfPsdFile.begin();psdFileFolder!=foldersOfPsdFile.end();psdFileFolder++)
     {
         QString psdFileSeg = QDir(*psdFileFolder).dirName();
-        if(psdFileSeg == "_00_Animations")
+        if(psdFileSeg == "_00_animations")
             continue;
-        bool isInAnObjectsFolder = psdFileSeg.contains("_Main");
-        bool isInAnInventoryFolder = psdFileSeg.contains("_Inventory");
+        bool isInAnObjectsFolder = psdFileSeg.contains("_main");
+        bool isInAnInventoryFolder = psdFileSeg.contains("_inventory");
 
         OFile oStream(isInAnObjectsFolder? *psdFileFolder : bad, psdFileSeg, package);
         IFile iStream(isInAnInventoryFolder? *psdFileFolder: bad, psdFileSeg, package);
@@ -161,13 +162,31 @@ void FolderTraverser::generate(QString rootFolder, QString package)
     }
 }	
 
-void FolderTraverser::searchForAllSubFoldersContainingKeyFolderAndGenerateIfFound(QString startingPath, QString targetPathSegment)
+void FolderTraverser::generateFilesFromSourceFolderOrASubFolderThereof(QString path)
 {
-    startingPath.replace("\\","/");
-    return searchRecursively(startingPath, targetPathSegment);
+    path.replace("\\","/");
+
+    // get dirs of child and parent
+    QDir dir(path);
+    int j = path.lastIndexOf(dir.dirName());
+    path.truncate(j-1);
+    QDir parentDir(path);
+
+    // get names of dir and parent
+    QString dirName = dir.dirName().toUpper();
+    QString parentDirName = parentDir.dirName().toUpper();
+
+    if(dirName == SOURCEIM)
+    {
+        processAllSubFolders(dir.absolutePath());
+    }
+    else if (parentDirName == SOURCEIM)
+    {
+        processJustThisSubFolder(dir.absolutePath());
+    }
 }
 
-void FolderTraverser::searchRecursively(QString folder, QString targetPathSegment)
+void FolderTraverser::processAllSubFolders(QString folder)
 {
     QStringList subFolders = files.getSubFolders(folder);
     for(int i=0;i<subFolders.count();i++)
@@ -175,32 +194,23 @@ void FolderTraverser::searchRecursively(QString folder, QString targetPathSegmen
         QString subFolder = subFolders.at(i);
         if(subFolder.contains(_00_ANIMATIONS))
             continue;//
+        processJustThisSubFolder(subFolder);
+    }
+}
 
 
-        QString sourceFolderSeg = "src";
 
-
-        int startOfSRC = subFolder.lastIndexOf(sourceFolderSeg);
-        int end = subFolder.lastIndexOf(targetPathSegment);
-        if(startOfSRC!=-1 && end!=-1 && startOfSRC<=end)
-        {
-
-                //if(subsubFolder.contains(_00_ANIMATIONS))
-                  ///  continue;// ..or else we keep generating animations folders in animations folders..
-
-                int offset = sourceFolderSeg.length() + 1; // src.com, the '+1' is to skip past the dot
-                int startOfTLD = startOfSRC + offset;//       ^   ^
-                QString package = subFolder.mid(startOfTLD,end+targetPathSegment.length() );
-                package.replace('/','.');
-                generate(subFolder, package);
-            // since we've processed all the subfolders at our target, then we return
-            // otherwise it will keep recursing through subdirs, and these will keep matching..
-            // ...since they contain both the start and the end.
-            // and then we'll get Generate called in many places, and _00_Animations folders in many places.
-            return;
-        }
-        //recurse
-        searchRecursively(subFolder,  targetPathSegment);
+void FolderTraverser::processJustThisSubFolder(QString subFolder)
+{
+    subFolder = subFolder.toLower();
+    int findSRC = subFolder.lastIndexOf(QString(SRC).toLower());
+    if(findSRC!=-1)
+    {
+        int offset = QString(SRC).length() + 1; // src.com, the '+1' is to skip past the dot
+        int startOfCOM = findSRC + offset;//       ^   ^
+        QString package = subFolder.mid(startOfCOM);
+        package.replace('/','.');
+        generate(subFolder, package);
     }
 }
 

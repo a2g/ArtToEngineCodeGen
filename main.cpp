@@ -17,7 +17,7 @@
 #include <QtGui/QApplication>
 #include <QMainWindow>
 #include "FolderTraverser.h"
-#include "TLD.h"
+#include "SOURCEIM.h"
 using namespace com::github::a2g::generator;
 
 static void messageFilterForSuppressingQtMessages(QtMsgType type, const char * msg)
@@ -65,33 +65,33 @@ void populateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
     }
 }
 
-void processRawFilesToResources(QString arg, QString findMe, bool isGwt)
+void processRawFilesToResources(QString arg)
 {
     OutputFiles output;
     {
         FileSystem fileSystem;
-        populateFileSystemFromRealSystemRecursively(&fileSystem,arg );
+        populateFileSystemFromRealSystemRecursively(&fileSystem,arg);
         {
             FolderTraverser trav(fileSystem, output);
-            trav.searchForAllSubFoldersContainingKeyFolderAndGenerateIfFound(arg, findMe);
+            trav.generateFilesFromSourceFolderOrASubFolderThereof(arg);
         }
+        output.writeAll(SOURCEIM, "visuals", fileSystem.isGwt());
+        //                ^          ^
+        //               search    replace
     }
-
-    output.writeAll(findMe, "visuals", isGwt);
 }
 
 int main(int argc, char *argv[])
 {
     installDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
     QApplication app(argc, argv);
-    QString arg = "D:/Conan/Swing/so/";
+    QString arg = "D:/Conan/Swing/src/com/so/";
     if(argc>1)
     {
         arg = argv[1];
     }
     {
-        processRawFilesToResources(arg, "gwt-resource", true);
-        processRawFilesToResources(arg, "swing-resource", false);
+        processRawFilesToResources(arg);
     }
     return 0;
 

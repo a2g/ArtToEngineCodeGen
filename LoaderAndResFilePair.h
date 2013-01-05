@@ -322,41 +322,42 @@ namespace com
                         for(unsigned int i=0;i<list.size();i++)
                         {
                             f << QString("    case %1: \n").arg(i);
-                            f << QString("GWT.runAsync\n");
-                            f << QString("(\n");
-                            f << QString("  new RunAsyncCallback()\n");
-                            f << QString("  {\n");
-                            f << QString("      public void onSuccess()\n");
+                            f << QString("    GWT.runAsync\n");
+                            f << QString("    (\n");
+                            f << QString("      new RunAsyncCallback()\n");
                             f << QString("      {\n");
-                            f << QString("        // Schedule the IncrementalCommand instance to run when\n");
-                            f << QString("        // control returns to the event loop by returning 'true'\n");
-                            f << QString("        Scheduler.get().scheduleFixedDelay\n");
-                            f << QString("        (\n");
-                            f << QString("          new Scheduler.RepeatingCommand()\n");
-                            f << QString("          {\n");
-                            f << QString("            int counter= 0;\n");
-                            f << QString("            @Override\n");
+                            f << QString("        public void onSuccess()\n");
+                            f << QString("        {\n");
+                            f << QString("          // Schedule the IncrementalCommand instance to run when\n");
+                            f << QString("          // control returns to the event loop by returning 'true'\n");
+                            f << QString("          Scheduler.get().scheduleFixedDelay\n");
+                            f << QString("          (\n");
+                            f << QString("            new Scheduler.RepeatingCommand()\n");
+                            f << QString("            {\n");
+                            f << QString("              int counter= 0;\n");
+                            f << QString("              @Override\n");
                             f << QString("              public boolean execute()\n");
                             f << QString("              {\n");
-                            f << QString(" %1.addImage(api, lh, counter+%2);\n").arg(list[i].second).arg(offset);
+                            f << QString("                %1.addImage(api, lh, counter+%2);\n").arg(list[i].second).arg(offset);
                             f << QString("                return (++counter<%1);\n").arg(list[i].first);
                             f << QString("              }\n");
-                            f << QString("          }\n");
-                            f << QString("          ,milliseconds\n");
-                            f << QString("        );\n");
-                            f << QString("      }\n");
-                            f << QString("      public void onFailure(Throwable caught)\n");
-                            f << QString("      {\n");
+                            f << QString("            }\n");
+                            f << QString("            ,milliseconds\n");
+                            f << QString("          );\n");
+                            f << QString("        }\n");
+                            f << QString("        public void onFailure(Throwable caught)\n");
+                            f << QString("        {\n");
                             f << QString("		   lh.onLoad(null);\n");
+                            f << QString("        }\n");
                             f << QString("      }\n");
-                            f << QString("    }\n");
-                            f << QString(");\n");
-                            f << QString("}\n");
-                            f << QString("return 0;\n");
+                            f << QString("    );\n");// end GWT.runAsync
+                            f << QString("    return 0;\n");
                             offset += list[i].first;
                         }
-                        f << ("}\n");
-                        f << ("}\n");
+                        f << ("}\n"); // end switch
+                        f << ("return 0;\n");
+                        f << ("}\n");// end function
+                        f << ("}\n");// end class
                         return true;
                     }
 

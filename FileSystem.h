@@ -33,9 +33,14 @@ namespace com
 
                     bool isGwt()
                     {
+                        // the way this list is ordered, only the latter
+                        // files contain the same full path that was used
+                        // as the root of this file system.
+                        //
+                        // so we take the last one in the list.
                         if(m_list.size()>0)
                         {
-                            if(m_list.at(0).toUpper().contains("SWING"))
+                            if(m_list.at(m_list.size()-1).toUpper().contains("SWING"))
                             {
                                 return false;
                             }

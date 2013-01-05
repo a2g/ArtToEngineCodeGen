@@ -18,6 +18,7 @@
 #include <QMainWindow>
 #include "FolderTraverser.h"
 #include "SOURCEIM.h"
+#include "time.h" //clock_t clock (); time_t time(time_t*), double difftime (time_t, time_t);
 using namespace com::github::a2g::generator;
 
 static void messageFilterForSuppressingQtMessages(QtMsgType type, const char * msg)
@@ -69,15 +70,30 @@ void processRawFilesToResources(QString arg)
 {
     OutputFiles output;
     {
+        clock_t t1 = clock();
+
         FileSystem fileSystem;
         populateFileSystemFromRealSystemRecursively(&fileSystem,arg);
+
+        clock_t t2 = clock();
         {
             FolderTraverser trav(fileSystem, output);
             trav.generateFilesFromSourceFolderOrASubFolderThereof(arg);
         }
+        clock_t t3 = clock();
         output.writeAll(SOURCEIM, "visuals", fileSystem.isGwt());
         //                ^          ^
         //               search    replace
+        clock_t t4 = clock();
+
+        std::cout << "\n";
+        std::cout << "Adding folders " << (t2-t1)/1000.0 << " seconds\n";
+        std::cout << "Planning output " << (t3-t2)/1000.0 << " seconds \n";
+        std::cout << "Writing output " << (t4-t3)/1000.0 << " seconds \n";
+        std::cout << "-----------------------------------------------\n";
+        std::cout << "Total " << (t4-t1)/1000.0 << " seconds \n";
+        std::cout << "( for path: " << arg.toStdString().c_str() << " )\n";
+        //qDebug("sadasdas");
     }
 }
 
@@ -85,7 +101,7 @@ int main(int argc, char *argv[])
 {
     installDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
     QApplication app(argc, argv);
-    QString arg = "D:/Conan/Swing/src/com/so/";
+    QString arg;
     if(argc>1)
     {
         arg = argv[1];

@@ -82,7 +82,7 @@ namespace com
                             return false;
 
                         QTextStream f(&file);
-                        f << ("package " + package + "._00_Animations;\n");
+                        f << ("package " + package + "._00_animations;\n");
                         f << ("\n");
                         f << ("public class a\n");
                         f << ("{\n");

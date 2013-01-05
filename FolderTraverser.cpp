@@ -41,7 +41,7 @@
 
 using namespace com::github::a2g::generator;
 
-const char* _00_ANIMATIONS = "_00_Animations";
+const char* _00_ANIMATIONS = "_00_animations";
 
 
 void FolderTraverser::generate(QString rootFolder, QString package)
@@ -55,7 +55,7 @@ void FolderTraverser::generate(QString rootFolder, QString package)
     for(QStringList::iterator psdFileFolder=foldersOfPsdFile.begin();psdFileFolder!=foldersOfPsdFile.end();psdFileFolder++)
     {
         QString psdFileSeg = QDir(*psdFileFolder).dirName();
-        if(psdFileSeg == "_00_animations")
+        if(psdFileSeg == _00_ANIMATIONS)
             continue;
         bool isInAnObjectsFolder = psdFileSeg.contains("_main");
         bool isInAnInventoryFolder = psdFileSeg.contains("_inventory");

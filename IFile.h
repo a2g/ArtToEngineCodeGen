@@ -74,17 +74,30 @@ namespace com
 
                         QTextStream f(&file);
                         f << ("package "+package+"." + maxFileSeg + ";\n");
-                        f << ("\n");
-                        f << ("public class i\n");
+                        f << ("import com.github.a2g.core.interfaces.InventoryItemEnumAPI;\n");
+                        f << ("public enum a\n");
+                        f << ("implements InventoryItemEnumAPI\n");
                         f << ("{\n");
 
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << ("  public static final int ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
+                            f << (iter.key().toUpper()) << "(" << (iter.value()) << ("),\n");
                         }		
+			f << (";\n");
+                        f << ("private int value;\n");
 
+                        f << ("a(int value)\n");
+                        f << ("{\n");
+                        f << ("		this.value = value;\n");
+                        f << ("	}\n");
+
+                        f << ("@Override\n");
+                        f << ("public int getValue() {\n");
+                        f << ("  return value;\n");
                         f << ("}\n");
+			f << ("}\n");
+			
                         file.close();
                         return true;
                     }

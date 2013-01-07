@@ -79,17 +79,30 @@ namespace com
 
                         QTextStream f(&file);
                         f << ("package "+package+"." + m_sceneSeg + ";\n");
-                        f << ("\n");
-                        f << ("public class o\n");
+                        f << ("import com.github.a2g.core.interfaces.ObjectEnumAPI;\n");
+                        f << ("public enum o\n");
+                        f << ("implements ObjectEnumAPI\n");
                         f << ("{\n");
 
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << ("  public static final short ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
-                        }							
-                        f << ("}\n");
+                            f << (iter.key().toUpper()) << "((short)" << (iter.value()) << ("),\n");
+                        }
+			f << (";\n");
+                        f << ("private short value;\n");
 
+                        f << ("o(short value)\n");
+                        f << ("{\n");
+                        f << ("		this.value = value;\n");
+                        f << ("	}\n");
+
+                        f << ("@Override\n");
+                        f << ("public short getValue() {\n");
+                        f << ("  return value;\n");
+                        f << ("}\n");
+			f << ("}\n");
+			
                         file.close();
                         return true;
                     }

@@ -87,20 +87,13 @@ namespace com
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << (iter.key().toUpper()) << "((short)" << (iter.value()) << ("),\n");
+                            f << "  " << (iter.key().toUpper()) << "((short)" << (iter.value()) << ("),\n");
                         }
-			f << (";\n");
-                        f << ("private short value;\n");
-
-                        f << ("o(short value)\n");
-                        f << ("{\n");
-                        f << ("		this.value = value;\n");
-                        f << ("	}\n");
-
-                        f << ("@Override\n");
-                        f << ("public short getValue() {\n");
-                        f << ("  return value;\n");
-                        f << ("}\n");
+			f << ("  ;\n");
+                        f << ("  private short value;\n");
+                        f << ("  o(short value){this.value = value;}\n");
+                        f << ("  @Override\n");
+                        f << ("  public short getValue() {return value;}\n");
 			f << ("}\n");
 			
                         file.close();

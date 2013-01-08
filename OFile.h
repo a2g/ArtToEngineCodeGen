@@ -22,6 +22,7 @@
 #include <QString>
 #include <QDir>
 #include "IdGenerator.h"
+#include "GETVALUE.h"
 
 namespace com
 {
@@ -93,7 +94,7 @@ namespace com
                         f << ("  private short value;\n");
                         f << ("  o(short value){this.value = value;}\n");
                         f << ("  @Override\n");
-                        f << ("  public short getValue() {return value;}\n");
+                        f << ("  public short " GETVALUE " {return value;}\n");
 			f << ("}\n");
 			
                         file.close();

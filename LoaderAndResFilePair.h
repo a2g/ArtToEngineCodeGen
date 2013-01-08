@@ -30,6 +30,7 @@
 #include "GetRealObjectSeg.h"
 #include <QPair>
 #include <algorithm>
+#include "GETVALUE.h"
 
 namespace com
 {
@@ -208,7 +209,8 @@ namespace com
                         int x = offset.x();
                         int y = offset.y();
                         QString oPlusA = objectPlusAnim.toUpper();
-                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%getValue(), new %9PackagedImage(res.%10));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
+                        const char* replacementString = "case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8." GETVALUE " (), new %9PackagedImage(res.%10));\n";
+                        QString caseStatement = QString(replacementString).arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
                         caseStatements.push_back(caseStatement);
                     }
 

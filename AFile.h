@@ -25,6 +25,7 @@
 #include <QTextStream>
 #include <QMap>
 #include <QString>
+#include "GETVALUE.h"
 namespace com
 {
     namespace github
@@ -94,9 +95,9 @@ namespace com
                         }
 			f << ("  ;\n");
                         f << ("  private int value;\n");
-                        f << ("  o(int value){this.value = value;}\n");
+                        f << ("  a(int value){this.value = value;}\n");
                         f << ("  @Override\n");
-                        f << ("  public int getValue() {return value;}\n");
+                        f << ("  public int " GETVALUE "() {return value;}\n");
 			f << ("}\n");
 			
                         file.close();

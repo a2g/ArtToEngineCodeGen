@@ -22,7 +22,6 @@
 #include <QString>
 #include <QDir>
 #include "IdGenerator.h"
-#include "GETVALUE.h"
 
 namespace com
 {
@@ -80,23 +79,17 @@ namespace com
 
                         QTextStream f(&file);
                         f << ("package "+package+"." + m_sceneSeg + ";\n");
-                        f << ("import com.github.a2g.core.interfaces.ObjectEnumAPI;\n");
-                        f << ("public enum o\n");
-                        f << ("implements ObjectEnumAPI\n");
+                        f << ("\n");
+                        f << ("public class o\n");
                         f << ("{\n");
 
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << "  " << (iter.key().toUpper()) << "((short)" << (iter.value()) << ("),\n");
-                        }
-			f << ("  ;\n");
-                        f << ("  private short value;\n");
-                        f << ("  o(short value){this.value = value;}\n");
-                        f << ("  @Override\n");
-                        f << ("  public short " GETVALUE " {return value;}\n");
-			f << ("}\n");
-			
+                            f << ("  public static final short ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
+                        }							
+                        f << ("}\n");
+
                         file.close();
                         return true;
                     }
@@ -109,4 +102,3 @@ namespace com
         }
     }
 }
-

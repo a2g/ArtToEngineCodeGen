@@ -15,4 +15,4 @@
  */
 
 #pragma once
-#define GETVALUE "val"
+#define GETVALUE "getValue"

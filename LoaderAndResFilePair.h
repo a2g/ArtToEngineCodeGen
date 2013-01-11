@@ -30,7 +30,6 @@
 #include "GetRealObjectSeg.h"
 #include <QPair>
 #include <algorithm>
-#include "GETVALUE.h"
 
 namespace com
 {
@@ -60,8 +59,8 @@ namespace com
                     QVector<QPair<QString, int> > animImages;
                     QVector<QPair<QString, int> > invImages;
 			
-			bool isGwt;
-
+                    bool isGwt;
+					QString lineThatSetsResolution;
                 public:
                     LoaderAndResFilePair(){}
                     LoaderAndResFilePair(const QString& sceneFolder, const QString& pixelSeg, const QString maxFileSeg, QString animFolder, const QString package)
@@ -73,6 +72,24 @@ namespace com
 			    , isGwt(false)
 
                     {
+
+                        int i = pixelSeg.indexOf("x");
+                        if(i!=-1)
+                        {
+                            bool isInventory = (animFolder.length()==0);
+                            QString first = pixelSeg.mid(1,i-1);
+                            QString last = pixelSeg.mid(i+1);
+                            int width = first.toInt();
+                            int height = last.toInt();
+                            if(isInventory)
+                            {
+                                lineThatSetsResolution = QString("    api.setInventoryPixelSize(%1, %2);\n").arg(width).arg(height);
+                            }
+                            else
+                            {
+                                lineThatSetsResolution = QString("    api.setScenePixelSize(%1, %2);\n").arg(width).arg(height);
+                            }
+                        }
 
                     }
                     ~LoaderAndResFilePair()
@@ -209,8 +226,8 @@ namespace com
                         int x = offset.x();
                         int y = offset.y();
                         QString oPlusA = objectPlusAnim.toUpper();
-                        const char* replacementString = "case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8." GETVALUE " (), new %9PackagedImage(res.%10));\n";
-                        QString caseStatement = QString(replacementString).arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
+
+                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8.getValue(), new %9PackagedImage(res.%10));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
                         caseStatements.push_back(caseStatement);
                     }
 
@@ -318,6 +335,7 @@ namespace com
                         f << ("  @Override\n");
                         f << ("  public int loadImageBundle(final LoadHandler lh, final InternalAPI api, final int bundleNumber, final int CHUNK, final int milliseconds)\n");
                         f << ("  {\n");
+                        f << lineThatSetsResolution;
                         f << ("    switch(bundleNumber)\n");
                         f << ("    {\n");
                         int offset = 0;
@@ -442,6 +460,7 @@ namespace com
                         f << ("  @Override\n");
                         f << ("  public int loadImageBundle(final LoadHandler lh, final InternalAPI api, final int bundleNumber, final int CHUNK, final int milliseconds)\n");
                         f << ("  {\n");
+                        f << lineThatSetsResolution;
                         f << ("    switch(bundleNumber)\n");
                         f << ("    {\n");
                         int offset = 0;

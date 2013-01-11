@@ -21,7 +21,7 @@
 #include <QMap>
 #include <QDir>
 #include "IdGenerator.h"
-#include "GETVALUE.h"
+
 namespace com
 {
     namespace github
@@ -74,23 +74,17 @@ namespace com
 
                         QTextStream f(&file);
                         f << ("package "+package+"." + maxFileSeg + ";\n");
-                        f << ("import com.github.a2g.core.interfaces.InventoryItemEnumAPI;\n");
-                        f << ("public enum i\n");
-                        f << ("implements InventoryItemEnumAPI\n");
+                        f << ("\n");
+                        f << ("public class i\n");
                         f << ("{\n");
 
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << "  " << (iter.key().toUpper()) << "(" << (iter.value()) << ("),\n");
+                            f << ("  public static final int ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
                         }		
-			f << ("  ;\n");
-                        f << ("  private int value;\n");
-                        f << ("  i(int value){this.value = value;}\n");
-                        f << ("  @Override\n");
-                        f << ("  public int " GETVALUE "() {return value;}\n");
-			f << ("}\n");
-			
+
+                        f << ("}\n");
                         file.close();
                         return true;
                     }
@@ -104,9 +98,3 @@ namespace com
         }
     }
 }
-
-
-
-
-
-

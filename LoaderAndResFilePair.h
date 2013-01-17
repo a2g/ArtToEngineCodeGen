@@ -56,7 +56,7 @@ namespace com
 
 
                     QVector<QString> caseStatements;
-                    QMap<QString, QString> resourceDeclarations;
+                    QVector<QPair<QString, QString> > resourcePairs;
                     QVector<QPair<QString, int> > animImages;
                     QVector<QPair<QString, int> > invImages;
                     QString firstResource;
@@ -164,7 +164,8 @@ namespace com
                             // add case and resource
                             QString objectPlusAnim = getObjectPlusAnim(objectSeg, animSeg);
                             QString resourceName = QString("%1__%2_%3()").arg(getRealObjectSeg(objectSeg)).arg(animSeg).arg(caseTally++);
-                            resourceDeclarations[resourceName] = pngSaveTo;
+                            resourcePairs.push_back(QPair<QString,QString>(resourceName, pngSaveTo));
+
                             addCaseStatementForAnim(objectSeg, offset, getRealObjectSeg(objectSeg), animSeg, idForObject, objectPlusAnim, resourceName);
                         }
 
@@ -197,7 +198,8 @@ namespace com
                             isDirMade=isDirMade;
                             bool isCopyOk = QFile::copy(pair.first, pngPath);
                             isCopyOk = isCopyOk;
-                            resourceDeclarations[resourceName] = pngPath;
+                            resourcePairs.push_back(QPair<QString,QString>(resourceName, pngPath));
+
                             addCaseStatementForInv(objectSeg, idForObject, resourceName);
                         }
                     }
@@ -247,20 +249,13 @@ namespace com
 
                     void removeAllButOne()
                     {
-                        // get the first one added
-                        QString key = firstResource;
-                        QString value = resourceDeclarations[firstResource];
-                        // clear the map and list
-                        resourceDeclarations.clear();
-                        // add the first one back
-                        resourceDeclarations.insert(firstResource,value);
+
                     }
                     void writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
                     {
                         if(isDummyRun())
                         {
-                            removeAllButOne();
-                            end = 1; start=0;
+                            end= start + (end-start)/2;
                         }
                         QStringList packageSegs = package.split(".");
 
@@ -282,10 +277,10 @@ namespace com
                         f << ("    {\n");
                         f << ("        public static final "+bundleJavaClassName+".MyRes RESOURCE =  GWT.create("+bundleJavaClassName+".MyRes.class);\n");
                         f << ("        \n");
-                        for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
+                        for(int i=start;i<end;i++)
                         {
-                            QString resourceName = iter.key();
-                            QString fullPath = iter.value();
+                            QString resourceName = resourcePairs[i].first;
+                            QString fullPath = resourcePairs[i].second;
                             QStringList pngSegs = fullPath.split("/");
                             QString relativePath = packageSegs[0];
                             QStringList::iterator iter = std::find(pngSegs.begin(), pngSegs.end(), packageSegs[1]);
@@ -409,8 +404,7 @@ namespace com
                     {
                         if(isDummyRun())
                         {
-                            removeAllButOne();
-                            end = 1; start=0;
+                            end= start + (end-start)/2;
                         }
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
@@ -427,10 +421,10 @@ namespace com
                         f << ("        public static final MyRes RESOURCE = new MyRes();");
                         f << ("        \n");
 
-                        for(QMap<QString,QString>::iterator iter=resourceDeclarations.begin();iter!=resourceDeclarations.end();iter++)
+                        for(int i=start;i<end;i++)
                         {
-                            QString resourceName = iter.key();
-                            QString fullPath = iter.value();
+                            QString resourceName = resourcePairs.at(i).first;
+                            QString fullPath = resourcePairs.at(i).second;
 
                             f << ("        public String "+resourceName+"{ return \"" + fullPath + "\";}\n");
                         }
@@ -536,7 +530,7 @@ namespace com
                         package = package.replace(find,replace);
                         sceneFolder =sceneFolder.replace(find,replace);
                         std::vector<std::pair<int,QString> > list;
-                        int total = resourceDeclarations.size();
+                        int total = resourcePairs.size();
                         int numberOfBundles = 10;
                         int maximumFeasibleSceneObjects = 80;
                         double fincrement = total/numberOfBundles; 

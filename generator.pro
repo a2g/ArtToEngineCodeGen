@@ -13,4 +13,5 @@ SOURCES += AFile.cpp \
     OFile.cpp \
     LoaderAndResFilePair.cpp \
     OutputFiles.cpp \
+    isDummyRun.cpp \
     Crop.cpp

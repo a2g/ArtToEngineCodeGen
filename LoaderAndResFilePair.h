@@ -30,6 +30,7 @@
 #include "GetRealObjectSeg.h"
 #include <QPair>
 #include <algorithm>
+#include "isDummyRun.h"
 
 namespace com
 {
@@ -58,9 +59,10 @@ namespace com
                     QMap<QString, QString> resourceDeclarations;
                     QVector<QPair<QString, int> > animImages;
                     QVector<QPair<QString, int> > invImages;
-			
+                    QString firstResource;
+
                     bool isGwt;
-					QString lineThatSetsResolution;
+                    QString lineThatSetsResolution;
                 public:
                     LoaderAndResFilePair(){}
                     LoaderAndResFilePair(const QString& sceneFolder, const QString& pixelSeg, const QString maxFileSeg, QString animFolder, const QString package)
@@ -69,7 +71,7 @@ namespace com
                             , pixelSeg(pixelSeg)
                             , sceneFolder(sceneFolder)
                             , animFolder(animFolder)
-			    , isGwt(false)
+                            , isGwt(false)
 
                     {
 
@@ -229,16 +231,37 @@ namespace com
 
                         QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8.getValue(), new %9PackagedImage(res.%10));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
                         caseStatements.push_back(caseStatement);
+
+                        if(firstResource.length()==0)
+                            firstResource=resourceName;
                     }
 
                     void addCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
                     {
                         QString caseStatement = QString("case %1: return api.addImageForAnInventoryItem(lh, \"%2\",%3,new %4PackagedImage(res.%5));\n").arg(caseStatements.size()).arg(invSeg.toUpper()).arg(idForInv).arg(isGwt? "GWT" : "Swing").arg(resourceName);
                         caseStatements.push_back(caseStatement);
+
+                        if(firstResource.length()==0)
+                            firstResource=resourceName;
                     }
 
+                    void removeAllButOne()
+                    {
+                        // get the first one added
+                        QString key = firstResource;
+                        QString value = resourceDeclarations[firstResource];
+                        // clear the map and list
+                        resourceDeclarations.clear();
+                        // add the first one back
+                        resourceDeclarations.insert(firstResource,value);
+                    }
                     void writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
                     {
+                        if(isDummyRun())
+                        {
+                            removeAllButOne();
+                            end = 1; start=0;
+                        }
                         QStringList packageSegs = package.split(".");
 
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
@@ -246,7 +269,7 @@ namespace com
                         
                         f << ("import com.github.a2g.core.gwt.factory.GWTPackagedImage;\n");
                         f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
-			f << ("import com.google.gwt.resources.client.ClientBundle;\n");
+                        f << ("import com.google.gwt.resources.client.ClientBundle;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
                         f << ("import com.google.gwt.resources.client.ImageResource;\n");
@@ -303,7 +326,7 @@ namespace com
                     {
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-			f << ("import com.github.a2g.core.interfaces.LoadAPI;\n");
+                        f << ("import com.github.a2g.core.interfaces.LoadAPI;\n");
                         f << ("import com.github.a2g.core.interfaces.InternalAPI;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
@@ -384,9 +407,14 @@ namespace com
 
                     void writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
                     {
+                        if(isDummyRun())
+                        {
+                            removeAllButOne();
+                            end = 1; start=0;
+                        }
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
-			f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
+                        f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.swing.factory.SwingPackagedImage;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         if(animFolder!=NULL)
@@ -499,7 +527,7 @@ namespace com
 
                     bool writeToFile(QString find, QString replace, bool isGwt)
                     {
-			this->isGwt=isGwt;
+                        this->isGwt=isGwt;
                         cropImagesAndConstructDeclarations(find, replace);
 
                         if(caseStatements.size()==0)

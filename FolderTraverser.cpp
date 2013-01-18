@@ -102,6 +102,8 @@ void FolderTraverser::generate(QString rootFolder, QString package)
                     {
                         QString animSeg = QDir(*animFolder).dirName().toLower();
 
+                        if(animSeg=="ignore")
+                            continue;
                         int idForObjPlusAnim = getObjectPlusAnimHash(objectSeg,animSeg);
 
                         aFile.insert(getObjectPlusAnim(objectSeg,animSeg).toStdString(), idForObjPlusAnim);
@@ -112,6 +114,8 @@ void FolderTraverser::generate(QString rootFolder, QString package)
                             if(pngLoadMe->right(4) != ".png")
                                 continue;
 
+                            // "blank" is usd when initial already exists, for that object, in some otherrender output
+                            //
                             if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"))
                             {
                                 initialStream.addAnimImage(*pngLoadMe, idForObj);

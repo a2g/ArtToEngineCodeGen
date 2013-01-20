@@ -19,7 +19,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMap>
-#include "ConsecutiveOddSystem.h"
 
 namespace com
 {
@@ -45,7 +44,8 @@ namespace com
                         if(mapOfObjectNames.find(objectName)!=mapOfObjectNames.end())
                             return mapOfObjectNames[objectName];
                         //else we've never seen it before
-                        int id = ConsecutiveOddSystem::STARTING_ODD + ( 2*currentSeed++);
+                        int id = currentSeed;
+                        currentSeed +=2;
                         mapOfObjectNames[objectName] = id;
                         return id;
                     }

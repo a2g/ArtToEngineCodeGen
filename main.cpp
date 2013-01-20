@@ -66,7 +66,7 @@ void populateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
     }
 }
 
-void processRawFilesToResources(QString arg)
+void processRawFilesToResources(QString arg, bool isDummyRun)
 {
     OutputFiles output;
     {
@@ -81,7 +81,7 @@ void processRawFilesToResources(QString arg)
             trav.generateFilesFromSourceFolderOrASubFolderThereof(arg);
         }
         clock_t t3 = clock();
-        output.writeAll(SOURCEIM, "visuals", fileSystem.isGwt());
+        output.writeAll(SOURCEIM, "visuals", fileSystem.isGwt(), isDummyRun);
         //                ^          ^
         //               search    replace
         clock_t t4 = clock();
@@ -106,8 +106,9 @@ int main(int argc, char *argv[])
     {
         arg = argv[1];
     }
+
     {
-        processRawFilesToResources(arg);
+        processRawFilesToResources(arg, argc>2);
     }
     return 0;
 

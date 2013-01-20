@@ -231,7 +231,7 @@ namespace com
                         int y = offset.y();
                         QString oPlusA = objectPlusAnim.toUpper();
 
-                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8.getValue(), new %9PackagedImage(res.%10));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
+                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8, new %9PackagedImage(res.%10));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
                         caseStatements.push_back(caseStatement);
 
                         if(firstResource.length()==0)
@@ -251,9 +251,9 @@ namespace com
                     {
 
                     }
-                    void writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
+                    void writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end, bool isDummyRun)
                     {
-                        if(isDummyRun())
+                        if(isDummyRun)
                         {
                             end= start + (end-start)/2;
                         }
@@ -400,9 +400,9 @@ namespace com
                     }
 
 
-                    void writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end)
+                    void writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end, bool isDummyRun)
                     {
-                        if(isDummyRun())
+                        if(isDummyRun)
                         {
                             end= start + (end-start)/2;
                         }
@@ -519,7 +519,7 @@ namespace com
                         return true;
                     }
 
-                    bool writeToFile(QString find, QString replace, bool isGwt)
+                    bool writeToFile(QString find, QString replace, bool isGwt, bool isDummyRun)
                     {
                         this->isGwt=isGwt;
                         cropImagesAndConstructDeclarations(find, replace);
@@ -555,11 +555,11 @@ namespace com
                             QTextStream f(&file);
                             if(isGwt)
                             {
-                                writeGwtBundle(f, bundleJavaClassName, start, end);
+                                writeGwtBundle(f, bundleJavaClassName, start, end, isDummyRun);
                             }
                             else
                             {
-                                writeSwingBundle(f, bundleJavaClassName, start, end);                                                                                   "\n";
+                                writeSwingBundle(f, bundleJavaClassName, start, end, isDummyRun);                                                                                   "\n";
                             }
                             file.close();
                             QString longName = package+"." + maxFileSeg +"." + pixelSeg+"."+bundleJavaClassName;

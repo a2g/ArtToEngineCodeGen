@@ -21,7 +21,7 @@
 #include <QMap>
 #include <QDir>
 #include "IdGenerator.h"
-
+#include "STARTING_ODD_INVENTORY_CODE.h"
 namespace com
 {
     namespace github
@@ -40,9 +40,9 @@ namespace com
 
                 public:
                     IFile()
-                            : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED){}
+                            : IdGenerator(STARTING_ODD_INVENTORY_CODE){}
                     IFile(QString sceneFolder, QString maxFileSeg, QString package)
-                            : IdGenerator(ConsecutiveOddSystem::STARTING_INVENTORY_SEED)
+                            : IdGenerator(STARTING_ODD_INVENTORY_CODE)
                             , maxFileSeg(maxFileSeg)
                             , package(package)
                             , sceneFolder(sceneFolder)

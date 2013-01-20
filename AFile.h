@@ -84,21 +84,14 @@ namespace com
 
                         QTextStream f(&file);
                         f << ("package " + package + "._00_animations;\n");
-                        f << ("import com.github.a2g.core.interfaces.AnimationEnumAPI;\n");
-                        f << ("public enum a\n");
-                        f << ("implements AnimationEnumAPI\n");
+                        f << ("public class a\n");
                         f << ("{\n");
 
                         for(QMap<QString,int>::iterator iter = mapOfAnims.begin();iter!=mapOfAnims.end();iter++)
                         {
-                           f << "  " << (iter.key().toUpper()) << "(" << (iter.value()) << ("),\n");
+                           f << "  public final static String " << (iter.key().toUpper()) << "=\"" << (iter.key().toUpper()) << ("\";\n");
                         }
-			f << ("  ;\n");
-                        f << ("  private int value;\n");
-                        f << ("  a(int value){this.value = value;}\n");
-                        f << ("  @Override\n");
-                        f << ("  public int " GETVALUE "() {return value;}\n");
-			f << ("}\n");
+                        f << ("}\n");
 			
                         file.close();
                         return true;

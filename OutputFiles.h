@@ -106,7 +106,7 @@ namespace com
                         return allAEntries;
                     }
 
-                    void writeAll(QString find, QString replace, bool isGwt)
+                    void writeAll(QString find, QString replace, bool isGwt, bool isDummyRun)
                     {
                         find = find.toLower();
                         replace = replace.toLower();
@@ -125,15 +125,15 @@ namespace com
                         }
                         for(int i=0;i<allOnlys.count();i++)
                         {
-                            allOnlys[i].writeToFile(find, replace, isGwt);
+                            allOnlys[i].writeToFile(find, replace, isGwt, isDummyRun);
                         }
                         for(int i=0;i<allFirsts.count();i++)
                         {
-                            allFirsts[i].writeToFile(find , replace, isGwt);
+                            allFirsts[i].writeToFile(find , replace, isGwt, isDummyRun);
                         }
                         for(int i=0;i<allLasts.count();i++)
                         {
-                            allLasts[i].writeToFile(find, replace, isGwt);
+                            allLasts[i].writeToFile(find, replace, isGwt, isDummyRun);
                         }
                     }
                 };

@@ -22,6 +22,7 @@
 #include <QString>
 #include <QDir>
 #include "IdGenerator.h"
+#include "STARTING_ODD_OBJECTS_CODE.h"
 
 namespace com
 {
@@ -41,13 +42,13 @@ namespace com
 
                 public:
                     OFile()
-                         : IdGenerator(ConsecutiveOddSystem::STARTING_LOCAL_SEED)
+                         : IdGenerator(STARTING_ODD_OBJECTS_CODE)
                     {
                     }
 
 
                     OFile(QString sceneFolder, QString maxFileSeg, const QString& package)
-                        : IdGenerator(ConsecutiveOddSystem::STARTING_LOCAL_SEED)
+                        :   IdGenerator(STARTING_ODD_OBJECTS_CODE)
                         , m_sceneFolder( sceneFolder)
                         , m_sceneSeg( maxFileSeg)
                         , package(package)

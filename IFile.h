@@ -75,13 +75,21 @@ namespace com
                         QTextStream f(&file);
                         f << ("package "+package+"." + maxFileSeg + ";\n");
                         f << ("\n");
-                        f << ("public class i\n");
+                        f << ("public interface i\n");
                         f << ("{\n");
-
+                        f << ("    public enum names");
+                        f << ("    {\n");
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << ("  public static final int ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
+                            f << "        " << (iter.key().toUpper()) << ",\n";
+                        }
+                        f << ("    }\n");
+
+                        iter =mapOfObjectNames.begin();
+                        for(;iter!=mapOfObjectNames.end();iter++)
+                        {
+                            f << ("    public static final int ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
                         }		
 
                         f << ("}\n");

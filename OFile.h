@@ -78,21 +78,31 @@ namespace com
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;
 
+
                         QTextStream f(&file);
                         f << ("package "+package+"." + m_sceneSeg + ";\n");
                         f << ("\n");
-                        f << ("public class o\n");
+                        f << ("public interface o\n");
                         f << ("{\n");
-
+                        f << ("     public enum names");
+                        f << ("     {\n");
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << ("  public static final short ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
-                        }							
-                        f << ("}\n");
+                            f << "        " << (iter.key().toUpper()) << ",\n";
+                        }
+                        f << ("     }\n");
 
+                        iter = mapOfObjectNames.begin();
+                        for(;iter!=mapOfObjectNames.end();iter++)
+                        {
+                            f << ("    public static final short ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
+                        }
+
+                        f << ("}\n");
                         file.close();
                         return true;
+
                     }
 
                     friend class OutputFiles;

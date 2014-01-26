@@ -129,13 +129,15 @@ QImage generateZBufferRepresentation(QImage image, QRgb zbufferColor)
     return alphed;
 }
 
-QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer)
+QRect crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer)
 {
     QDir dir;
     bool isOK = dir.mkpath(fullPathToSaveTo);
     if(!isOK)
     {
-        QMessageBox::warning(NULL, "Dir of this file can't be created", fullPathToSaveTo);
+        QDir dd(fullPathToSaveTo);
+        if(!QFile::exists(dd.path()))
+            QMessageBox::warning(NULL, "Dir of this file can't be created", fullPathToSaveTo);
     }
 
     QDir dir2(fullPathToSaveTo);
@@ -148,19 +150,18 @@ QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
         }
     }
 
-    int x=0;
-    int y=0;
+    QRect rect;
     bool isCropping = true;
     if(isCropping)
     {
-         QImage temp;
+        QImage temp;
         bool isLoaded = temp.load(fullPathToLoadFrom);
 
         A2GASSERT(isLoaded);
         if(isLoaded)
         {
             QString croppedZBufferFilename = fullPathToLoadFrom.left(fullPathToLoadFrom.length() -4) + "_CroppedZBuffer.bmp";
-            QRect rect = getBoundingNonBlackRectangle(temp);
+            rect = getBoundingNonBlackRectangle(temp);
 
             QImage image;
             QImage zbuf;
@@ -168,15 +169,11 @@ QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
             {
                 image = QImage(1,1,QImage::Format_ARGB32_Premultiplied);
                 zbuf = QImage(1,1, QImage::Format_ARGB32_Premultiplied);
-                x = 1;
-                y = 1;
+                rect=QRect(1,1,0,0);
             }
             else
             {
-                x = rect.x();
-                y = rect.y();
-
-                // generate images and assign 
+                // generate images and assign
                 image = temp.copy(rect.x(), rect.y(), rect.width(), rect.height());
             }
             A2GASSERT(!image.isNull());
@@ -194,9 +191,7 @@ QPoint crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZ
     {
         QFile::remove(fullPathToSaveTo);
         QFile::copy(fullPathToLoadFrom, fullPathToSaveTo);
-        x=0;
-        y=0;
     }
 
-    return QPoint(x,y);
+    return rect;
 }

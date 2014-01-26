@@ -15,3 +15,4 @@ SOURCES += AFile.cpp \
     OutputFiles.cpp \
     isDummyRun.cpp \
     Crop.cpp
+HEADERS += FileSystem.h

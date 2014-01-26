@@ -159,14 +159,14 @@ namespace com
                             // do the cropping
 
 
-                            QPoint offset = crop(pngPath, pngSaveTo, Qt::red);
+                            QRect rect = crop(pngPath, pngSaveTo, Qt::red);
 
                             // add case and resource
                             QString objectPlusAnim = getObjectPlusAnim(objectSeg, animSeg);
                             QString resourceName = QString("%1__%2_%3()").arg(getRealObjectSeg(objectSeg)).arg(animSeg).arg(caseTally++);
                             resourcePairs.push_back(QPair<QString,QString>(resourceName, pngSaveTo));
 
-                            addCaseStatementForAnim(objectSeg, offset, getRealObjectSeg(objectSeg), animSeg, idForObject, objectPlusAnim, resourceName);
+                            addCaseStatementForAnim(objectSeg, rect, getRealObjectSeg(objectSeg), animSeg, idForObject, objectPlusAnim, resourceName);
                         }
 
                         for(int j=0;j<invImages.size();j++)
@@ -213,25 +213,27 @@ namespace com
                 private: 
                     bool isNeeded()
                     {
-                        bool isNeeded = (maxFileSeg.contains("_Objects")|| javaClassName!=FIRST);
+                        bool isNeeded = (maxFileSeg.toLower().contains("_objects")|| javaClassName!=FIRST);
                         return isNeeded;
                     }
 
                     bool isInventory()
                     {
-                        bool isInventory = (maxFileSeg.contains("_Inventory"));
+                        bool isInventory = (maxFileSeg.toLower().contains("_inventory"));
                         return isInventory;
                     }
 
-                    void addCaseStatementForAnim(QString objectSeg, QPoint offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
+                    void addCaseStatementForAnim(QString objectSeg, QRect offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
                     {
                         int prefix = objectSeg.mid(1,2).toInt();
 
                         int x = offset.x();
                         int y = offset.y();
+                        int w = offset.width();
+                        int h = offset.height();
                         QString oPlusA = objectPlusAnim.toUpper();
 
-                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4, \"%5\",\"%6\",(short)%7,a.%8, new %9PackagedImage(res.%10));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "GWT" : "Swing").arg(resourceName);
+                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4,%5,%6, \"%7\",\"%8\",(short)%9,a.%10, new PackagedImageFor%11(res.%12));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(w).arg(h).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "Html4" : "Java").arg(resourceName);
                         caseStatements.push_back(caseStatement);
 
                         if(firstResource.length()==0)
@@ -240,7 +242,7 @@ namespace com
 
                     void addCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
                     {
-                        QString caseStatement = QString("case %1: return api.addImageForAnInventoryItem(lh, \"%2\",%3,new %4PackagedImage(res.%5));\n").arg(caseStatements.size()).arg(invSeg.toUpper()).arg(idForInv).arg(isGwt? "GWT" : "Swing").arg(resourceName);
+                        QString caseStatement = QString("case %1: return api.addImageForAnInventoryItem(lh, \"%2\",%3,new PackagedImageFor%4(res.%5));\n").arg(caseStatements.size()).arg(invSeg.toUpper()).arg(idForInv).arg(isGwt? "Html4" : "Java").arg(resourceName);
                         caseStatements.push_back(caseStatement);
 
                         if(firstResource.length()==0)
@@ -262,7 +264,7 @@ namespace com
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
                         
-                        f << ("import com.github.a2g.core.gwt.factory.GWTPackagedImage;\n");
+                        f << ("import com.github.a2g.core.platforms.html4.PackagedImageForHtml4;\n");
                         f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
                         f << ("import com.google.gwt.resources.client.ClientBundle;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
@@ -409,7 +411,7 @@ namespace com
                         f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
                         f << ("\n");
                         f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
-                        f << ("import com.github.a2g.core.swing.factory.SwingPackagedImage;\n");
+                        f << ("import com.github.a2g.core.platforms.java.PackagedImageForJava;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         if(animFolder!=NULL)
                             f << ("import "+package+"." + animFolder +".a;\n");
@@ -531,13 +533,13 @@ namespace com
                         sceneFolder =sceneFolder.replace(find,replace);
                         std::vector<std::pair<int,QString> > list;
                         int total = resourcePairs.size();
-                        int numberOfBundles = 10;
-                        int maximumFeasibleSceneObjects = 80;
-                        double fincrement = total/numberOfBundles; 
+                        double numberOfBundles = 10.0;
+                        int upperLimitOnSingleBundleSpecialCase = 80;
+                        double fincrement = (total*1.0)/numberOfBundles;
                         double fend = fincrement;
                         int start = 0;
                         int end = static_cast<int>(fend);
-                        if(total < maximumFeasibleSceneObjects)
+                        if(total < upperLimitOnSingleBundleSpecialCase)
                         {
                             numberOfBundles = 1;
                             end = total;
@@ -566,7 +568,7 @@ namespace com
                             list.push_back(std::pair<int,QString>(end-start, longName));
                             fend = fend + fincrement;
                             start = end;
-                            end = static_cast<int>(fend);
+                            end = fend;
                         }
 
                         // now to write the loader

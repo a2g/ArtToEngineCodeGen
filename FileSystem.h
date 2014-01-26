@@ -95,7 +95,7 @@ namespace com
                             int numberOfForwardSlashes = item.count("/");
                             if(numberOfForwardSlashes==numberOfForwardSlashesNeeded)
                             {
-                                if(item.contains(fullFolderPath)&&item != fullFolderPath)
+                                if(item.contains(fullFolderPath+"/"))
                                 {
                                     bool isFile = item.contains(".");
                                     bool isFolder = !isFile;
@@ -111,6 +111,14 @@ namespace com
                     
                     int getNumberOfItems(){ return m_list.count(); }
                     QString getItem(int i){ return m_list.at(i);}
+                    void dump()
+                    {
+                        for(int i=0;i<getNumberOfItems();i++)
+                        {
+                            qDebug(" %s ",  getItem(i).toAscii().data());
+
+                        }
+                    }
                 };
             }
         }

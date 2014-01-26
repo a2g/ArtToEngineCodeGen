@@ -74,6 +74,7 @@ void processRawFilesToResources(QString arg, bool isDummyRun)
 
         FileSystem fileSystem;
         populateFileSystemFromRealSystemRecursively(&fileSystem,arg);
+        //fileSystem.dump();
 
         clock_t t2 = clock();
         {
@@ -93,7 +94,11 @@ void processRawFilesToResources(QString arg, bool isDummyRun)
         std::cout << "-----------------------------------------------\n";
         std::cout << "Total " << (t4-t1)/1000.0 << " seconds \n";
         std::cout << "( for path: " << arg.toStdString().c_str() << " )\n";
-        //qDebug("sadasdas");
+
+        for(int i=0;i<fileSystem.getNumberOfItems();i++)
+        {
+            std::cout <<  fileSystem.getItem(i).toAscii().data() << "\n";
+        }
     }
 }
 

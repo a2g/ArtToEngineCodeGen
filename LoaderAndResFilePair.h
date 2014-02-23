@@ -60,6 +60,7 @@ namespace com
                     QVector<QPair<QString, int> > animImages;
                     QVector<QPair<QString, int> > invImages;
                     QString firstResource;
+                    static const bool IS_SWITCH = false;
 
                     bool isGwt;
                     QString lineThatSetsResolution;
@@ -233,7 +234,8 @@ namespace com
                         int h = offset.height();
                         QString oPlusA = objectPlusAnim.toUpper();
 
-                        QString caseStatement = QString("case %1: return api.addImageForASceneObject(lh, %2,%3,%4,%5,%6, \"%7\",\"%8\",(short)%9,a.%10, new PackagedImageFor%11(res.%12));\n").arg(caseStatements.size()).arg(prefix).arg(x).arg(y).arg(w).arg(h).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "Html4" : "Java").arg(resourceName);
+                        QString start = QString(IS_SWITCH? "        case %1:" : "else if(i==%1)").arg(caseStatements.size());
+                        QString caseStatement = start + QString(" return api.addImageForASceneObject(lh, %1,%2,%3,%4,%5, \"%6\",\"%7\",(short)%8,\"%9\", new PackagedImageFor%10(res.%11));\n").arg(prefix).arg(x).arg(y).arg(w).arg(h).arg(realObjectSeg.toUpper()).arg(animSeg.toUpper()).arg(idForObj).arg(oPlusA).arg(isGwt? "Html4" : "Java").arg(resourceName);
                         caseStatements.push_back(caseStatement);
 
                         if(firstResource.length()==0)
@@ -242,7 +244,9 @@ namespace com
 
                     void addCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
                     {
-                        QString caseStatement = QString("case %1: return api.addImageForAnInventoryItem(lh, \"%2\",%3,new PackagedImageFor%4(res.%5));\n").arg(caseStatements.size()).arg(invSeg.toUpper()).arg(idForInv).arg(isGwt? "Html4" : "Java").arg(resourceName);
+                        QString start = QString(IS_SWITCH? "        case %1:" : "else if(i==%1)").arg(caseStatements.size());
+
+                        QString caseStatement = start + QString(" return api.addImageForAnInventoryItem(lh, \"%1\",%2,new PackagedImageFor%3(res.%4));\n").arg(invSeg.toUpper()).arg(idForInv).arg(isGwt? "Html4" : "Java").arg(resourceName);
                         caseStatements.push_back(caseStatement);
 
                         if(firstResource.length()==0)
@@ -270,8 +274,7 @@ namespace com
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
                         f << ("import com.google.gwt.core.client.GWT;\n");
                         f << ("import com.google.gwt.resources.client.ImageResource;\n");
-                        if(animFolder!=NULL)
-                            f << ("import "+package+"." + animFolder +".a;\n");
+
                         f << ("\n");
                         f << ("public class "+bundleJavaClassName+"\n");
                         f << ("{\n");
@@ -307,12 +310,14 @@ namespace com
                         f << QString("    public static boolean addImage(ImageAddAPI api, LoadHandler lh, int i)\n");
                         f << "    {"                                                                               "\n";
                         f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
-                        f << "        switch(i){"                                                                  "\n";
+                        f << (IS_SWITCH? "        switch(i){\n" : "        if(i==-1){}\n");
+
                         for(int j=start;j<end;j++)
                         {
                             f << caseStatements[j];
                         }
-                        f << "        }"                                                                           "\n";
+                        f << (IS_SWITCH? "        }"    "\n" : "\n");
+
                         f << "        return false;"                                                               "\n";
                         f << "    }"                                                                               "\n";
                         f << "}"                                                                                   "\n";
@@ -342,26 +347,42 @@ namespace com
                         f << ("  @Override\n");
                         f << ("  public int getNumberOfImagesInBundle(int bundleNumber)\n");
                         f << ("  {\n");
-                        f << ("    switch(bundleNumber)\n");
-                        f << ("    {\n");
+                        f << (IS_SWITCH? "    switch(bundleNumber)\n{\n" : "    if(bundleNumber==-1){}\n");
+
 
                         for(unsigned int i=0;i<list.size();i++)
                         {
-                            f << QString("    case %1: return %2; \n").arg(i).arg(list[i].first);
+                            if(IS_SWITCH)
+                            {
+                                f << QString("    case %1: return %2; \n").arg(i).arg(list[i].first);
+                            }else
+                            {
+                                f << QString("    else if(bundleNumber== %1){ return %2;} \n").arg(i).arg(list[i].first);
+                            }
                         }
-                        f << ("    }\n");
+                        if(IS_SWITCH)
+                        {
+                            f << ("    }\n");
+                        }
                         f << ("    return 0;\n");
                         f << ("  }\n");
                         f << ("  @Override\n");
                         f << ("  public int loadImageBundle(final LoadHandler lh, final InternalAPI api, final int bundleNumber, final int CHUNK, final int milliseconds)\n");
                         f << ("  {\n");
                         f << lineThatSetsResolution;
-                        f << ("    switch(bundleNumber)\n");
-                        f << ("    {\n");
+
+                        f << (IS_SWITCH? "    switch(bundleNumber)\n{\n" : "    if(bundleNumber==-1){}\n");
                         int offset = 0;
                         for(unsigned int i=0;i<list.size();i++)
                         {
-                            f << QString("    case %1: \n").arg(i);
+                            if(IS_SWITCH)
+                            {
+                                f << QString("    case %1:{ \n").arg(i);
+                            }
+                            else
+                            {
+                                f << QString("    else if(bundleNumber== %1){ \n").arg(i);
+                            }
                             f << QString("    GWT.runAsync\n");
                             f << QString("    (\n");
                             f << QString("      new RunAsyncCallback()\n");
@@ -392,9 +413,13 @@ namespace com
                             f << QString("      }\n");
                             f << QString("    );\n");// end GWT.runAsync
                             f << QString("    return 0;\n");
+                            f << ("}\n"); // end case or elseif or whatever it is
                             offset += list[i].first;
                         }
-                        f << ("}\n"); // end switch
+                        if(IS_SWITCH)
+                        {
+                            f << ("}\n"); // end switch
+                        }
                         f << ("return 0;\n");
                         f << ("}\n");// end function
                         f << ("}\n");// end class
@@ -413,8 +438,6 @@ namespace com
                         f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
                         f << ("import com.github.a2g.core.platforms.java.PackagedImageForJava;\n");
                         f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
-                        if(animFolder!=NULL)
-                            f << ("import "+package+"." + animFolder +".a;\n");
                         f << ("\n");
                         f << ("public class "+bundleJavaClassName+"\n");
                         f << ("{\n");

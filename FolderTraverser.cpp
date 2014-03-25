@@ -116,7 +116,7 @@ void FolderTraverser::generate(QString rootFolder, QString package)
 
                             // "blank" is usd when initial already exists, for that object, in some otherrender output
                             //
-                            if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"))
+                            if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"||animSeg=="placeholder"))
                             {
                                 initialStream.addAnimImage(*pngLoadMe, idForObj);
                             }

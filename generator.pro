@@ -15,4 +15,29 @@ SOURCES += AFile.cpp \
     OutputFiles.cpp \
     isDummyRun.cpp \
     Crop.cpp
-HEADERS += FileSystem.h
+HEADERS += FileSystem.h \
+    STARTING_ODD_OBJECTS_CODE.h \
+    STARTING_ODD_INVENTORY_CODE.h \
+    SRC.h \
+    SOURCEIM.h \
+    RES.h \
+    OutputFiles.h \
+    OFile.h \
+    LoaderAndResFilePair.h \
+    isDummyRun.h \
+    INITIAL.h \
+    IFile.h \
+    IdGenerator.h \
+    GETVALUE.h \
+    GetRealObjectSeg.h \
+    GetObjectPlusAnimHash.h \
+    GetObjectPlusAnim.h \
+    FolderTraverser.h \
+    FOLDERSONLY.h \
+    FIRST.h \
+    FileSystem.h \
+    FileBrowser.h \
+    Crop.h \
+    BLANK.h \
+    AFile.h \
+    A2GASSERT.h

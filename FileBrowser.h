@@ -57,6 +57,8 @@ public:
         bool res2 = connect(&listWidget, SIGNAL(itemSelectionChanged()), this, SLOT(onSelectionChanged ()));
         A2GASSERT(res1);
         A2GASSERT(res2);
+        (res1=res1);
+        (res2=res2);
     }
 
 

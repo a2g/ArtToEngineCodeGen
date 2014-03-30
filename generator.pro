@@ -36,8 +36,8 @@ HEADERS += FileSystem.h \
     FOLDERSONLY.h \
     FIRST.h \
     FileSystem.h \
-    FileBrowser.h \
     Crop.h \
     BLANK.h \
     AFile.h \
-    A2GASSERT.h
+    A2GASSERT.h \
+    IsPngOrBmp.h

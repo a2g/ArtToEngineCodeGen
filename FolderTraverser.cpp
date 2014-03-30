@@ -37,6 +37,7 @@
 #include "GetObjectPlusAnimHash.h"
 #include "SOURCEIM.h"
 #include "SRC.h"
+#include "IsPngOrBmp.h"
 
 
 using namespace com::github::a2g::generator;
@@ -83,7 +84,7 @@ void FolderTraverser::generate(QString rootFolder, QString package)
                     for(int i=0;i<PNGs.size();i++)
                     {
                         QString pngPath = PNGs[i];
-                        if(pngPath.right(4) != ".png")
+                        if(!IsPngOrBmp(pngPath))
                             continue;
                         QString invSeg = objectSeg;
                         int idForInv = iStream.getIdForName(invSeg);
@@ -111,7 +112,7 @@ void FolderTraverser::generate(QString rootFolder, QString package)
 
                         for(QStringList::iterator pngLoadMe = PNGs.begin();pngLoadMe!=PNGs.end();pngLoadMe++)
                         {   
-                            if(pngLoadMe->right(4) != ".png")
+                            if(!IsPngOrBmp(*pngLoadMe))
                                 continue;
 
                             // "blank" is usd when initial already exists, for that object, in some otherrender output

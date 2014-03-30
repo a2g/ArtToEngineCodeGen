@@ -19,6 +19,7 @@
 #include "FolderTraverser.h"
 #include "SOURCEIM.h"
 #include "time.h" //clock_t clock (); time_t time(time_t*), double difftime (time_t, time_t);
+#include "IsPngOrBmp.h"
 using namespace com::github::a2g::generator;
 
 static void messageFilterForSuppressingQtMessages(QtMsgType type, const char * msg)
@@ -45,21 +46,21 @@ void installDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput()
 }
 void populateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
 {
-    // the only filter that would be useful here would be ".png" AND folders - but it's not possible.f
+    // the only filter that would be useful here would be files with our desired image extensions AND folders - but it's not possible
+    // so we go thru them all and look for either
     QStringList dirs = QDir(path).entryList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot);
     int count = dirs.count();
     for(int i=0;i<count;i++)
     {
         QString name = path + "/" + dirs.at(i);
         bool isFolder = !name.contains(".");
-        bool isPNG = name.contains(".png", Qt::CaseInsensitive);
-            
+
         if(isFolder)
         {
             fs->add(name);   
             populateFileSystemFromRealSystemRecursively(fs, name);
         }
-        else if(isPNG)
+        else if(IsPngOrBmp(name))
         {
             fs->add(name);
         }

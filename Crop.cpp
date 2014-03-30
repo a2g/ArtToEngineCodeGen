@@ -69,10 +69,10 @@ QRect getBoundingNonBlackRectangle(QImage image)
     int left = 0;
     int bottom = image.height()-1;
     int right = image.width()-1;
-    bool isToKeepAdvancingTop = true;
-    bool isToKeepAdvancingLeft = true;
-    bool isToKeepAdvancingBottom = true;
-    bool isToKeepAdvancingRight = true;
+    bool isToKeepShrinkingTop = true;
+    bool isToKeepShrinkingLeft = true;
+    bool isToKeepShrinkingBottom = true;
+    bool isToKeepShrinkingRight = true;
     // this turns off the optimization :return QRect(QPoint(left,top),QPoint(right,bottom));
 
     // This is finding the bounding box by keeping shrinking the square (top,left,bottom,right)
@@ -81,27 +81,32 @@ QRect getBoundingNonBlackRectangle(QImage image)
     // fewer pixels to scan ( every horizontal line scanned can be two pixels shorter than the previous)
     for(int i=0;i<max;i++)
     {
-        for(int k=left;k<=right && (isToKeepAdvancingTop || isToKeepAdvancingBottom);k++)
+        for(int k=left;k<=right && (isToKeepShrinkingTop || isToKeepShrinkingBottom);k++)
         {
-            int colorTop = image.pixel(k,top)&RGB_MASK;
-            int colorBottom = image.pixel(k,bottom)&RGB_MASK;
-            isToKeepAdvancingTop &= (colorTop==0);
-            isToKeepAdvancingBottom &= (colorBottom==0);
+            int colorTop = image.pixel(k,top);
+            int colorBottom = image.pixel(k,bottom);
+            // keep Shrinking when:
+            // - pixel is transparent (alpha = opacity) so if alpha == 0, then 0% opaque.
+            // - either the pixel is black (ie 3dsmax always renders a background color, and it
+            //   looks best if its black if we insist if its black)
+            isToKeepShrinkingTop &= (colorTop&RGB_MASK==0)||(::qAlpha(colorTop)==0);
+            isToKeepShrinkingBottom &= (colorBottom&RGB_MASK==0)||(::qAlpha(colorBottom)==0);
+            // we put the black test first, because > 90% will be max renders
         }
 
-        top += isToKeepAdvancingTop;
-        bottom -= isToKeepAdvancingBottom;
+        top += isToKeepShrinkingTop;
+        bottom -= isToKeepShrinkingBottom;
 
-        for(int k=top;k<=bottom && (isToKeepAdvancingLeft || isToKeepAdvancingRight);k++)
+        for(int k=top;k<=bottom && (isToKeepShrinkingLeft || isToKeepShrinkingRight);k++)
         {
-            int colorLeft = image.pixel(left,k)&RGB_MASK;
-            int colorRight = image.pixel(right,k)&RGB_MASK;
-            isToKeepAdvancingRight &= (colorRight==0);
-            isToKeepAdvancingLeft &= (colorLeft==0);
+            int colorLeft = image.pixel(left,k);
+            int colorRight = image.pixel(right,k);
+            isToKeepShrinkingRight &= (colorRight&RGB_MASK==0)||(::qAlpha(colorRight)==0);
+            isToKeepShrinkingLeft &= (colorLeft&RGB_MASK==0)||(::qAlpha(colorLeft)==0);
         }
 
-        left += isToKeepAdvancingLeft;
-        right -= isToKeepAdvancingRight;
+        left += isToKeepShrinkingLeft;
+        right -= isToKeepShrinkingRight;
     }
 
     QPoint topLeft(left,top);
@@ -160,7 +165,7 @@ QRect crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZB
         A2GASSERT(isLoaded);
         if(isLoaded)
         {
-            QString croppedZBufferFilename = fullPathToLoadFrom.left(fullPathToLoadFrom.length() -4) + "_CroppedZBuffer.bmp";
+            QString croppedZBufferFilename = fullPathToLoadFrom.left(fullPathToLoadFrom.length() -4) + "_CroppedZBuffer.png";
             rect = getBoundingNonBlackRectangle(temp);
 
             QImage image;

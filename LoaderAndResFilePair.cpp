@@ -539,7 +539,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find
         }
         else
         {
-            writeSwingBundle(f, bundleJavaClassName, start, end, isDummyRun);                                                                                   "\n";
+            writeSwingBundle(f, bundleJavaClassName, start, end, isDummyRun);
         }
         file.close();
         QString longName = package+"." + maxFileSeg +"." + pixelSeg+"."+bundleJavaClassName;

@@ -64,11 +64,11 @@ QRect getBoundingNonBlackRectangle(QImage image)
     image.setPixel(0,lastRow,0);
     image.setPixel(0,0,0);
 
-    int max = image.width() > image.height()? image.width() : image.height();
-    int top = 0;
-    int left = 0;
-    int bottom = image.height()-1;
-    int right = image.width()-1;
+    unsigned int max = image.width() > image.height()? image.width() : image.height();
+    unsigned int top = 0;
+    unsigned int left = 0;
+    unsigned int bottom = image.height()-1;
+    unsigned int right = image.width()-1;
     bool isToKeepShrinkingTop = true;
     bool isToKeepShrinkingLeft = true;
     bool isToKeepShrinkingBottom = true;
@@ -79,12 +79,16 @@ QRect getBoundingNonBlackRectangle(QImage image)
     // until it runs into some non zero pixels.
     // we alternate between vertical and horizontal, because overall, this results in
     // fewer pixels to scan ( every horizontal line scanned can be two pixels shorter than the previous)
-    for(int i=0;i<max;i++)
+    for(unsigned int i=0;i<max;i++)
     {
-        for(int k=left;k<=right && (isToKeepShrinkingTop || isToKeepShrinkingBottom);k++)
+        // one comparison per column is probably ok.
+        // top and left start off as zero, so if they go bigger than their counterpart then bail - image is blank!
+        if(top>=bottom||left>=right)
+            return QRect(0,0,0,0);
+        for(unsigned int x=left;x<=right && (isToKeepShrinkingTop || isToKeepShrinkingBottom);x++)
         {
-            int colorTop = image.pixel(k,top);
-            int colorBottom = image.pixel(k,bottom);
+            int colorTop = image.pixel(x,top);
+            int colorBottom = image.pixel(x,bottom);
             // keep Shrinking when:
             // - pixel is transparent (alpha = opacity) so if alpha == 0, then 0% opaque.
             // - either the pixel is black (ie 3dsmax always renders a background color, and it
@@ -97,10 +101,10 @@ QRect getBoundingNonBlackRectangle(QImage image)
         top += isToKeepShrinkingTop;
         bottom -= isToKeepShrinkingBottom;
 
-        for(int k=top;k<=bottom && (isToKeepShrinkingLeft || isToKeepShrinkingRight);k++)
+        for(unsigned int y=top;y<=bottom && (isToKeepShrinkingLeft || isToKeepShrinkingRight);y++)
         {
-            int colorLeft = image.pixel(left,k);
-            int colorRight = image.pixel(right,k);
+            int colorLeft = image.pixel(left,y);
+            int colorRight = image.pixel(right,y);
             isToKeepShrinkingRight &= (colorRight&RGB_MASK==0)||(::qAlpha(colorRight)==0);
             isToKeepShrinkingLeft &= (colorLeft&RGB_MASK==0)||(::qAlpha(colorLeft)==0);
         }

@@ -20,6 +20,7 @@
 #include "SOURCEIM.h"
 #include "time.h" //clock_t clock (); time_t time(time_t*), double difftime (time_t, time_t);
 #include "IsPngOrBmp.h"
+#include "QDebug.h"
 using namespace com::github::a2g::generator;
 
 static void messageFilterForSuppressingQtMessages(QtMsgType type, const char * msg)
@@ -77,35 +78,37 @@ void processRawFilesToResources(QString arg, bool isDummyRun)
         populateFileSystemFromRealSystemRecursively(&fileSystem,arg);
         //fileSystem.dump();
 
+
+        qDebug() << "\n";
         clock_t t2 = clock();
+        qDebug() << "Adding folders " << (t2-t1)/1000.0 << " seconds\n";
+
         {
             FolderTraverser trav(fileSystem, output);
             trav.generateFilesFromSourceFolderOrASubFolderThereof(arg);
         }
         clock_t t3 = clock();
+        qDebug() << "Planning output " << (t3-t2)/1000.0 << " seconds \n";
+
         output.writeAll(SOURCEIM, "visuals", fileSystem.isGwt(), isDummyRun);
         //                ^          ^
         //               search    replace
         clock_t t4 = clock();
-
-        std::cout << "\n";
-        std::cout << "Adding folders " << (t2-t1)/1000.0 << " seconds\n";
-        std::cout << "Planning output " << (t3-t2)/1000.0 << " seconds \n";
-        std::cout << "Writing output " << (t4-t3)/1000.0 << " seconds \n";
-        std::cout << "-----------------------------------------------\n";
-        std::cout << "Total " << (t4-t1)/1000.0 << " seconds \n";
-        std::cout << "( for path: " << arg.toStdString().c_str() << " )\n";
+        qDebug() << "Writing output " << (t4-t3)/1000.0 << " seconds \n";
+        qDebug() << "-----------------------------------------------\n";
+        qDebug() << "Total " << (t4-t1)/1000.0 << " seconds \n";
+        qDebug() << "( for path: " << arg.toStdString().c_str() << " )\n";
 
         for(int i=0;i<fileSystem.getNumberOfItems();i++)
         {
-            std::cout <<  fileSystem.getItem(i).toAscii().data() << "\n";
+            qDebug() <<  fileSystem.getItem(i).toAscii().data() << "\n";
         }
     }
 }
 
 int main(int argc, char *argv[])
 {
-    installDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
+  //  installDummyMessageHandlerToSuppressQtMessagesInTheDebugOutput();
     QApplication app(argc, argv);
     QString arg;
     if(argc>1)

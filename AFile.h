@@ -78,13 +78,13 @@ namespace com
 
                         QDir dir;
                         dir.mkpath(m_currentPath+"/" + m_animFolder);
-                        QFile file(m_currentPath+"/" + m_animFolder + "/a.java");
+                        QFile file(m_currentPath+"/" + m_animFolder + "/A.java");
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;
 
                         QTextStream f(&file);
                         f << ("package " + package + "._00_animations;\n");
-                        f << ("public class a\n");
+                        f << ("public class A\n");
                         f << ("{\n");
 
                         for(QMap<QString,int>::iterator iter = mapOfAnims.begin();iter!=mapOfAnims.end();iter++)

@@ -67,7 +67,7 @@ namespace com
 
                         QDir dir;
                         dir.mkpath(sceneFolder);
-                        QFile file(sceneFolder+"\\i.java");
+                        QFile file(sceneFolder+"\\I.java");
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;
 
@@ -75,7 +75,7 @@ namespace com
                         QTextStream f(&file);
                         f << ("package "+package+"." + maxFileSeg + ";\n");
                         f << ("\n");
-                        f << ("public interface i\n");
+                        f << ("public interface I\n");
                         f << ("{\n");
                         f << ("    public enum names");
                         f << ("    {\n");

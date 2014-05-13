@@ -41,8 +41,8 @@ namespace com
 
                     int getIdForName(QString objectName)
                     {
-                        if(objectName.startsWith("X_"))
-                            return -1;
+                        if(objectName.startsWith("X_", Qt::CaseInsensitive))
+                            return -2;
                         if(mapOfObjectNames.find(objectName)!=mapOfObjectNames.end())
                             return mapOfObjectNames[objectName];
                         //else we've never seen it before

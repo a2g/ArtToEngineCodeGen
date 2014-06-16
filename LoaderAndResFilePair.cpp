@@ -414,12 +414,12 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeSwingBundle(QTextSt
     f << "    public static boolean addImage(ImageAddAPI api, LoadHandler lh, int i)"      "\n";
     f << "    {"                                                                               "\n";
     f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
-    f << "        switch(i){"                                                                  "\n";
+    f << (IS_SWITCH?"        switch(i){\n": "if(i==-1){}\n");
     for(int j=start;j<end;j++)
     {
         f << caseStatements[j];
     }
-    f << "        }"                                                                           "\n";
+    f << (IS_SWITCH? "        }"    "\n" : "\n");                                                                         "\n";
     f << "        return false;"                                                               "\n";
     f << "    }"                                                                               "\n";
     f << "}"                                                                                   "\n";

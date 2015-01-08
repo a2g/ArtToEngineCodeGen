@@ -419,7 +419,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeSwingBundle(QTextSt
     {
         f << caseStatements[j];
     }
-    f << (IS_SWITCH? "        }"    "\n" : "\n");                                                                         "\n";
+    f << (IS_SWITCH? ("        }"    "\n") : ("\n"));                                                                         "\n";
     f << "        return false;"                                                               "\n";
     f << "    }"                                                                               "\n";
     f << "}"                                                                                   "\n";

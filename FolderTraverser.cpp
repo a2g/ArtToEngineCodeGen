@@ -16,7 +16,6 @@
 
 #include "FolderTraverser.h"
 #include "A2GASSERT.h"
-#include "FOLDERSONLY.h"
 #include <time.h>
 #include <locale>
 #include <QRgb>

@@ -49,7 +49,7 @@ void populateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
 {
     // the only filter that would be useful here would be files with our desired image extensions AND folders - but it's not possible
     // so we go thru them all and look for either
-    QStringList dirs = QDir(path).entryList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot);
+    QStringList dirs = QDir(path).entryList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot, QDir::Name|QDir::IgnoreCase);
     int count = dirs.count();
     for(int i=0;i<count;i++)
     {

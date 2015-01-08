@@ -15,5 +15,3 @@
  */
 
 #pragma once
-
-#define FOLDERSONLY QDir::Dirs|QDir::NoDotAndDotDot

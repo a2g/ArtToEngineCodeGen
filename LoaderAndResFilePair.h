@@ -21,13 +21,11 @@
 #include <QPoint>
 #include <QVector>
 #include <iostream>
-#include <QMessageBox>
 #include <QDir>
 #include <QMap>
 #include "FIRST.h"
 #include "Crop.h"
 #include "GetObjectPlusAnim.h"
-#include "GetRealObjectSeg.h"
 #include <QPair>
 #include <algorithm>
 #include "isDummyRun.h"
@@ -43,8 +41,7 @@ namespace com
                 class LoaderAndResFilePair 
                 {
                     mutable QString package;
-                    mutable QString maxFileSeg;
-                    mutable QString pixelSeg;
+                    mutable QString psdFileSeg;
                     mutable QString sceneFolder;
                     mutable QString animFolder;
 
@@ -66,7 +63,7 @@ namespace com
                     QString lineThatSetsResolution;
                 public:
                     LoaderAndResFilePair();
-                    LoaderAndResFilePair(const QString& sceneFolder, const QString& pixelSeg, const QString maxFileSeg, QString animFolder, const QString package);
+                    LoaderAndResFilePair(const QString package, const QString maxFileSeg,  const QString& sceneFolder,  QString animFolder);
                     ~LoaderAndResFilePair();
 
                     void setJavaClassNamePrefix(QString theJavaClassNamePrefix);

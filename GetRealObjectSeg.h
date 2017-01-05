@@ -16,8 +16,15 @@
 
 #pragma once
 
-static QString getRealObjectSeg(QString objectSeg)
+static QString getRealObjectSeg(QString objectSeg, bool isInv)
 {
+    // inventory doesn't have a concept of objectSeg...
+    // so for the inventory case we'll get called here with the containing
+    // folder of an inventory object which is a resolution eg "32x64" etc.
+    // we don't want to use that at all, so we just return "_".
+    if(isInv)
+        return "_";
+
    // remove the prefix ie "_80_"
     QString realObjectSeg = objectSeg.mid(4);
     return realObjectSeg;

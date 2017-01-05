@@ -13,35 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
-#include "FolderTraverser.h"
+#include "Crop.h"
+#include <QDir>
+#include <QFile>
+#include <QtGui\QImage.h>
+#include <QtGui\QMessageBox.h>
 #include "A2GASSERT.h"
-#include <time.h>
-#include <locale>
-#include <QRgb>
-#include <QImage>
-#include <QMessageBox>
-#include <QImage>
-#include <QRect>
-#include <QSet>
-#include <QList>
-#include <QtGui/qrgb.h>
-#include <QDomDocument>
-#include <QTextStream>
-#include <QTextBrowser>
-#include <QVariant>
-#include "OFile.h"
-#include "IFile.h"
-#include "LoaderAndResFilePair.h"
-#include "AFile.h"
 
-#include <QSplitter>
 
 const char* STR_IMAGE = "croppedImage";
 const char* STR_ZBUFFER = "croppedZBuffer";
-
-using namespace com::github::a2g::generator;
-
 
 QRect getBoundingNonBlackRectangle(QImage image)
 {
@@ -137,7 +118,7 @@ QImage generateZBufferRepresentation(QImage image, QRgb zbufferColor)
     return alphed;
 }
 
-QRect crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer)
+QRect com::github::a2g::generator::crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer)
 {
     QDir dir;
     bool isOK = dir.mkpath(fullPathToSaveTo);

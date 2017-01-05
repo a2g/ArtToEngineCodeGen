@@ -18,26 +18,26 @@
 #include "A2GASSERT.h"
 #include <time.h>
 #include <locale>
-#include <QRgb>
-#include <QImage>
+#include <QtGui\QRgb>
+#include <QtGui\QImage>
 
-#include <QImage>
+#include <QtGui\QImage>
 #include <QRect>
 #include <QSet>
 #include <QList>
-#include <QDomDocument>
+#include <QtXml\QDomDocument>
 #include <QTextStream>
-#include <QTextBrowser>
+#include <QtGui\QTextBrowser>
 #include <QVariant>
 #include "OFile.h"
 #include "IFile.h"
 #include "LoaderAndResFilePair.h"
 #include "AFile.h"
 #include "GetObjectPlusAnimHash.h"
-#include "SOURCEIM.h"
+#include "SOURCE.h"
 #include "SRC.h"
 #include "IsPngOrBmp.h"
-
+#include "IsInventory.h"
 
 using namespace com::github::a2g::generator;
 
@@ -57,78 +57,72 @@ void FolderTraverser::generate(QString rootFolder, QString package)
         QString psdFileSeg = QDir(*psdFileFolder).dirName();
         if(psdFileSeg == _00_ANIMATIONS)
             continue;
-        bool isInAnObjectsFolder = psdFileSeg.contains("_main");
-        bool isInAnInventoryFolder = psdFileSeg.contains("_inventory");
+        bool isInAnObjectsFolder = !psdFileSeg.contains("shared");
+        bool isInAnInventoryFolder = IsInventory(psdFileSeg);
 
         OFile oStream(isInAnObjectsFolder? *psdFileFolder : bad, psdFileSeg, package);
         IFile iStream(isInAnInventoryFolder? *psdFileFolder: bad, psdFileSeg, package);
 
-        QStringList pixelFolders = files.getSubFolders(*psdFileFolder);
-        for(QStringList::iterator pixelFolder=pixelFolders.begin();pixelFolder!=pixelFolders.end();pixelFolder++)
-        {			
-            QString pixelSeg = QDir(*pixelFolder).dirName();
+        LoaderAndResFilePair resStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
+        LoaderAndResFilePair initialStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
 
+        std::list<QString> objectFolders = files.getSubFolders(*psdFileFolder).toStdList();
+        for(std::list<QString>::reverse_iterator objectFolder=objectFolders.rbegin();objectFolder!=objectFolders.rend();objectFolder++)
+        {
+            QString objectSeg = QDir(*objectFolder).dirName();
 
-            LoaderAndResFilePair resStream( *psdFileFolder, pixelSeg, psdFileSeg, isInAnInventoryFolder? NULL: animFolder, package);
-            LoaderAndResFilePair initialStream( *psdFileFolder, pixelSeg, psdFileSeg, isInAnInventoryFolder? NULL: animFolder, package);
-
-            std::list<QString> objectFolders = files.getSubFolders(*pixelFolder).toStdList();
-            for(std::list<QString>::reverse_iterator objectFolder=objectFolders.rbegin();objectFolder!=objectFolders.rend();objectFolder++)
+            if(isInAnInventoryFolder)
             {
-                QString objectSeg = QDir(*objectFolder).dirName();
-
-                if(isInAnInventoryFolder)
+                QStringList PNGs = files.getSubFiles(*objectFolder);
+                for(int i=0;i<PNGs.size();i++)
                 {
-                    QStringList PNGs = files.getSubFiles(*objectFolder);
-                    for(int i=0;i<PNGs.size();i++)
-                    {
-                        QString pngPath = PNGs[i];
-                        if(!IsPngOrBmp(pngPath))
-                            continue;
-                        QString invSeg = objectSeg;
-                        int idForInv = iStream.getIdForName(invSeg);
+                    QString pngPath = PNGs[i];
+                    if(!IsPngOrBmp(pngPath))
+                        continue;
+                    QString invSeg = objectSeg;
+                    int idForInv = iStream.getIdForName(invSeg);
 
-                        resStream.addInvImage(pngPath, idForInv);
+                    resStream.addInvImage(pngPath, idForInv);
 
-                        break;//only take the first png in each folder
-                    }
-                }
-                else
-                {
-                    int idForObj = oStream.getIdForName(getRealObjectSeg(objectSeg));
-
-                    QStringList animFolders = files.getSubFolders(*objectFolder);
-                    for(QStringList::iterator animFolder = animFolders.begin();animFolder!=animFolders.end();animFolder++)
-                    {
-                        QString animSeg = QDir(*animFolder).dirName().toLower();
-
-                        if(animSeg=="ignore")
-                            continue;
-                        int idForObjPlusAnim = getObjectPlusAnimHash(objectSeg,animSeg);
-
-                        aFile.insert(getObjectPlusAnim(objectSeg,animSeg).toStdString(), idForObjPlusAnim);
-                        QStringList PNGs = files.getSubFiles(*animFolder);
-
-                        for(QStringList::iterator pngLoadMe = PNGs.begin();pngLoadMe!=PNGs.end();pngLoadMe++)
-                        {   
-                            if(!IsPngOrBmp(*pngLoadMe))
-                                continue;
-
-                            // "blank" is usd when initial already exists, for that object, in some otherrender output
-                            //
-                            if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"||animSeg=="placeholder"))
-                            {
-                                initialStream.addAnimImage(*pngLoadMe, idForObj);
-                            }
-                            else
-                            {
-                                resStream.addAnimImage(*pngLoadMe, isInAnObjectsFolder? idForObj : -1);//if the id is -1 then it signals the engine to look for an existing object to add the anim image to
-                            }
-                        }
-
-                    }
+                    break;//only take the first png in each folder
                 }
             }
+            else
+            {
+                int idForObj = oStream.getIdForName(getRealObjectSeg(objectSeg,false));
+
+                QStringList animFolders = files.getSubFolders(*objectFolder);
+                for(QStringList::iterator animFolder = animFolders.begin();animFolder!=animFolders.end();animFolder++)
+                {
+                    QString animSeg = QDir(*animFolder).dirName().toLower();
+
+                    if(animSeg=="ignore")
+                        continue;
+                    int idForObjPlusAnim = getObjectPlusAnimHash(objectSeg,animSeg);
+
+                    aFile.insert(getObjectPlusAnim(objectSeg,animSeg).toStdString(), idForObjPlusAnim);
+                    QStringList PNGs = files.getSubFiles(*animFolder);
+
+                    for(QStringList::iterator pngLoadMe = PNGs.begin();pngLoadMe!=PNGs.end();pngLoadMe++)
+                    {
+                        if(!IsPngOrBmp(*pngLoadMe))
+                            continue;
+
+                        // "blank" is usd when initial already exists, for that object, in some otherrender output
+                        //
+                        if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"||animSeg=="placeholder"))
+                        {
+                            initialStream.addAnimImage(*pngLoadMe, idForObj);
+                        }
+                        else
+                        {
+                            resStream.addAnimImage(*pngLoadMe, isInAnObjectsFolder? idForObj : -1);//if the id is -1 then it signals the engine to look for an existing object to add the anim image to
+                        }
+                    }
+
+                }
+            }
+
 
             // set the names in one place;
             // if both the streams have content, and thus will write a valid file, then "first"+"last"
@@ -137,38 +131,66 @@ void FolderTraverser::generate(QString rootFolder, QString package)
             {
                 initialStream.setJavaClassNamePrefix("Only");
                 resStream.setJavaClassNamePrefix("Only");
-                output.addOnly(initialStream);
-                output.addOnly(resStream);
+                if(output)
+                {
+                    output->addOnly(initialStream);
+                    output->addOnly(resStream);
+                }
             }
             else
             {
                 initialStream.setJavaClassNamePrefix("First");
                 resStream.setJavaClassNamePrefix("Last");
-                output.addFirst(initialStream);
-                output.addLast(resStream);
+                if(output)
+                {
+                    output->addFirst(initialStream);
+                    output->addLast(resStream);
+                }
             }
-
-
         }
         if(iStream.getNumberOfEntries()>0)
         {
-            output.addIFile(iStream);
+             if(output)
+            {
+                output->addIFile(iStream);
+            }
         }
         if(oStream.getNumberOfEntries()>0)
         {
-            output.addOFile(oStream);
+             if(output)
+            {
+                output->addOFile(oStream);
+            }
         }
     }
 
     if(aFile.getNumberOfEntries()>0)
     {
-        output.addAFile(aFile);
+        if(output)
+        {
+            output->addAFile(aFile);
+        }
     }
 }	
 
-void FolderTraverser::generateFilesFromSourceFolderOrASubFolderThereof(QString path)
+FolderTraverserResult getErrorFromInputPath(QString path)
 {
+    path = path.toUpper();
+    if(!path.contains(SRC))
+        return  SrcIsNotFoundInPathParameter;
+    if(!path.contains(SOURCE))
+        return SourceIsNotFoundInPathParameter;
+    return IsOk;
+}
+
+FolderTraverserResult FolderTraverser::generateFilesFromSourceFolderOrASubFolderThereof(QString path)
+{
+    FolderTraverserResult error = getErrorFromInputPath(path);
+    if(error > 1)
+        return error;
+
     path.replace("\\","/");
+
 
     // get dirs of child and parent
     QDir dir(path);
@@ -180,14 +202,17 @@ void FolderTraverser::generateFilesFromSourceFolderOrASubFolderThereof(QString p
     QString dirName = dir.dirName().toUpper();
     QString parentDirName = parentDir.dirName().toUpper();
 
-    if(dirName == SOURCEIM)
+    if(dirName == SOURCE)
     {
         processAllSubFolders(dir.absolutePath());
+
     }
-    else if (parentDirName == SOURCEIM)
+    else if (parentDirName == SOURCE)
     {
         processJustThisSubFolder(dir.absolutePath());
+
     }
+    return IsOk;
 }
 
 void FolderTraverser::processAllSubFolders(QString folder)
@@ -208,14 +233,12 @@ void FolderTraverser::processJustThisSubFolder(QString subFolder)
 {
     subFolder = subFolder.toLower();
     int findSRC = subFolder.lastIndexOf(QString(SRC).toLower());
-    if(findSRC!=-1)
-    {
-        int offset = QString(SRC).length() + 1; // src.com, the '+1' is to skip past the dot
-        int startOfCOM = findSRC + offset;//       ^   ^
-        QString package = subFolder.mid(startOfCOM);
-        package.replace('/','.');
-        generate(subFolder, package);
-    }
+
+    int offset = QString(SRC).length() + 1; // src.com, the '+1' is to skip past the dot
+    int startOfCOM = findSRC + offset;//       ^   ^
+    QString package = subFolder.mid(startOfCOM);
+    package.replace('/','.');
+    generate(subFolder, package);
 }
 
 

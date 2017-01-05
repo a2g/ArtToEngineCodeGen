@@ -20,14 +20,14 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMap>
-#include <QListWidget.h>
+#include <QtGui\QListWidget.h>
 #include <QDir.h>
 #include <QFileInfo.h>
-#include <QSplitter>
-#include <QTextBrowser>
-#include <QGraphicsScene>
-#include <QListWidgetItem>
-#include <QGraphicsView>
+#include <QtGui\QSplitter>
+#include <QtGui\QTextBrowser>
+#include <QtGui\QGraphicsScene>
+#include <QtGui\QListWidgetItem>
+#include <QtGui\QGraphicsView>
 #include "IdGenerator.h"
 #include <QList>
 
@@ -85,59 +85,61 @@ public:
 signals:
     void picked(const QString &fileName);
 
-    private slots:
-        void onItemChanged (QListWidgetItem* /*current*/, QListWidgetItem* /*previous*/)
+private slots:
+    void onItemChanged (QListWidgetItem* /*current*/, QListWidgetItem* /*previous*/)
+    {
+        if(listWidget.currentItem()!=NULL)
         {
-            if(listWidget.currentItem()!=NULL)
-            {
-                QString seg = listWidget.currentItem()->text();
-                QString path = basePath + "/" + seg;
+            QString seg = listWidget.currentItem()->text();
+            QString path = basePath + "/" + seg;
 
-                QStringList foldersOfMaxFile = QDir(path).entryList(FOLDERSONLY);
-                for(QStringList::iterator maxFileSeg=foldersOfMaxFile.begin();maxFileSeg <foldersOfMaxFile.end();maxFileSeg++)
+            QStringList foldersOfMaxFile = QDir(path).entryList(FOLDERSONLY);
+            for(QStringList::iterator maxFileSeg=foldersOfMaxFile.begin();maxFileSeg <foldersOfMaxFile.end();maxFileSeg++)
+            {
+                if(*maxFileSeg =="_320x180" || *maxFileSeg=="_640x360")
                 {
-                    if(*maxFileSeg =="_320x180" || *maxFileSeg=="_640x360")
+                    scene.clear();
+                    QString pixelFolder = basePath + "/" + seg + "/" + *maxFileSeg;
+
+                    QStringList objectFolders = QDir(pixelFolder).entryList(FOLDERSONLY);
+                    for(QStringList::iterator objectSeg=objectFolders.begin();objectSeg!=objectFolders.end();objectSeg++)
                     {
-                        scene.clear();
-                        QString pixelFolder = basePath + "/" + seg + "/" + *maxFileSeg;
-
-                        QStringList objectFolders = QDir(pixelFolder).entryList(FOLDERSONLY);
-                        for(QStringList::iterator objectSeg=objectFolders.begin();objectSeg!=objectFolders.end();objectSeg++)
+                        QString objectFolder = pixelFolder + "/" + *objectSeg;
+                        QString possibleImage = objectFolder + "/initial/orig_0000.png";
+                        if(QFile::exists(possibleImage))
                         {
-                            QString objectFolder = pixelFolder + "/" + *objectSeg;
-                            QString possibleImage = objectFolder + "/initial/orig_0000.png";
-                            if(QFile::exists(possibleImage))
-                            {
 
-                                //QGraphicsPixmapItem* item = scene.addPixmap(possibleImage);
-                                //               scene.update();
+                            //QGraphicsPixmapItem* item = scene.addPixmap(possibleImage);
+                            //               scene.update();
 
-                            }
                         }
-                        break;
                     }
+                    break;
                 }
             }
         }
-        void onSelectionChanged()
+    }
+    void onSelectionChanged()
+    {
+        QList<QListWidgetItem *> selectedItems = listWidget.selectedItems();
+        if(selectedItems.size()==1)
         {
-            QList<QListWidgetItem *> selectedItems = listWidget.selectedItems();
-            if(selectedItems.size()==1)
+            QString seg = listWidget.selectedItems().at(0)->text();
+            if (seg =="_320x180" || seg=="_640x360")
             {
-                QString seg = listWidget.selectedItems().at(0)->text();
-                if (seg =="_320x180" || seg=="_640x360")
-                {
 
-                }
-                else
-                {
-                    QString path = basePath + "/" + seg;
-                    setDir(path);
-                }
+            }
+            else
+            {
+                QString path = basePath + "/" + seg;
+                setDir(path);
             }
         }
+    }
 
 private:
     QString nameFilter;
     QString basePath;
 };
+
+

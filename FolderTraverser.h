@@ -18,6 +18,7 @@
 #include <QString>
 #include "FileSystem.h"
 #include "OutputFiles.h"
+#include "FolderTraverserResult.h"
 namespace com
 { 
     namespace github
@@ -29,14 +30,14 @@ namespace com
                 class FolderTraverser
                 {
                     FileSystem& files;
-                    OutputFiles& output;
+                    OutputFiles* output;
                 public:
-                    FolderTraverser(FileSystem& fs, OutputFiles& output)
+                    FolderTraverser(FileSystem& fs, OutputFiles* output)
                         : files(fs)
                         , output(output)
                     {  }
 
-                    void generateFilesFromSourceFolderOrASubFolderThereof(QString startingPath);
+                    FolderTraverserResult generateFilesFromSourceFolderOrASubFolderThereof(QString startingPath);
                 private:                    
                     void searchRecursively(QString folder, QString targetPathSegment);
                     void generate(QString rootFolder, QString package);

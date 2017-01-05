@@ -15,22 +15,21 @@
  */
 
 #include "LoaderAndResFilePair.h"
+#include "IsInventory.h"
 
 
 
 
 
 com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(){}
-com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QString& sceneFolder, const QString& pixelSeg, const QString maxFileSeg, QString animFolder, const QString package)
+com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QString package, const QString psdFileSeg, const QString& sceneFolder,  QString animFolder)
         : package(package)
-        , maxFileSeg(maxFileSeg)
-        , pixelSeg(pixelSeg)
         , sceneFolder(sceneFolder)
         , animFolder(animFolder)
         , isGwt(false)
 
 {
-
+/*
     int i = pixelSeg.indexOf("x");
     if(i!=-1)
     {
@@ -41,13 +40,14 @@ com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QS
         int height = last.toInt();
         if(isInventory)
         {
-            lineThatSetsResolution = QString("    api.setInventoryPixelSize(%1, %2);\n").arg(width).arg(height);
+            lineThatSetsResolution = QString("    api.setInventoryImageSize(%1, %2);\n").arg(width).arg(height);
         }
         else
         {
             lineThatSetsResolution = QString("    api.setScenePixelSize(%1, %2);\n").arg(width).arg(height);
         }
     }
+    */
 
 }
 
@@ -103,7 +103,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::cropImagesAndConstructDe
         }
 
         QString animFolder = QDir(root).canonicalPath();
-        QString maxFileSeg = list[i-4];
+        QString psdFileSeg = list[i-4];
         QString pixelSeg   = list[i-3];
         QString objectSeg  = list[i-2];
         QString animSeg    = list[i-1];
@@ -121,10 +121,10 @@ void com::github::a2g::generator::LoaderAndResFilePair::cropImagesAndConstructDe
 
         // add case and resource
         QString objectPlusAnim = getObjectPlusAnim(objectSeg, animSeg);
-        QString resourceName = QString("%1__%2_%3()").arg(getRealObjectSeg(objectSeg)).arg(animSeg).arg(caseTally++);
+        QString resourceName = QString("%1__%2_%3()").arg(getRealObjectSeg(objectSeg, isInventory())).arg(animSeg).arg(caseTally++);
         resourcePairs.push_back(QPair<QString,QString>(resourceName, pngSaveTo));
 
-        addCaseStatementForAnim(objectSeg, rect, getRealObjectSeg(objectSeg), animSeg, idForObject, objectPlusAnim, resourceName);
+        addCaseStatementForAnim(objectSeg, rect, getRealObjectSeg(objectSeg, isInventory()), animSeg, idForObject, objectPlusAnim, resourceName);
     }
 
     for(int j=0;j<invImages.size();j++)
@@ -141,7 +141,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::cropImagesAndConstructDe
         }
 
         QString animFolder = root;
-        QString maxFileSeg = list[i-3];
+        QString psdFileSeg = list[i-3];
         QString pixelSeg   = list[i-2];
         QString objectSeg  = list[i-1];
 
@@ -170,13 +170,13 @@ bool com::github::a2g::generator::LoaderAndResFilePair::isEmpty()
 
 bool com::github::a2g::generator::LoaderAndResFilePair::isNeeded()
 {
-    bool isNeeded = (maxFileSeg.toLower().contains("_objects")|| javaClassName!=FIRST);
+    bool isNeeded = (psdFileSeg.toLower().contains("_objects")|| javaClassName!=FIRST);
     return isNeeded;
 }
 
 bool com::github::a2g::generator::LoaderAndResFilePair::isInventory()
 {
-    bool isInventory = (maxFileSeg.toLower().contains("_inventory"));
+    bool isInventory = com::github::a2g::generator::IsInventory(psdFileSeg);
     return isInventory;
 }
 
@@ -221,11 +221,11 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeGwtBundle(QTextStre
     }
     QStringList packageSegs = package.split(".");
 
-    f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
+    f << ("package "+package+"." + psdFileSeg + ";\n");
     f << ("\n");
 
     f << ("import com.github.a2g.core.platforms.html4.PackagedImageForHtml4;\n");
-    f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
+    f << ("import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n");
     f << ("import com.google.gwt.resources.client.ClientBundle;\n");
     f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
     f << ("import com.google.gwt.core.client.GWT;\n");
@@ -263,7 +263,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeGwtBundle(QTextStre
         }
     }
     f << "    }"                                                                               "\n";
-    f << QString("    public static boolean addImage(ImageAddAPI api, LoadHandler lh, int i)\n");
+    f << QString("    public static boolean addImage(IMasterPresenterFromBundle api, LoadHandler lh, int i)\n");
     f << "    {"                                                                               "\n";
     f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
     f << (IS_SWITCH? "        switch(i){\n" : "        if(i==-1){}\n");
@@ -282,10 +282,10 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeGwtBundle(QTextStre
 
 bool com::github::a2g::generator::LoaderAndResFilePair::writeGwtLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
 {
-    f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
+    f << ("package "+package+"." + psdFileSeg +"." +";\n");
     f << ("\n");
-    f << ("import com.github.a2g.core.interfaces.LoadAPI;\n");
-    f << ("import com.github.a2g.core.interfaces.InternalAPI;\n");
+    f << ("import com.github.a2g.core.interfaces.internal.ILoad;\n");
+    f << ("import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n");
     f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
     f << ("import com.google.gwt.core.client.GWT;\n");
     f << ("import com.google.gwt.core.client.RunAsyncCallback;\n");
@@ -293,7 +293,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeGwtLoader(QTextStre
 
 
     f << ("\n");
-    f << ("public class "+loaderJavaClassName+" implements LoadAPI\n");
+    f << ("public class "+loaderJavaClassName+" implements ILoad\n");
     f << ("{\n");
     f << ("  @Override\n");
     f << QString("  public boolean isInventory(){ return %1;}\n").arg(isInventory()? "true" : "false");
@@ -323,7 +323,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeGwtLoader(QTextStre
     f << ("    return 0;\n");
     f << ("  }\n");
     f << ("  @Override\n");
-    f << ("  public int loadImageBundle(final LoadHandler lh, final InternalAPI api, final int bundleNumber, final int CHUNK, final int milliseconds)\n");
+    f << ("  public int loadImageBundle(final LoadHandler lh, final IMasterPresenterFromBundle api, final int bundleNumber, final int CHUNK, final int milliseconds)\n");
     f << ("  {\n");
     f << lineThatSetsResolution;
 
@@ -389,9 +389,9 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeSwingBundle(QTextSt
     {
         end= start + (end-start)/2;
     }
-    f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
+    f << ("package "+package+"." + psdFileSeg +";\n");
     f << ("\n");
-    f << ("import com.github.a2g.core.interfaces.ImageAddAPI;\n");
+    f << ("import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n");
     f << ("import com.github.a2g.core.platforms.java.PackagedImageForJava;\n");
     f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
     f << ("\n");
@@ -411,7 +411,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeSwingBundle(QTextSt
     }
     f << "    }"                                                                                "\n";
 
-    f << "    public static boolean addImage(ImageAddAPI api, LoadHandler lh, int i)"      "\n";
+    f << "    public static boolean addImage(IMasterPresenterFromBundle api, LoadHandler lh, int i)"      "\n";
     f << "    {"                                                                               "\n";
     f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
     f << (IS_SWITCH?"        switch(i){\n": "if(i==-1){}\n");
@@ -428,18 +428,18 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeSwingBundle(QTextSt
 
 bool com::github::a2g::generator::LoaderAndResFilePair::writeSwingLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
 {
-    f << ("package "+package+"." + maxFileSeg +"." + pixelSeg +";\n");
+    f << ("package "+package+"." + psdFileSeg +";\n");
     f << ("\n");
     f << ("import javax.swing.Timer;\n");
     f << ("import java.awt.event.ActionEvent;\n");
     f << ("import java.awt.event.ActionListener;\n");
     f << ("import com.google.gwt.event.dom.client.LoadHandler;\n");
-    f << ("import com.github.a2g.core.interfaces.LoadAPI;\n");
-    f << ("import com.github.a2g.core.interfaces.InternalAPI;\n");
+    f << ("import com.github.a2g.core.interfaces.internal.ILoad;\n");
+    f << ("import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n");
 
 
     f << ("\n");
-    f << ("public class "+loaderJavaClassName+" implements LoadAPI\n");
+    f << ("public class "+loaderJavaClassName+" implements ILoad\n");
     f << ("{\n");
     f << ("  Timer timer;\n");
     f << ("  @Override\n");
@@ -461,7 +461,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeSwingLoader(QTextSt
     f << ("    return 0;\n");
     f << ("  }\n");
     f << ("  @Override\n");
-    f << ("  public int loadImageBundle(final LoadHandler lh, final InternalAPI api, final int bundleNumber, final int CHUNK, final int milliseconds)\n");
+    f << ("  public int loadImageBundle(final LoadHandler lh, final IMasterPresenterFromBundle api, final int bundleNumber, final int CHUNK, final int milliseconds)\n");
     f << ("  {\n");
     f << lineThatSetsResolution;
     f << ("    switch(bundleNumber)\n");
@@ -483,6 +483,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeSwingLoader(QTextSt
         f << QString("            counter++;\n");
         f << QString("            if(counter==%1)\n").arg(list[i].first);
         f << QString("               timer.stop();\n");
+        f << QString("            lh.onLoad(null);\n");
         f << QString("          }\n");
         f << QString("        }\n");
         f << QString("      );\n");
@@ -528,8 +529,8 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find
     {
         QString bundleJavaClassName = theJavaClassNamePrefix + names[i] + "Bundle";
         QDir dir;
-        dir.mkpath(sceneFolder+"/"+ pixelSeg);
-        QFile file(sceneFolder+"/"     + pixelSeg + "/" + bundleJavaClassName + ".java");
+        dir.mkpath(sceneFolder);
+        QFile file(sceneFolder+"/" + bundleJavaClassName + ".java");
         if (!file.open(QFile::WriteOnly | QFile::Truncate))
             return false;
         QTextStream f(&file);
@@ -542,7 +543,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find
             writeSwingBundle(f, bundleJavaClassName, start, end, isDummyRun);
         }
         file.close();
-        QString longName = package+"." + maxFileSeg +"." + pixelSeg+"."+bundleJavaClassName;
+        QString longName = package+"." + psdFileSeg +"."+bundleJavaClassName;
         list.push_back(std::pair<int,QString>(end-start, longName));
         fend = fend + fincrement;
         start = end;
@@ -552,8 +553,8 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find
     // now to write the loader
     QString loaderJavaClassName = theJavaClassNamePrefix + "Loader";
     QDir dir;
-    dir.mkpath(sceneFolder+"/"+ pixelSeg);
-    QFile loader( sceneFolder+"/"+ pixelSeg+"/"+loaderJavaClassName + ".java");
+    dir.mkpath(sceneFolder);
+    QFile loader( sceneFolder+"/"+loaderJavaClassName + ".java");
     if (!loader.open(QFile::WriteOnly | QFile::Truncate))
         return false;
 

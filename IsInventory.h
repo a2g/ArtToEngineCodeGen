@@ -15,4 +15,24 @@
  */
 
 #pragma once
-static const char* SOURCEIM = "SOURCEIM";
+#include <QString>
+
+namespace com
+{
+    namespace github
+    {
+        namespace a2g
+        {
+            namespace generator
+            {
+                bool IsInventory(QString segment);
+            }
+        }
+    }
+}
+
+
+
+
+
+

@@ -71,30 +71,48 @@ namespace com
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;
 
-
                         QTextStream f(&file);
                         f << ("package "+package+"." + maxFileSeg + ";\n");
+
                         f << ("\n");
-                        f << ("public interface I\n");
+                        f << ("public class I\n");
                         f << ("{\n");
-                        f << ("    public enum names");
+                        f << ("    public enum Enum");
                         f << ("    {\n");
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << "        " << (iter.key().toUpper()) << ",\n";
+                            f<<"        " << (iter.key().toUpper()) << "(" << (iter.value()) <<"),\n";
                         }
+                        f << ("        ;\n");
+                        f << ("        //private final int code;\n");
+                        f << ("        Enum(int code) {\n");
+                        f << ("         //this.code = code;\n");
+                        f << ("        }\n");
                         f << ("    }\n");
-
-                        iter =mapOfObjectNames.begin();
+                        f << ("    public static Enum getEnum(int value)\n");
+                        f << ("    {                               \n");
+                        f << ("        switch(value)               \n");
+                        f << ("        {                           \n");
+                        iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << ("    public static final int ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
-                        }		
+                         f << "            case " << (iter.value()) << ": return Enum." + (iter.key().toUpper()) <<";\n";
+                        }
+                        f << ("        }\n");
+                        f << ("        return null;\n");
+                        f << ("    }\n");
+
+                        iter = mapOfObjectNames.begin();
+                        for(;iter!=mapOfObjectNames.end();iter++)
+                        {
+                            f << ("    public static final short ") <<  (iter.key().toUpper()) << " = " << (iter.value()) << (";\n");
+                        }
 
                         f << ("}\n");
                         file.close();
                         return true;
+
                     }
 
                     friend class OutputFiles;

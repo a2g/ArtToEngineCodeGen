@@ -16,9 +16,19 @@
 
 #pragma once
 
-#include <QRgb>
-#include <QPoint>
-
-QRect crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer);
-
+#include <QtGui\qrgb.h>
+#include <QRect>
+namespace com
+{
+    namespace github
+    {
+        namespace a2g
+        {
+            namespace generator
+            {
+                QRect crop(QString fullPathToLoadFrom, QString fullPathToSaveTo, QRgb colorForZBuffer);
+            }
+        }
+    }
+}
 

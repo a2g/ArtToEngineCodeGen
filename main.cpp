@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright 2012 Anthony Cassidy
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -15,9 +16,8 @@
  */
 
 #include <QtGui/QApplication>
-#include <QMainWindow>
 #include "FolderTraverser.h"
-#include "SOURCEIM.h"
+#include "SOURCE.h"
 #include "time.h" //clock_t clock (); time_t time(time_t*), double difftime (time_t, time_t);
 #include "IsPngOrBmp.h"
 #include "QDebug.h"
@@ -84,13 +84,13 @@ void processRawFilesToResources(QString arg, bool isDummyRun)
         qDebug() << "Adding folders " << (t2-t1)/1000.0 << " seconds\n";
 
         {
-            FolderTraverser trav(fileSystem, output);
+            FolderTraverser trav(fileSystem, &output);
             trav.generateFilesFromSourceFolderOrASubFolderThereof(arg);
         }
         clock_t t3 = clock();
         qDebug() << "Planning output " << (t3-t2)/1000.0 << " seconds \n";
 
-        output.writeAll(SOURCEIM, "visuals", fileSystem.isGwt(), isDummyRun);
+        output.writeAll(SOURCE, "visuals", fileSystem.isGwt(), isDummyRun);
         //                ^          ^
         //               search    replace
         clock_t t4 = clock();

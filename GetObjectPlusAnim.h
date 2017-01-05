@@ -21,7 +21,7 @@
 
 inline QString getObjectPlusAnim(QString objectSeg, QString animSeg)
 {
-    QString objectPlusAnim = getRealObjectSeg(objectSeg) + "_" + animSeg;
+    QString objectPlusAnim = getRealObjectSeg(objectSeg, false) + "_" + animSeg;
     return objectPlusAnim;
 }
                                         

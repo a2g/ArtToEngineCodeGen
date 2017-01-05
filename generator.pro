@@ -1,43 +1,49 @@
 # -------------------------------------------------
-# Project created by QtCreator 2011-12-17T14:30:32
+# Project created by QtCreator 2015-05-06T21:51:31
 # -------------------------------------------------
+QT += core
+QT += gui
 QT += xml
 TARGET = generator
 TEMPLATE = app
-SOURCES += AFile.cpp \
+SOURCES += main.cpp \
+    AFile.cpp \
+    Crop.cpp \
+    FileBrowser.cpp \
     FileSystem.cpp \
     FolderTraverser.cpp \
     IdGenerator.cpp \
     IFile.cpp \
-    main.cpp \
-    OFile.cpp \
-    LoaderAndResFilePair.cpp \
-    OutputFiles.cpp \
     isDummyRun.cpp \
-    Crop.cpp
-HEADERS += FileSystem.h \
-    STARTING_ODD_OBJECTS_CODE.h \
-    STARTING_ODD_INVENTORY_CODE.h \
-    SRC.h \
-    SOURCEIM.h \
-    RES.h \
-    OutputFiles.h \
-    OFile.h \
-    LoaderAndResFilePair.h \
-    isDummyRun.h \
-    INITIAL.h \
-    IFile.h \
-    IdGenerator.h \
-    GETVALUE.h \
-    GetRealObjectSeg.h \
-    GetObjectPlusAnimHash.h \
-    GetObjectPlusAnim.h \
-    FolderTraverser.h \
-    FOLDERSONLY.h \
-    FIRST.h \
-    FileSystem.h \
-    Crop.h \
-    BLANK.h \
+    LoaderAndResFilePair.cpp \
+    OFile.cpp \
+    OutputFiles.cpp \
+    IsInventory.cpp
+HEADERS += A2GASSERT.h \
     AFile.h \
-    A2GASSERT.h \
-    IsPngOrBmp.h
+    BLANK.h \
+    Crop.h \
+    FileBrowser.h \
+    FileSystem.h \
+    FIRST.h \
+    FOLDERSONLY.h \
+    FolderTraverser.h \
+    GetObjectPlusAnim.h \
+    GetObjectPlusAnimHash.h \
+    GetRealObjectSeg.h \
+    GETVALUE.h \
+    IdGenerator.h \
+    IFile.h \
+    INITIAL.h \
+    isDummyRun.h \
+    IsPngOrBmp.h \
+    LoaderAndResFilePair.h \
+    OFile.h \
+    OutputFiles.h \
+    RES.h \
+    SOURCE.h \
+    SRC.h \
+    STARTING_ODD_INVENTORY_CODE.h \
+    STARTING_ODD_OBJECTS_CODE.h \
+    IsInventory.h \
+    FolderTraverserResult.h \

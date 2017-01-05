@@ -82,16 +82,33 @@ namespace com
                         QTextStream f(&file);
                         f << ("package "+package+"." + m_sceneSeg + ";\n");
                         f << ("\n");
-                        f << ("public interface O\n");
+                        f << ("public class O\n");
                         f << ("{\n");
-                        f << ("     public enum names");
+                        f << ("     public enum Enum");
                         f << ("     {\n");
                         QMap<QString, int>::iterator iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                            f << "        " << (iter.key().toUpper()) << ",\n";
+                            f<<"        " << (iter.key().toUpper()) << "((short)" << (iter.value()) <<"),\n";
                         }
-                        f << ("     }\n");
+                        f << ("        ;\n");
+                        f << ("        //private final short code;\n");
+                        f << ("        Enum(short code) {\n");
+                        f << ("           // this.code = code;\n");
+                        f << ("        }\n");
+                        f << ("    }\n");
+                        f << ("    public static Enum getEnum(int value)\n");
+                        f << ("    {                               \n");
+                        f << ("        switch(value)               \n");
+                        f << ("        {                           \n");
+                        iter = mapOfObjectNames.begin();
+                        for(;iter!=mapOfObjectNames.end();iter++)
+                        {
+                            f << "            case " << (iter.value()) << ": return Enum." + (iter.key().toUpper()) <<";\n";
+                        }
+                        f << ("        };\n");
+                        f << ("        return null;\n");
+                        f << ("    }\n");
 
                         iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)

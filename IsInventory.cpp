@@ -13,16 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+#include "IsInventory.h"
 
-#pragma once
-#include <time.h>
-#include <locale>
- static int getObjectPlusAnimHash(QString objectSeg, QString animSeg)
- {
-    std::locale loc;
-    const std::collate<char>& coll = std::use_facet<std::collate<char> >(loc);
-
-    std::string objectPlusAnim = getObjectPlusAnim(objectSeg,animSeg).toStdString();
-    int idForObjPlusAnim  = coll.hash(objectPlusAnim.data(), objectPlusAnim.data() + objectPlusAnim.length());
-    return idForObjPlusAnim;
- }
+bool  com::github::a2g::generator::IsInventory(QString segment)
+{
+    bool isInventory = segment.toLower().contains("inv");
+    return isInventory;
+}

@@ -16,9 +16,7 @@
 
 #include "LoaderAndResFilePair.h"
 #include "IsInventory.h"
-
-
-
+#include "GetWidthAndHeightFromImageName.h"
 
 
 com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(){}
@@ -29,25 +27,8 @@ com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QS
         , isGwt(false)
 
 {
-/*
-    int i = pixelSeg.indexOf("x");
-    if(i!=-1)
-    {
-        bool isInventory = (animFolder.length()==0);
-        QString first = pixelSeg.mid(1,i-1);
-        QString last = pixelSeg.mid(i+1);
-        int width = first.toInt();
-        int height = last.toInt();
-        if(isInventory)
-        {
-            lineThatSetsResolution = QString("    api.setInventoryImageSize(%1, %2);\n").arg(width).arg(height);
-        }
-        else
-        {
-            lineThatSetsResolution = QString("    api.setScenePixelSize(%1, %2);\n").arg(width).arg(height);
-        }
-    }
-    */
+
+
 
 }
 
@@ -81,11 +62,30 @@ QString com::github::a2g::generator::LoaderAndResFilePair::makePath(QString full
 void com::github::a2g::generator::LoaderAndResFilePair::addAnimImage(QString pngPath, int idForObj)
 {
     animImages.push_back(QPair<QString,int>(pngPath,idForObj));
+    if(lineThatSetsResolution.isEmpty())
+        lineThatSetsResolution = buildLineThatSetsResolution(pngPath, false);
 }
 
 void com::github::a2g::generator::LoaderAndResFilePair::addInvImage(QString pngPath, int idForInv)
 {
     invImages.push_back(QPair<QString,int>(pngPath,idForInv));
+     if(lineThatSetsResolution.isEmpty())
+        lineThatSetsResolution = buildLineThatSetsResolution(pngPath, true);
+}
+
+QString com::github::a2g::generator::LoaderAndResFilePair::buildLineThatSetsResolution(QString pngPath, bool isInventory)
+{
+
+    QPoint p = generator::getWidthAndHeightFromImageName(pngPath);
+    if(isInventory)
+    {
+        lineThatSetsResolution = QString("    api.setInventoryImageSize(%1, %2);\n").arg(p.x()).arg(p.y());
+    }
+    else
+    {
+        lineThatSetsResolution = QString("    api.setScenePixelSize(%1, %2);\n").arg(p.x()).arg(p.y());
+    }
+    return lineThatSetsResolution;
 }
 
 void com::github::a2g::generator::LoaderAndResFilePair::cropImagesAndConstructDeclarations(QString find, QString replace)

@@ -47,3 +47,4 @@ HEADERS += A2GASSERT.h \
     STARTING_ODD_OBJECTS_CODE.h \
     IsInventory.h \
     FolderTraverserResult.h \
+    GetWidthAndHeightFromImageName.h\

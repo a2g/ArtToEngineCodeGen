@@ -189,6 +189,9 @@ FolderTraverserResult FolderTraverser::generateFilesFromSourceFolderOrASubFolder
     if(error > 1)
         return error;
 
+    if(output)
+        output->clear();
+
     path.replace("\\","/");
 
 

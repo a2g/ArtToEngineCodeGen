@@ -81,6 +81,7 @@ namespace com
                     void cropImagesAndConstructDeclarations(QString find, QString replace);
                     bool isEmpty();
                 private: 
+                    QString buildLineThatSetsResolution(QString pngPath, bool isInventory);
                     bool isNeeded();
                     bool isInventory();
                     void addCaseStatementForAnim(QString objectSeg, QRect offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName);

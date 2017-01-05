@@ -49,6 +49,16 @@ namespace com
                     QVector<LoaderAndResFilePair> getFirsts(){return allFirsts; }
                     QVector<LoaderAndResFilePair> getLasts(){return allLasts; }
 
+                    void clear()
+                    {
+                        allAFiles.clear();;
+                        allIFiles.clear();
+                        allOFiles.clear();
+                        allOnlys.clear();
+                        allFirsts.clear();
+                        allLasts.clear();
+                    }
+
                     void addAFile(AFile file)
                     {
                         allAFiles.push_back(file);

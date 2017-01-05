@@ -10,5 +10,5 @@ enum FolderTraverserResult
 {
     IsOk=1
     ,SrcIsNotFoundInPathParameter
-    ,SourceIsNotFoundInPathParameter
+    ,SourceImagesIsNotFoundInPathParameter
 };

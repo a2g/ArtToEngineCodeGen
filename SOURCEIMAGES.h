@@ -15,4 +15,4 @@
  */
 
 #pragma once
-static const char* SOURCE = "SOURCE";
+static const char* SOURCEIMAGES = "SOURCEIMAGES";

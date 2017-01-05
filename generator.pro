@@ -41,7 +41,7 @@ HEADERS += A2GASSERT.h \
     OFile.h \
     OutputFiles.h \
     RES.h \
-    SOURCE.h \
+    SOURCEIMAGES.h \
     SRC.h \
     STARTING_ODD_INVENTORY_CODE.h \
     STARTING_ODD_OBJECTS_CODE.h \

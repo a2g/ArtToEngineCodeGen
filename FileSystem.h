@@ -38,9 +38,10 @@ namespace com
                         // as the root of this file system.
                         //
                         // so we take the last one in the list.
-                        if(m_list.size()>0)
+                        int count = m_list.size();
+                        if(count>0)
                         {
-                            if(m_list.at(m_list.size()-1).toUpper().contains("SWING"))
+                            if(m_list.at(count-1).toUpper().contains("SWING"))
                             {
                                 return false;
                             }

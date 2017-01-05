@@ -34,7 +34,7 @@
 #include "LoaderAndResFilePair.h"
 #include "AFile.h"
 #include "GetObjectPlusAnimHash.h"
-#include "SOURCE.h"
+#include "SOURCEIMAGES.h"
 #include "SRC.h"
 #include "IsPngOrBmp.h"
 #include "IsInventory.h"
@@ -178,8 +178,8 @@ FolderTraverserResult getErrorFromInputPath(QString path)
     path = path.toUpper();
     if(!path.contains(SRC))
         return  SrcIsNotFoundInPathParameter;
-    if(!path.contains(SOURCE))
-        return SourceIsNotFoundInPathParameter;
+    if(!path.contains(SOURCEIMAGES))
+        return SourceImagesIsNotFoundInPathParameter;
     return IsOk;
 }
 
@@ -202,12 +202,12 @@ FolderTraverserResult FolderTraverser::generateFilesFromSourceFolderOrASubFolder
     QString dirName = dir.dirName().toUpper();
     QString parentDirName = parentDir.dirName().toUpper();
 
-    if(dirName == SOURCE)
+    if(dirName == SOURCEIMAGES)
     {
         processAllSubFolders(dir.absolutePath());
 
     }
-    else if (parentDirName == SOURCE)
+    else if (parentDirName == SOURCEIMAGES)
     {
         processJustThisSubFolder(dir.absolutePath());
 

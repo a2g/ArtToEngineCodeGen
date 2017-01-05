@@ -16,8 +16,9 @@
  */
 
 #include <QtGui/QApplication>
+#include <QtCore/QDir>
 #include "FolderTraverser.h"
-#include "SOURCE.h"
+#include "SOURCEIMAGES.h"
 #include "time.h" //clock_t clock (); time_t time(time_t*), double difftime (time_t, time_t);
 #include "IsPngOrBmp.h"
 #include "QDebug.h"
@@ -70,6 +71,10 @@ void populateFileSystemFromRealSystemRecursively(FileSystem* fs, QString path)
 
 void processRawFilesToResources(QString arg, bool isDummyRun)
 {
+    QDir dir(arg);
+    if(!dir.exists(arg))
+        return; //quick exit. don't want to unit test this because it deals with files on disk
+
     OutputFiles output;
     {
         clock_t t1 = clock();
@@ -90,9 +95,9 @@ void processRawFilesToResources(QString arg, bool isDummyRun)
         clock_t t3 = clock();
         qDebug() << "Planning output " << (t3-t2)/1000.0 << " seconds \n";
 
-        output.writeAll(SOURCE, "visuals", fileSystem.isGwt(), isDummyRun);
-        //                ^          ^
-        //               search    replace
+        output.writeAll(SOURCEIMAGES, "visuals", fileSystem.isGwt(), isDummyRun);
+        //                 ^              ^
+        //               search        replace
         clock_t t4 = clock();
         qDebug() << "Writing output " << (t4-t3)/1000.0 << " seconds \n";
         qDebug() << "-----------------------------------------------\n";

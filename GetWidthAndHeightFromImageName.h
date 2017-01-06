@@ -29,7 +29,7 @@ namespace com
                         int height = atoi(last.toAscii());
                         return QPoint(width,height);
                     }
-                    return QPoint(0,0);
+                    return QPoint(320,180);// the default
                 }
             }
         }

@@ -10,6 +10,11 @@ namespace com
             {
                 static QPoint getWidthAndHeightFromImageName(QString imageName)
                 {
+                    int lastSlash = imageName.lastIndexOf("/");
+                    if(lastSlash!=-1)
+                    {
+                        imageName = imageName.mid(lastSlash+1);//just beyond last slash - at worst this is null pointer so still safe
+                    }
                     imageName = imageName.replace("_"," "); // this allows toInt to work, since it splits on whitespace
                     int i = imageName.indexOf("x");
                     if(i!=-1)

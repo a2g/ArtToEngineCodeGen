@@ -43,6 +43,13 @@ using namespace com::github::a2g::generator;
 
 const char* _00_ANIMATIONS = "_00_animations";
 
+FolderTraverser::FolderTraverser(FileSystem& fs, OutputFiles* output)
+                        : files(fs)
+                        , output(output)
+                        , isOnlyOnly(false)
+                    {
+                        isOnlyOnly = 0;
+                    }
 
 void FolderTraverser::generate(QString rootFolder, QString package)
 {
@@ -127,7 +134,8 @@ void FolderTraverser::generate(QString rootFolder, QString package)
             // set the names in one place;
             // if both the streams have content, and thus will write a valid file, then "first"+"last"
             // but if either is empty, and thus only one file then "only"
-            if(initialStream.isEmpty() || resStream.isEmpty())
+            // 2017, decided that I'm using Only for everything.
+            if(isOnlyOnly || initialStream.isEmpty() || resStream.isEmpty())
             {
                 initialStream.setJavaClassNamePrefix("Only");
                 resStream.setJavaClassNamePrefix("Only");

@@ -90,6 +90,7 @@ void processRawFilesToResources(QString arg, bool isDummyRun)
 
         {
             FolderTraverser trav(fileSystem, &output);
+            trav.setIsOnlyOnly(true);
             trav.generateFilesFromSourceFolderOrASubFolderThereof(arg);
         }
         clock_t t3 = clock();

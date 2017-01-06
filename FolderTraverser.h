@@ -31,12 +31,10 @@ namespace com
                 {
                     FileSystem& files;
                     OutputFiles* output;
+                    bool isOnlyOnly;
                 public:
-                    FolderTraverser(FileSystem& fs, OutputFiles* output)
-                        : files(fs)
-                        , output(output)
-                    {  }
-
+                    FolderTraverser(FileSystem& fs, OutputFiles* output);
+                    void setIsOnlyOnly(bool isOnly){ this->isOnlyOnly = isOnly; }
                     FolderTraverserResult generateFilesFromSourceFolderOrASubFolderThereof(QString startingPath);
                 private:                    
                     void searchRecursively(QString folder, QString targetPathSegment);

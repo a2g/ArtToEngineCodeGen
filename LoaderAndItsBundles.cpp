@@ -21,11 +21,10 @@
 
 
 com::github::a2g::generator::LoaderAndItsBundles::LoaderAndItsBundles(){}
-com::github::a2g::generator::LoaderAndItsBundles::LoaderAndItsBundles(const QString package, const QString psdFileSeg, const QString& scenePath,  QString animPath)
+com::github::a2g::generator::LoaderAndItsBundles::LoaderAndItsBundles(const QString package, const QString psdFileSeg, const QString& scenePath)
         : package(package)
         , psdFileSeg(psdFileSeg)
         , scenePath(scenePath)
-        , animPath(animPath)
         , isGwt(false)
 
 {
@@ -414,13 +413,13 @@ void com::github::a2g::generator::LoaderAndItsBundles::writeSwingBundle(QTextStr
     f << "    public static boolean addImage(IMasterPresenterFromBundle api, LoadHandler lh, int i)"      "\n";
     f << "    {"                                                                               "\n";
     f << "        final MyRes res = MyRes.RESOURCE;"                                           "\n";
-    f << (IS_SWITCH?"        switch(i){\n": "if(i==-1){}\n");
+    f << (IS_SWITCH?"        switch(i){\n"   : "if(i==-1){}\n");
     for(int j=start;j<end;j++)
     {
         f << caseStatements[j];
     }
-    f << (IS_SWITCH? ("        }"    "\n") : ("\n"));                                                                         "\n";
-    f << "        return false;"                                                               "\n";
+    f << (IS_SWITCH? "        }\n"            : "\n");                                                               "\n";
+    f <<             "        return false;"                                                   "\n";
     f << "    }"                                                                               "\n";
     f << "}"                                                                                   "\n";
 

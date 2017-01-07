@@ -43,7 +43,6 @@ namespace com
                     mutable QString package;
                     mutable QString psdFileSeg;
                     mutable QString scenePath;
-                    mutable QString animPath;
 
                     QString theJavaClassNamePrefix;
                     QString javaClassName;
@@ -64,7 +63,7 @@ namespace com
                     QString lineForLoaderEnum;
                 public:
                     LoaderAndItsBundles();
-                    LoaderAndItsBundles(const QString package, const QString maxFileSeg,  const QString& sceneFolder,  QString animFolder);
+                    LoaderAndItsBundles(const QString package, const QString maxFileSeg,  const QString& sceneFolder);
                     ~LoaderAndItsBundles();
 
                     void setJavaClassNamePrefix(QString theJavaClassNamePrefix);

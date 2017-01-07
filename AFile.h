@@ -26,6 +26,7 @@
 #include <QMap>
 #include <QString>
 #include "GETVALUE.h"
+#include "_00_ANIMATIONS.h"
 namespace com
 {
     namespace github
@@ -37,14 +38,12 @@ namespace com
                 class AFile 
                 {
                     mutable QString m_currentPath;
-                    mutable QString m_animFolder;
                     mutable QString package;
                     QMap<QString,int> mapOfAnims;
                 public:
                     AFile(){}
-                    AFile(const QString& currentPath, const QString& animFolder, const QString& package) 
+                    AFile(const QString& currentPath, const QString& package)
                             : m_currentPath(currentPath)
-                            , m_animFolder(animFolder)
                             , package(package)
                     {
                     }
@@ -77,8 +76,8 @@ namespace com
                         package = package.replace(find,replace);
 
                         QDir dir;
-                        dir.mkpath(m_currentPath+"/" + m_animFolder);
-                        QFile file(m_currentPath+"/" + m_animFolder + "/A.java");
+                        dir.mkpath(m_currentPath+"/" + _00_ANIMATIONS);
+                        QFile file(m_currentPath+"/" + _00_ANIMATIONS + "/A.java");
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;
 

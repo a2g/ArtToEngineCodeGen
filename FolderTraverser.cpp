@@ -39,9 +39,8 @@
 #include "IsPngOrBmp.h"
 #include "IsInventory.h"
 #include "IsShared.h"
+#include "_00_ANIMATIONS.h"
 using namespace com::github::a2g::generator;
-
-const char* _00_ANIMATIONS = "_00_animations";
 
 FolderTraverser::FolderTraverser(FileSystem& fs, OutputFiles* output)
                         : files(fs)
@@ -55,8 +54,7 @@ void FolderTraverser::generate(QString rootFolder, QString package)
 {
     QString bad = "?"; //this is a char that will invalidate a filename, and thus any XFile class if used as param1
 
-    QString animFolder = _00_ANIMATIONS;
-    AFile aFile(rootFolder, animFolder, package);
+    AFile aFile(rootFolder, package);
 
     QStringList foldersOfPsdFile = files.getSubFolders(rootFolder);
     for(QStringList::iterator psdFileFolder=foldersOfPsdFile.begin();psdFileFolder!=foldersOfPsdFile.end();psdFileFolder++)
@@ -70,8 +68,8 @@ void FolderTraverser::generate(QString rootFolder, QString package)
         OFile oStream(package, psdFileSeg, isInAnObjectsFolder? *psdFileFolder : bad );
         IFile iStream(package, psdFileSeg, isInAnInventoryFolder? *psdFileFolder: bad );
 
-        LoaderAndItsBundles resStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
-        LoaderAndItsBundles initialStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
+        LoaderAndItsBundles resStream(package, psdFileSeg, *psdFileFolder);
+        LoaderAndItsBundles initialStream(package, psdFileSeg, *psdFileFolder);
 
         std::list<QString> objectFolders = files.getSubFolders(*psdFileFolder).toStdList();
         for(std::list<QString>::reverse_iterator objectFolder=objectFolders.rbegin();objectFolder!=objectFolders.rend();objectFolder++)

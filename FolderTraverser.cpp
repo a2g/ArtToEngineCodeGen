@@ -50,38 +50,38 @@ FolderTraverser::FolderTraverser(FileSystem& fs, OutputFiles* output)
                         isOnlyOnly = 0;
                     }
 
-void FolderTraverser::generate(QString rootFolder, QString package)
+void FolderTraverser::generate(QString locationPath, QString package)
 {
     QString bad = "?"; //this is a char that will invalidate a filename, and thus any XFile class if used as param1
 
-    AFile aFile(rootFolder, package);
+    AFile aFile(locationPath, package);
 
-    QStringList foldersOfPsdFile = files.getSubFolders(rootFolder);
-    for(QStringList::iterator psdFileFolder=foldersOfPsdFile.begin();psdFileFolder!=foldersOfPsdFile.end();psdFileFolder++)
+    QStringList camerasInLocation = files.getSubFolders(locationPath);
+    for(QStringList::iterator cameraPath=camerasInLocation.begin();cameraPath!=camerasInLocation.end();cameraPath++)
     {
-        QString psdFileSeg = QDir(*psdFileFolder).dirName();
-        if(psdFileSeg == _00_ANIMATIONS)
+        QString cameraSeg = QDir(*cameraPath).dirName();
+        if(cameraSeg == _00_ANIMATIONS)
             continue;
-        bool isInAnObjectsFolder = !IsShared(psdFileSeg);
-        bool isInAnInventoryFolder = IsInventory(psdFileSeg);
+        bool isInAnObjectsFolder = !IsShared(cameraSeg);
+        bool isInAnInventoryFolder = IsInventory(cameraSeg);
 
-        OFile oStream(package, psdFileSeg, isInAnObjectsFolder? *psdFileFolder : bad );
-        IFile iStream(package, psdFileSeg, isInAnInventoryFolder? *psdFileFolder: bad );
+        OFile oStream(package, cameraSeg, isInAnObjectsFolder? *cameraPath : bad );
+        IFile iStream(package, cameraSeg, isInAnInventoryFolder? *cameraPath: bad );
 
-        LoaderAndItsBundles resStream(package, psdFileSeg, *psdFileFolder);
-        LoaderAndItsBundles initialStream(package, psdFileSeg, *psdFileFolder);
+        LoaderAndItsBundles resStream(package, cameraSeg, *cameraPath);
+        LoaderAndItsBundles initialStream(package, cameraSeg, *cameraPath);
 
-        std::list<QString> objectFolders = files.getSubFolders(*psdFileFolder).toStdList();
-        for(std::list<QString>::reverse_iterator objectFolder=objectFolders.rbegin();objectFolder!=objectFolders.rend();objectFolder++)
+        std::list<QString> objectsOfCamera = files.getSubFolders(*cameraPath).toStdList();
+        for(std::list<QString>::reverse_iterator objectPath=objectsOfCamera.rbegin();objectPath!=objectsOfCamera.rend();objectPath++)
         {
-            QString objectSeg = QDir(*objectFolder).dirName();
+            QString objectSeg = QDir(*objectPath).dirName();
 
             if(isInAnInventoryFolder)
             {
-                QStringList PNGs = files.getSubFiles(*objectFolder);
-                for(int i=0;i<PNGs.size();i++)
+                QStringList pathsToPngs = files.getSubFiles(*objectPath);
+                for(int i=0;i<pathsToPngs.size();i++)
                 {
-                    QString pngPath = PNGs[i];
+                    QString pngPath = pathsToPngs[i];
                     if(!IsPngOrBmp(pngPath))
                         continue;
                     QString invSeg = objectSeg;
@@ -96,32 +96,32 @@ void FolderTraverser::generate(QString rootFolder, QString package)
             {
                 int idForObj = oStream.getIdForName(getRealObjectSeg(objectSeg,false));
 
-                QStringList animFolders = files.getSubFolders(*objectFolder);
-                for(QStringList::iterator animFolder = animFolders.begin();animFolder!=animFolders.end();animFolder++)
+                QStringList animsOfObject = files.getSubFolders(*objectPath);
+                for(QStringList::iterator animPath = animsOfObject.begin();animPath!=animsOfObject.end();animPath++)
                 {
-                    QString animSeg = QDir(*animFolder).dirName().toLower();
+                    QString animSeg = QDir(*animPath).dirName().toLower();
 
                     if(animSeg=="ignore")
                         continue;
                     int idForObjPlusAnim = getObjectPlusAnimHash(objectSeg,animSeg);
 
                     aFile.insert(getObjectPlusAnim(objectSeg,animSeg).toStdString(), idForObjPlusAnim);
-                    QStringList PNGs = files.getSubFiles(*animFolder);
+                    QStringList pathsToPngs = files.getSubFiles(*animPath);
 
-                    for(QStringList::iterator pngLoadMe = PNGs.begin();pngLoadMe!=PNGs.end();pngLoadMe++)
+                    for(QStringList::iterator pathToPng = pathsToPngs.begin();pathToPng!=pathsToPngs.end();pathToPng++)
                     {
-                        if(!IsPngOrBmp(*pngLoadMe))
+                        if(!IsPngOrBmp(*pathToPng))
                             continue;
 
                         // "blank" is usd when initial already exists, for that object, in some otherrender output
                         //
                         if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"||animSeg=="placeholder"))
                         {
-                            initialStream.addAnimImage(*pngLoadMe, idForObj);
+                            initialStream.addAnimImage(*pathToPng, idForObj);
                         }
                         else
                         {
-                            resStream.addAnimImage(*pngLoadMe, isInAnObjectsFolder? idForObj : -1);//if the id is -1 then it signals the engine to look for an existing object to add the anim image to
+                            resStream.addAnimImage(*pathToPng, isInAnObjectsFolder? idForObj : -1);//if the id is -1 then it signals the engine to look for an existing object to add the anim image to
                         }
                     }
 
@@ -135,8 +135,8 @@ void FolderTraverser::generate(QString rootFolder, QString package)
             // 2017, decided that I'm using Only for everything.
             if(isOnlyOnly || initialStream.isEmpty() || resStream.isEmpty())
             {
-                initialStream.setJavaClassNamePrefix("Only");
-                resStream.setJavaClassNamePrefix("Only");
+                initialStream.setJavaClassNamePrefix("");
+                resStream.setJavaClassNamePrefix("");
                 if(output)
                 {
                     output->addOnly(initialStream);

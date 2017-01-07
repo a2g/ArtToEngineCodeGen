@@ -526,7 +526,7 @@ bool com::github::a2g::generator::LoaderAndItsBundles::writeToFile(QString find,
     const char* names[10]={"0","1","2","3","4","5","6","7","8","9"};
     for(int i=0;i<numberOfBundles;i++)
     {
-        QString bundleJavaClassName = theJavaClassNamePrefix + names[i] + "Bundle";
+        QString bundleJavaClassName = theJavaClassNamePrefix + "Bundle"+ names[i];
         QDir dir;
         dir.mkpath(scenePath);
         QFile file(scenePath+"/" + bundleJavaClassName + ".java");

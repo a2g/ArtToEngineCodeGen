@@ -20,7 +20,7 @@
 #include "AFile.h"
 #include "OFile.h"
 #include "IFile.h"
-#include "LoaderAndResFilePair.h"
+#include "LoaderAndItsBundles.h"
 namespace com
 { 
     namespace github
@@ -35,9 +35,9 @@ namespace com
                     QVector<AFile> allAFiles;
                     QVector<IFile> allIFiles;
                     QVector<OFile> allOFiles;
-                    QVector<LoaderAndResFilePair> allOnlys;
-                    QVector<LoaderAndResFilePair> allFirsts;
-                    QVector<LoaderAndResFilePair> allLasts;
+                    QVector<LoaderAndItsBundles> allOnlys;
+                    QVector<LoaderAndItsBundles> allFirsts;
+                    QVector<LoaderAndItsBundles> allLasts;
 
                 public:
                     OutputFiles(){}
@@ -45,9 +45,9 @@ namespace com
                     QVector<AFile> getAFiles(){ return allAFiles; }
                     QVector<IFile> getIFiles(){ return allIFiles; }
                     QVector<OFile> getOFiles(){ return allOFiles; }
-                    QVector<LoaderAndResFilePair> getOnlys(){return allOnlys; }
-                    QVector<LoaderAndResFilePair> getFirsts(){return allFirsts; }
-                    QVector<LoaderAndResFilePair> getLasts(){return allLasts; }
+                    QVector<LoaderAndItsBundles> getOnlys(){return allOnlys; }
+                    QVector<LoaderAndItsBundles> getFirsts(){return allFirsts; }
+                    QVector<LoaderAndItsBundles> getLasts(){return allLasts; }
 
                     void clear()
                     {
@@ -71,15 +71,15 @@ namespace com
                     {
                         allOFiles.push_back(file);
                     }
-                    void addFirst(LoaderAndResFilePair file)
+                    void addFirst(LoaderAndItsBundles file)
                     {
                         allFirsts.push_back(file);
                     }
-                    void addOnly(LoaderAndResFilePair file)
+                    void addOnly(LoaderAndItsBundles file)
                     {
                         allOnlys.push_back(file);
                     }
-                    void addLast(LoaderAndResFilePair file)
+                    void addLast(LoaderAndItsBundles file)
                     {
                         allLasts.push_back(file);
                     }

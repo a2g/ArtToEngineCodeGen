@@ -15,7 +15,7 @@ SOURCES += main.cpp \
     IdGenerator.cpp \
     IFile.cpp \
     isDummyRun.cpp \
-    LoaderAndResFilePair.cpp \
+    LoaderAndItsBundles.cpp \
     OFile.cpp \
     OutputFiles.cpp \
     IsInventory.cpp \
@@ -38,7 +38,7 @@ HEADERS += A2GASSERT.h \
     INITIAL.h \
     isDummyRun.h \
     IsPngOrBmp.h \
-    LoaderAndResFilePair.h \
+    LoaderAndItsBundles.h \
     OFile.h \
     OutputFiles.h \
     RES.h \

@@ -38,7 +38,7 @@ namespace com
         {
             namespace generator
             {
-                class LoaderAndResFilePair 
+                class LoaderAndItsBundles 
                 {
                     mutable QString package;
                     mutable QString psdFileSeg;
@@ -63,9 +63,9 @@ namespace com
                     QString lineThatSetsResolution;
                     QString lineForLoaderEnum;
                 public:
-                    LoaderAndResFilePair();
-                    LoaderAndResFilePair(const QString package, const QString maxFileSeg,  const QString& sceneFolder,  QString animFolder);
-                    ~LoaderAndResFilePair();
+                    LoaderAndItsBundles();
+                    LoaderAndItsBundles(const QString package, const QString maxFileSeg,  const QString& sceneFolder,  QString animFolder);
+                    ~LoaderAndItsBundles();
 
                     void setJavaClassNamePrefix(QString theJavaClassNamePrefix);
 

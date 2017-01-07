@@ -14,14 +14,14 @@
  * the License.
  */
 
-#include "LoaderAndResFilePair.h"
+#include "LoaderAndItsBundles.h"
 #include "IsInventory.h"
 #include "GetWidthAndHeightFromImageName.h"
 #include "GetLoaderEnum.h"
 
 
-com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(){}
-com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QString package, const QString psdFileSeg, const QString& scenePath,  QString animPath)
+com::github::a2g::generator::LoaderAndItsBundles::LoaderAndItsBundles(){}
+com::github::a2g::generator::LoaderAndItsBundles::LoaderAndItsBundles(const QString package, const QString psdFileSeg, const QString& scenePath,  QString animPath)
         : package(package)
         , psdFileSeg(psdFileSeg)
         , scenePath(scenePath)
@@ -29,51 +29,51 @@ com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QS
         , isGwt(false)
 
 {
-    lineForLoaderEnum = "int getLoaderEnum(){ return " + GetLoaderEnum(psdFileSeg) + "; }\n";
+    lineForLoaderEnum = "  public int getLoaderEnum(){ return " + GetLoaderEnum(psdFileSeg) + "; }\n";
 }
 
 
-com::github::a2g::generator::LoaderAndResFilePair::~LoaderAndResFilePair()
+com::github::a2g::generator::LoaderAndItsBundles::~LoaderAndItsBundles()
 {
     //  writeToFile();
 }
 
-void com::github::a2g::generator::LoaderAndResFilePair::setJavaClassNamePrefix(QString theJavaClassNamePrefix)
+void com::github::a2g::generator::LoaderAndItsBundles::setJavaClassNamePrefix(QString theJavaClassNamePrefix)
 {
     this->theJavaClassNamePrefix = theJavaClassNamePrefix;
 }
 
-QString com::github::a2g::generator::LoaderAndResFilePair::getJavaClassNamePrefix()
+QString com::github::a2g::generator::LoaderAndItsBundles::getJavaClassNamePrefix()
 {
     return theJavaClassNamePrefix;
 }
 
-QString com::github::a2g::generator::LoaderAndResFilePair::getJavaClassName()
+QString com::github::a2g::generator::LoaderAndItsBundles::getJavaClassName()
 {
     return javaClassName;
 }
 
-QString com::github::a2g::generator::LoaderAndResFilePair::makePath(QString fullOfSlashes)
+QString com::github::a2g::generator::LoaderAndItsBundles::makePath(QString fullOfSlashes)
 {
     fullOfSlashes.replace('.','/');
     return fullOfSlashes;
 }
 
-void com::github::a2g::generator::LoaderAndResFilePair::addAnimImage(QString pngPath, int idForObj)
+void com::github::a2g::generator::LoaderAndItsBundles::addAnimImage(QString pngPath, int idForObj)
 {
     animImages.push_back(QPair<QString,int>(pngPath,idForObj));
     if(lineThatSetsResolution.isEmpty())
         lineThatSetsResolution = buildLineThatSetsResolution(pngPath, false);
 }
 
-void com::github::a2g::generator::LoaderAndResFilePair::addInvImage(QString pngPath, int idForInv)
+void com::github::a2g::generator::LoaderAndItsBundles::addInvImage(QString pngPath, int idForInv)
 {
     invImages.push_back(QPair<QString,int>(pngPath,idForInv));
      if(lineThatSetsResolution.isEmpty())
         lineThatSetsResolution = buildLineThatSetsResolution(pngPath, true);
 }
 
-QString com::github::a2g::generator::LoaderAndResFilePair::buildLineThatSetsResolution(QString pngPath, bool isInventory)
+QString com::github::a2g::generator::LoaderAndItsBundles::buildLineThatSetsResolution(QString pngPath, bool isInventory)
 {
 
     QPoint p = generator::getWidthAndHeightFromImageName(pngPath);
@@ -88,7 +88,7 @@ QString com::github::a2g::generator::LoaderAndResFilePair::buildLineThatSetsReso
     return lineThatSetsResolution;
 }
 
-void com::github::a2g::generator::LoaderAndResFilePair::cropImagesAndConstructDeclarations(QString find, QString replace)
+void com::github::a2g::generator::LoaderAndItsBundles::cropImagesAndConstructDeclarations(QString find, QString replace)
 {
     int caseTally = 0;
     for(int j=0;j<animImages.size();j++)
@@ -162,25 +162,25 @@ void com::github::a2g::generator::LoaderAndResFilePair::cropImagesAndConstructDe
     }
 }
 
-bool com::github::a2g::generator::LoaderAndResFilePair::isEmpty()
+bool com::github::a2g::generator::LoaderAndItsBundles::isEmpty()
 {
     bool isEmpty = animImages.size()==0 && invImages.size()==0;
     return isEmpty;
 }
 
-bool com::github::a2g::generator::LoaderAndResFilePair::isNeeded()
+bool com::github::a2g::generator::LoaderAndItsBundles::isNeeded()
 {
     bool isNeeded = (psdFileSeg.toLower().contains("_objects")|| javaClassName!=FIRST);
     return isNeeded;
 }
 
-bool com::github::a2g::generator::LoaderAndResFilePair::isInventory()
+bool com::github::a2g::generator::LoaderAndItsBundles::isInventory()
 {
     bool isInventory = com::github::a2g::generator::IsInventory(psdFileSeg);
     return isInventory;
 }
 
-void com::github::a2g::generator::LoaderAndResFilePair::addCaseStatementForAnim(QString objectSeg, QRect offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
+void com::github::a2g::generator::LoaderAndItsBundles::addCaseStatementForAnim(QString objectSeg, QRect offset, QString realObjectSeg, QString animSeg, int idForObj, QString objectPlusAnim, QString resourceName)
 {
     int prefix = objectSeg.mid(1,2).toInt();
 
@@ -198,7 +198,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::addCaseStatementForAnim(
         firstResource=resourceName;
 }
 
-void com::github::a2g::generator::LoaderAndResFilePair::addCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
+void com::github::a2g::generator::LoaderAndItsBundles::addCaseStatementForInv(QString invSeg, int idForInv,QString resourceName)
 {
     QString start = QString(IS_SWITCH? "        case %1:" : "else if(i==%1)").arg(caseStatements.size());
 
@@ -209,11 +209,11 @@ void com::github::a2g::generator::LoaderAndResFilePair::addCaseStatementForInv(Q
         firstResource=resourceName;
 }
 
-void com::github::a2g::generator::LoaderAndResFilePair::removeAllButOne()
+void com::github::a2g::generator::LoaderAndItsBundles::removeAllButOne()
 {
 
 }
-void com::github::a2g::generator::LoaderAndResFilePair::writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end, bool isDummyRun)
+void com::github::a2g::generator::LoaderAndItsBundles::writeGwtBundle(QTextStream& f, QString bundleJavaClassName, int start, int end, bool isDummyRun)
 {
     if(isDummyRun)
     {
@@ -280,7 +280,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeGwtBundle(QTextStre
 
 }
 
-bool com::github::a2g::generator::LoaderAndResFilePair::writeGwtLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
+bool com::github::a2g::generator::LoaderAndItsBundles::writeGwtLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
 {
     f << ("package "+package+"." + psdFileSeg + ";\n");
     f << ("\n");
@@ -383,7 +383,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeGwtLoader(QTextStre
 }
 
 
-void com::github::a2g::generator::LoaderAndResFilePair::writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end, bool isDummyRun)
+void com::github::a2g::generator::LoaderAndItsBundles::writeSwingBundle(QTextStream& f, QString bundleJavaClassName, int start, int end, bool isDummyRun)
 {
     if(isDummyRun)
     {
@@ -426,7 +426,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeSwingBundle(QTextSt
 
 }
 
-bool com::github::a2g::generator::LoaderAndResFilePair::writeSwingLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
+bool com::github::a2g::generator::LoaderAndItsBundles::writeSwingLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
 {
     f << ("package "+package+"." + psdFileSeg +";\n");
     f << ("\n");
@@ -501,7 +501,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeSwingLoader(QTextSt
     return true;
 }
 
-bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find, QString replace, bool isGwt, bool isDummyRun)
+bool com::github::a2g::generator::LoaderAndItsBundles::writeToFile(QString find, QString replace, bool isGwt, bool isDummyRun)
 {
     this->isGwt=isGwt;
     cropImagesAndConstructDeclarations(find, replace);

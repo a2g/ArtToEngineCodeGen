@@ -31,7 +31,7 @@
 #include <QVariant>
 #include "OFile.h"
 #include "IFile.h"
-#include "LoaderAndResFilePair.h"
+#include "LoaderAndItsBundles.h"
 #include "AFile.h"
 #include "GetObjectPlusAnimHash.h"
 #include "SOURCEIMAGES.h"
@@ -70,8 +70,8 @@ void FolderTraverser::generate(QString rootFolder, QString package)
         OFile oStream(package, psdFileSeg, isInAnObjectsFolder? *psdFileFolder : bad );
         IFile iStream(package, psdFileSeg, isInAnInventoryFolder? *psdFileFolder: bad );
 
-        LoaderAndResFilePair resStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
-        LoaderAndResFilePair initialStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
+        LoaderAndItsBundles resStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
+        LoaderAndItsBundles initialStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
 
         std::list<QString> objectFolders = files.getSubFolders(*psdFileFolder).toStdList();
         for(std::list<QString>::reverse_iterator objectFolder=objectFolders.rbegin();objectFolder!=objectFolders.rend();objectFolder++)

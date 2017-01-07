@@ -90,32 +90,26 @@ private slots:
     {
         if(listWidget.currentItem()!=NULL)
         {
-            QString seg = listWidget.currentItem()->text();
-            QString path = basePath + "/" + seg;
+            QString locationSeg = listWidget.currentItem()->text();
+            QString locationPath = basePath + "/" + locationSeg;
 
-            QStringList foldersOfMaxFile = QDir(path).entryList(FOLDERSONLY);
-            for(QStringList::iterator maxFileSeg=foldersOfMaxFile.begin();maxFileSeg <foldersOfMaxFile.end();maxFileSeg++)
+            QStringList foldersOfLocation = QDir( locationPath).entryList(FOLDERSONLY);
+            for(QStringList::iterator cameraSeg=foldersOfLocation.begin();cameraSeg <foldersOfLocation.end();cameraSeg++)
             {
-                if(*maxFileSeg =="_320x180" || *maxFileSeg=="_640x360")
+                QString cameraPath = basePath + "/" + locationSeg + "/" + *cameraSeg;
+                QStringList foldersOfCamera = QDir( cameraPath).entryList(FOLDERSONLY);
+                for(QStringList::iterator objectSeg=foldersOfCamera.begin();objectSeg <foldersOfCamera.end();objectSeg++)
                 {
-                    scene.clear();
-                    QString pixelFolder = basePath + "/" + seg + "/" + *maxFileSeg;
-
-                    QStringList objectFolders = QDir(pixelFolder).entryList(FOLDERSONLY);
-                    for(QStringList::iterator objectSeg=objectFolders.begin();objectSeg!=objectFolders.end();objectSeg++)
+                    QString objectPath = basePath + "/" + locationSeg + "/" + *cameraSeg + "/" + *objectSeg;
+                    QString possibleImage = objectPath + "/initial/orig_0000.png";
+                    if(QFile::exists(possibleImage))
                     {
-                        QString objectFolder = pixelFolder + "/" + *objectSeg;
-                        QString possibleImage = objectFolder + "/initial/orig_0000.png";
-                        if(QFile::exists(possibleImage))
-                        {
-
-                            //QGraphicsPixmapItem* item = scene.addPixmap(possibleImage);
-                            //               scene.update();
-
-                        }
                     }
-                    break;
+                        //QGraphicsPixmapItem* item = scene.addPixmap(possibleImage);
+                    //               scene.update();
+
                 }
+
             }
         }
     }

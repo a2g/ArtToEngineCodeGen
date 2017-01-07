@@ -17,19 +17,19 @@
 #include "LoaderAndResFilePair.h"
 #include "IsInventory.h"
 #include "GetWidthAndHeightFromImageName.h"
+#include "GetLoaderEnum.h"
 
 
 com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(){}
-com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QString package, const QString psdFileSeg, const QString& sceneFolder,  QString animFolder)
+com::github::a2g::generator::LoaderAndResFilePair::LoaderAndResFilePair(const QString package, const QString psdFileSeg, const QString& scenePath,  QString animPath)
         : package(package)
-        , sceneFolder(sceneFolder)
-        , animFolder(animFolder)
+        , psdFileSeg(psdFileSeg)
+        , scenePath(scenePath)
+        , animPath(animPath)
         , isGwt(false)
 
 {
-
-
-
+    lineForLoaderEnum = "int getLoaderEnum(){ return " + GetLoaderEnum(psdFileSeg) + "; }\n";
 }
 
 
@@ -282,7 +282,7 @@ void com::github::a2g::generator::LoaderAndResFilePair::writeGwtBundle(QTextStre
 
 bool com::github::a2g::generator::LoaderAndResFilePair::writeGwtLoader(QTextStream& f, QString loaderJavaClassName, const std::vector<std::pair<int,QString> >&  list)
 {
-    f << ("package "+package+"." + psdFileSeg +"." +";\n");
+    f << ("package "+package+"." + psdFileSeg + ";\n");
     f << ("\n");
     f << ("import com.github.a2g.core.interfaces.internal.ILoad;\n");
     f << ("import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n");
@@ -296,7 +296,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeGwtLoader(QTextStre
     f << ("public class "+loaderJavaClassName+" implements ILoad\n");
     f << ("{\n");
     f << ("  @Override\n");
-    f << QString("  public boolean isInventory(){ return %1;}\n").arg(isInventory()? "true" : "false");
+    f << lineForLoaderEnum;
     f << ("  @Override\n");
     f << QString("  public int getNumberOfBundles(){ return %1;}\n").arg(list.size());
     f << ("  \n");
@@ -443,7 +443,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeSwingLoader(QTextSt
     f << ("{\n");
     f << ("  Timer timer;\n");
     f << ("  @Override\n");
-    f << QString("  public boolean isInventory(){ return %1;}\n").arg(isInventory()? "true" : "false");
+    f << lineForLoaderEnum;
     f << ("  @Override\n");
     f << QString("  public int getNumberOfBundles(){ return %1;}\n").arg(list.size());
     f << ("  \n");
@@ -510,7 +510,7 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find
         return false;
 
     package = package.replace(find,replace);
-    sceneFolder =sceneFolder.replace(find,replace);
+    scenePath =scenePath.replace(find,replace);
     std::vector<std::pair<int,QString> > list;
     int total = resourcePairs.size();
     double numberOfBundles = 10.0;
@@ -529,8 +529,8 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find
     {
         QString bundleJavaClassName = theJavaClassNamePrefix + names[i] + "Bundle";
         QDir dir;
-        dir.mkpath(sceneFolder);
-        QFile file(sceneFolder+"/" + bundleJavaClassName + ".java");
+        dir.mkpath(scenePath);
+        QFile file(scenePath+"/" + bundleJavaClassName + ".java");
         if (!file.open(QFile::WriteOnly | QFile::Truncate))
             return false;
         QTextStream f(&file);
@@ -553,8 +553,8 @@ bool com::github::a2g::generator::LoaderAndResFilePair::writeToFile(QString find
     // now to write the loader
     QString loaderJavaClassName = theJavaClassNamePrefix + "Loader";
     QDir dir;
-    dir.mkpath(sceneFolder);
-    QFile loader( sceneFolder+"/"+loaderJavaClassName + ".java");
+    dir.mkpath(scenePath);
+    QFile loader( scenePath+"/"+loaderJavaClassName + ".java");
     if (!loader.open(QFile::WriteOnly | QFile::Truncate))
         return false;
 

@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     LoaderAndResFilePair.cpp \
     OFile.cpp \
     OutputFiles.cpp \
-    IsInventory.cpp
+    IsInventory.cpp \
+    IsShared.cpp
 HEADERS += A2GASSERT.h \
     AFile.h \
     BLANK.h \
@@ -46,5 +47,7 @@ HEADERS += A2GASSERT.h \
     STARTING_ODD_INVENTORY_CODE.h \
     STARTING_ODD_OBJECTS_CODE.h \
     IsInventory.h \
+    IsShared.h \
     FolderTraverserResult.h \
     GetWidthAndHeightFromImageName.h\
+    GetLoaderEnum.h\

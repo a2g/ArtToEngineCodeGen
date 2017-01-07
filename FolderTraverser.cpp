@@ -38,7 +38,7 @@
 #include "SRC.h"
 #include "IsPngOrBmp.h"
 #include "IsInventory.h"
-
+#include "IsShared.h"
 using namespace com::github::a2g::generator;
 
 const char* _00_ANIMATIONS = "_00_animations";
@@ -64,11 +64,11 @@ void FolderTraverser::generate(QString rootFolder, QString package)
         QString psdFileSeg = QDir(*psdFileFolder).dirName();
         if(psdFileSeg == _00_ANIMATIONS)
             continue;
-        bool isInAnObjectsFolder = !psdFileSeg.contains("shared");
+        bool isInAnObjectsFolder = !IsShared(psdFileSeg);
         bool isInAnInventoryFolder = IsInventory(psdFileSeg);
 
-        OFile oStream(isInAnObjectsFolder? *psdFileFolder : bad, psdFileSeg, package);
-        IFile iStream(isInAnInventoryFolder? *psdFileFolder: bad, psdFileSeg, package);
+        OFile oStream(package, psdFileSeg, isInAnObjectsFolder? *psdFileFolder : bad );
+        IFile iStream(package, psdFileSeg, isInAnInventoryFolder? *psdFileFolder: bad );
 
         LoaderAndResFilePair resStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);
         LoaderAndResFilePair initialStream(package, psdFileSeg, *psdFileFolder, isInAnInventoryFolder? NULL: animFolder);

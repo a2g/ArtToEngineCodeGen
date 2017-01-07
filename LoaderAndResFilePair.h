@@ -42,8 +42,8 @@ namespace com
                 {
                     mutable QString package;
                     mutable QString psdFileSeg;
-                    mutable QString sceneFolder;
-                    mutable QString animFolder;
+                    mutable QString scenePath;
+                    mutable QString animPath;
 
                     QString theJavaClassNamePrefix;
                     QString javaClassName;
@@ -61,6 +61,7 @@ namespace com
 
                     bool isGwt;
                     QString lineThatSetsResolution;
+                    QString lineForLoaderEnum;
                 public:
                     LoaderAndResFilePair();
                     LoaderAndResFilePair(const QString package, const QString maxFileSeg,  const QString& sceneFolder,  QString animFolder);

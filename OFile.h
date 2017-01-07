@@ -36,22 +36,22 @@ namespace com
                 {
 
                 private:
-                    mutable QString m_sceneFolder;
-                    mutable QString m_sceneSeg;
                     mutable QString package;
+                    mutable QString m_sceneSeg;
+                    mutable QString m_sceneFolder;
 
                 public:
                     OFile()
-                         : IdGenerator(STARTING_ODD_OBJECTS_CODE)
+                            : IdGenerator(STARTING_ODD_OBJECTS_CODE)
                     {
                     }
 
 
-                    OFile(QString sceneFolder, QString maxFileSeg, const QString& package)
-                        :   IdGenerator(STARTING_ODD_OBJECTS_CODE)
-                        , m_sceneFolder( sceneFolder)
-                        , m_sceneSeg( maxFileSeg)
-                        , package(package)
+                    OFile(const QString& package, QString maxFileSeg, QString sceneFolder)
+                            :   IdGenerator(STARTING_ODD_OBJECTS_CODE)
+                            , package(package)
+                            , m_sceneSeg( maxFileSeg)
+                            , m_sceneFolder( sceneFolder)
                     {
                         
                     }
@@ -64,7 +64,7 @@ namespace com
 
                     ~OFile()
                     {
-                     //   writeToFile();
+                        //   writeToFile();
                     }
                 private:
                     bool writeToFile(QString find, QString replace)

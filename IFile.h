@@ -34,17 +34,17 @@ namespace com
 
                 class IFile : public IdGenerator
                 {
-                    mutable QString maxFileSeg;
                     mutable QString package;
+                    mutable QString maxFileSeg;
                     mutable QString sceneFolder;
 
                 public:
                     IFile()
                             : IdGenerator(STARTING_ODD_INVENTORY_CODE){}
-                    IFile(QString sceneFolder, QString maxFileSeg, QString package)
+                    IFile(QString package, QString maxFileSeg, QString sceneFolder)
                             : IdGenerator(STARTING_ODD_INVENTORY_CODE)
-                            , maxFileSeg(maxFileSeg)
                             , package(package)
+                            , maxFileSeg(maxFileSeg)
                             , sceneFolder(sceneFolder)
                     {
                     }
@@ -97,7 +97,7 @@ namespace com
                         iter = mapOfObjectNames.begin();
                         for(;iter!=mapOfObjectNames.end();iter++)
                         {
-                         f << "            case " << (iter.value()) << ": return Enum." + (iter.key().toUpper()) <<";\n";
+                            f << "            case " << (iter.value()) << ": return Enum." + (iter.key().toUpper()) <<";\n";
                         }
                         f << ("        }\n");
                         f << ("        return null;\n");

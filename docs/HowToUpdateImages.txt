@@ -1,0 +1,10 @@
+To generate these images I used a resolution of 1280x800,
+Used Windows 7 drag doccking of windows to drag it to the right.
+Turned off PreviewPane.
+
+The slideshow effect is best reproduced by working backwards:
+Starting at visuals/PNG Files, generating an image,
+and then moving to A.java, O.java, I. java, Loader.java, Bundle.java
+
+And then doing the same for sourceimages/PNG Files:
+Animations then Objects, then Cameras, then Locations

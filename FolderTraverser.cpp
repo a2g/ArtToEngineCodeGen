@@ -115,7 +115,7 @@ void FolderTraverser::generate(QString locationPath, QString package)
 
                         // "blank" is usd when initial already exists, for that object, in some otherrender output
                         //
-                        if(isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"||animSeg=="placeholder"))
+                        if(!isOnlyOnly && isInAnObjectsFolder && (animSeg=="initial" || animSeg=="blank"||animSeg=="placeholder"))
                         {
                             initialStream.addAnimImage(*pathToPng, idForObj);
                         }
@@ -135,7 +135,7 @@ void FolderTraverser::generate(QString locationPath, QString package)
             // 2017, decided that I'm using Only for everything.
             if(isOnlyOnly || initialStream.isEmpty() || resStream.isEmpty())
             {
-                initialStream.setJavaClassNamePrefix("");
+                initialStream.setJavaClassNamePrefix(!isOnlyOnly? "" : "ShouldNotAppearSinceOnlyOnly");
                 resStream.setJavaClassNamePrefix("");
                 if(output)
                 {

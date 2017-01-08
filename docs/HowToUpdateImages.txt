@@ -8,3 +8,7 @@ and then moving to A.java, O.java, I. java, Loader.java, Bundle.java
 
 And then doing the same for sourceimages/PNG Files:
 Animations then Objects, then Cameras, then Locations
+
+Windows 7 also had an optimization whereby in the left pane it only
+showed folders that had been recently visited. So to get the full set of
+LOCATIONS in the left pane, I had to visit them all previously.

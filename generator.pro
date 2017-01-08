@@ -31,6 +31,7 @@ HEADERS += A2GASSERT.h \
     FolderTraverser.h \
     GetObjectPlusAnim.h \
     GetObjectPlusAnimHash.h \
+    _00_ANIMATIONS.h\
     GetRealObjectSeg.h \
     GETVALUE.h \
     IdGenerator.h \

@@ -16,6 +16,6 @@
 
 #pragma once
 
-static const QString _00_ANIMATIONS = "_00_ANIMATIONS";//folder for AFile
+static const QString _00_ANIMATIONS = "_00_animations";//folder for AFile
 
 

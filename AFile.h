@@ -76,13 +76,13 @@ namespace com
                         package = package.replace(find,replace);
 
                         QDir dir;
-                        dir.mkpath(m_currentPath+"/" + _00_ANIMATIONS);
-                        QFile file(m_currentPath+"/" + _00_ANIMATIONS + "/A.java");
+                        dir.mkpath(m_currentPath+"/" + _00_ANIMATIONS.toLower());
+                        QFile file(m_currentPath+"/" + _00_ANIMATIONS.toLower() + "/A.java");
                         if (!file.open(QFile::WriteOnly | QFile::Truncate)) 
                             return false;
 
                         QTextStream f(&file);
-                        f << ("package " + package + "._00_animations;\n");
+                        f << ("package " + package + "." + _00_ANIMATIONS.toLower() + ";\n");
                         f << ("public class A\n");
                         f << ("{\n");
 

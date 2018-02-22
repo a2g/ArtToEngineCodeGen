@@ -15,5 +15,4 @@
  */
 
 #pragma once
-
-bool isDummyRun();// camel case because most common usage is class name
+bool isDummyRun(){ return false; }

@@ -25,7 +25,12 @@ namespace com
         {
             namespace generator
             {
-                bool IsInventory(QString segment);
+                static bool isInventory(QString segment)
+                {
+                    bool isInventory = segment.toLower().contains("inv");
+                    return isInventory;
+                }
+
             }
         }
     }

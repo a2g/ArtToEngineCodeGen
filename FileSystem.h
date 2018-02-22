@@ -17,111 +17,85 @@
 #pragma once
 #include <QStringList>
 #include <QDir>
-namespace com
-{ 
-    namespace github
+#include <NAMESPACE_BEGIN.h>
+#include <NAMESPACE_END.h>
+NAMESPACE_BEGIN
+class FileSystem
+{
+private:
+    QStringList m_list;
+public:
+
+    void clear()
     {
-        namespace a2g
+        m_list.clear();
+    }
+
+    void add(QString path)
+    {
+        // make sure all the paths we are adding are forward-slashed (not back-slashed)
+        path.replace("\\","/");
+        path = path.toLower();
+
+        int numberOfSlashes = path.count("/")+1;
+        for(int i=0;i<numberOfSlashes;i++)
         {
-            namespace generator
+            m_list.push_back(path);
+            QDir dir(path);
+            int j = path.lastIndexOf(dir.dirName());
+            path.truncate(j-1);
+        }
+        m_list.removeDuplicates();
+        m_list.sort();
+    }
+
+    QStringList getSubFiles(QString fullFolderPath) const
+    {
+        return getFilesForTrueFoldersForFalse(fullFolderPath,true);
+    }
+
+    QStringList getSubFolders(QString fullFolderPath) const
+    {
+        return getFilesForTrueFoldersForFalse(fullFolderPath,false);
+    }
+
+    QStringList getFilesForTrueFoldersForFalse(QString fullFolderPath,bool isLookingForFiles) const
+    {
+        fullFolderPath.replace("\\","/");
+        fullFolderPath = fullFolderPath.toLower();
+        bool isLookingForFolders = !isLookingForFiles;
+        int numberOfForwardSlashesNeeded = fullFolderPath.count("/") + 1;
+        QStringList toReturn;
+        int count = m_list.count();
+        for(int i=0;i<count;i++)
+        {
+            QString item = m_list[i];
+            int numberOfForwardSlashes = item.count("/");
+            if(numberOfForwardSlashes==numberOfForwardSlashesNeeded)
             {
-                class FileSystem
+                if(item.contains(fullFolderPath+"/"))
                 {
-                private:
-                    QStringList m_list;
-                public:
-
-                    bool isGwt()
+                    bool isFile = item.contains(".");
+                    bool isFolder = !isFile;
+                    if((isFile & isLookingForFiles) || (isFolder & isLookingForFolders))
                     {
-                        // the way this list is ordered, only the latter
-                        // files contain the same full path that was used
-                        // as the root of this file system.
-                        //
-                        // so we take the last one in the list.
-                        int count = m_list.size();
-                        if(count>0)
-                        {
-                            if(m_list.at(count-1).toUpper().contains("SWING"))
-                            {
-                                return false;
-                            }
-                        }
-                        return true;
+                        toReturn.push_back(item);
                     }
-
-                    void clear()
-                    {
-                        m_list.clear();
-                    }
-
-                    void add(QString path)
-                    {
-                        // make sure all the paths we are adding are forward-slashed (not back-slashed)
-                        path.replace("\\","/");
-                        path = path.toLower();
-
-                        int numberOfSlashes = path.count("/")+1;
-                        for(int i=0;i<numberOfSlashes;i++)
-                        {
-                            m_list.push_back(path);
-                            QDir dir(path);
-                            int j = path.lastIndexOf(dir.dirName());
-                            path.truncate(j-1);
-                        }
-                        m_list.removeDuplicates();
-                        m_list.sort();
-                    }
-                    
-                    QStringList getSubFiles(QString fullFolderPath)
-                    {
-                        return getFilesForTrueFoldersForFalse(fullFolderPath, true);
-                    }
-
-                    QStringList getSubFolders(QString fullFolderPath)
-                    {
-                        return getFilesForTrueFoldersForFalse(fullFolderPath, false);
-                    }
-
-                    QStringList getFilesForTrueFoldersForFalse(QString fullFolderPath, bool isLookingForFiles)
-                    {
-                        fullFolderPath.replace("\\", "/");
-                        fullFolderPath = fullFolderPath.toLower();
-                        bool isLookingForFolders = !isLookingForFiles;
-                        int numberOfForwardSlashesNeeded = fullFolderPath.count("/") + 1;
-                        QStringList toReturn;
-                        int count = m_list.count();
-                        for(int i=0;i<count;i++)
-                        {
-                            QString item = m_list[i];
-                            int numberOfForwardSlashes = item.count("/");
-                            if(numberOfForwardSlashes==numberOfForwardSlashesNeeded)
-                            {
-                                if(item.contains(fullFolderPath+"/"))
-                                {
-                                    bool isFile = item.contains(".");
-                                    bool isFolder = !isFile;
-                                    if((isFile & isLookingForFiles) || (isFolder & isLookingForFolders))
-                                    {
-                                        toReturn.push_back(item);                             
-                                    }
-                                }
-                            }
-                        }
-                        return toReturn;
-                    }
-                    
-                    int getNumberOfItems(){ return m_list.count(); }
-                    QString getItem(int i){ return m_list.at(i);}
-                    void dump()
-                    {
-                        for(int i=0;i<getNumberOfItems();i++)
-                        {
-                            qDebug(" %s ",  getItem(i).toAscii().data());
-
-                        }
-                    }
-                };
+                }
             }
         }
+        return toReturn;
     }
-}
+
+    int getNumberOfItems(){ return m_list.count(); }
+    QString getItem(int i){ return m_list.at(i); }
+    void dump()
+    {
+        for(int i=0;i<getNumberOfItems();i++)
+        {
+            qDebug(" %s ",getItem(i).toUtf8().data());
+
+        }
+    }
+};
+NAMESPACE_END

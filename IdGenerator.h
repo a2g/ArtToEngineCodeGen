@@ -19,6 +19,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMap>
+#include "StartingOddCode.h"
 
 namespace com
 {
@@ -34,22 +35,21 @@ namespace com
                     QMap<QString, int> mapOfObjectNames;
                     int currentSeed;
                 public:
-                    IdGenerator(int seed)
+                    IdGenerator(StartingOddEnum seed)
                             :currentSeed(seed)
                     {
                     }
 
-                    int getIdForName(QString objectName)
+                    int getIdForName(const QString& objectNamePassedIn)
                     {
+                        QString  objectName = objectNamePassedIn.toUpper();
                         if(objectName.startsWith("X_", Qt::CaseInsensitive))
                             return -2;
                         if(mapOfObjectNames.find(objectName)!=mapOfObjectNames.end())
                             return mapOfObjectNames[objectName];
                         //else we've never seen it before
-                        int id = currentSeed;
-                        currentSeed +=2;
-                        mapOfObjectNames[objectName] = id;
-                        return id;
+                        mapOfObjectNames[objectName] = currentSeed;
+                        return (currentSeed++*2)+1;// yes, return old seed, then increment it
                     }
                 };
             }

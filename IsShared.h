@@ -25,7 +25,12 @@ namespace com
         {
             namespace generator
             {
-                bool IsShared(QString cameraSeg);
+                static bool isShared(QString cameraSegment)
+                {
+                    bool isShared = cameraSegment.toLower().contains("shared");
+                    return isShared;
+                }
+
             }
         }
     }

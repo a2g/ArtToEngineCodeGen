@@ -20,14 +20,14 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMap>
-#include <QtGui\QListWidget.h>
+#include <QListWidget.h>
 #include <QDir.h>
 #include <QFileInfo.h>
-#include <QtGui\QSplitter>
-#include <QtGui\QTextBrowser>
-#include <QtGui\QGraphicsScene>
-#include <QtGui\QListWidgetItem>
-#include <QtGui\QGraphicsView>
+#include <QSplitter>
+#include <QTextBrowser>
+#include <QGraphicsScene>
+#include <QListWidgetItem>
+#include <QGraphicsView>
 #include "IdGenerator.h"
 #include <QList>
 

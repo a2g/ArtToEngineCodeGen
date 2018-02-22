@@ -15,4 +15,4 @@
  */
 
 #pragma once
-static const char* SOURCEIMAGES = "SOURCEIMAGES";
+static const QString SOURCEIMAGES = "SOURCEIMAGES";

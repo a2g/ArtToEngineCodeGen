@@ -15,7 +15,7 @@
  */
 
 #pragma once
-inline bool IsPngOrBmp(QString name)
+inline bool isPngOrBmp(QString name)
 {
     bool isPng = name.endsWith(".png", Qt::CaseInsensitive);
     bool isBmp = name.endsWith(".bmp", Qt::CaseInsensitive);

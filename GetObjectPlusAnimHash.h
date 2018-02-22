@@ -17,12 +17,15 @@
 #pragma once
 #include <time.h>
 #include <locale>
+#include <QString>
+#include "DomAnimation.h"
+#include "GetObjectPlusAnim.h"
  static int getObjectPlusAnimHash(QString objectSeg, QString animSeg)
  {
     std::locale loc;
     const std::collate<char>& coll = std::use_facet<std::collate<char> >(loc);
 
-    std::string objectPlusAnim = getObjectPlusAnim(objectSeg,animSeg).toStdString();
+    std::string objectPlusAnim = getObjectPlusAnim(objectSeg, animSeg).toStdString();
     int idForObjPlusAnim  = coll.hash(objectPlusAnim.data(), objectPlusAnim.data() + objectPlusAnim.length());
     return idForObjPlusAnim;
  }

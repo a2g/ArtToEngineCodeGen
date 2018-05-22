@@ -17,7 +17,7 @@
 #include "IsShared.h"
 #include "IsInventory.h"
 
-QString GetLoaderEnum(QString cameraSeg)
+QString getLoaderEnum(QString cameraSeg)
 {
     if(com::github::a2g::generator::IsInventory(cameraSeg))
         return "2";

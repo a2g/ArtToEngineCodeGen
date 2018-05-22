@@ -14,7 +14,7 @@
  * the License.
  */
 
-#pragma once
+#pragma onceGetLoader
 
 static QString getRealObjectSeg(QString objectSeg, bool isInv)
 {

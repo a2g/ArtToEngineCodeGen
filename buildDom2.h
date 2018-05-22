@@ -21,7 +21,7 @@
 #include "Dom2Location.h"
 #include "allcaps\INITIALS.h"
 #include "DomLocation.h"
-#include "Idgenerator.h"
+#include "IdGenerator.h"
 #include "getRealObjectSeg.h"
 #include "getObjectPlusAnim.h"
 

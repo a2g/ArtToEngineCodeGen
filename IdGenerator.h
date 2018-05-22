@@ -19,7 +19,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMap>
-#include "StartingOddCode.h"
+#include "StartingOddEnum.h"
 
 namespace com
 {

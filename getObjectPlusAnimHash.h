@@ -19,7 +19,7 @@
 #include <locale>
 #include <QString>
 #include "DomAnimation.h"
-#include "GetObjectPlusAnim.h"
+#include "getObjectPlusAnim.h"
  static int getObjectPlusAnimHash(QString objectSeg, QString animSeg)
  {
     std::locale loc;

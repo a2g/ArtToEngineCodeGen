@@ -16,11 +16,11 @@
 
 #pragma once
 #include "Dom2Location.h"
-#include "_00_ANIMATIONS.h"
+#include "allcaps\AFile.h"
 #include <QSet.h>
 #include "getObjectPlusAnim.h"
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
+#include "allcaps\NAMESPACE_BEGIN.h"
+#include "allcaps\NAMESPACE_END.h"
 NAMESPACE_BEGIN
 static QString writeInitialEnumFile(const Dom2Loader& l)
 {
@@ -31,20 +31,6 @@ static QString writeInitialEnumFile(const Dom2Loader& l)
     s += ("{\n");
 
     QSet<QString> animations;
-
-    /*
-    auto iter = l.getBundles();
-    for(int j = 0; j < l.getBundleCount() && j<1; j++)
-    {
-        auto b = iter.at(j);
-        for(auto i = 0; i<b.getFrameCount();i++)
-        {
-            auto& frame = b.getFrameAt(i);
-            QString animationName= frame.realObjectSegToUpper+"_"+frame.animSegToUpper;
-            animations.insert(animationName);
-        }
-    }
-    */
     {
         auto& bundles = l.getBundles();
         for(int i=0;i<bundles.size();i++)

@@ -14,14 +14,6 @@
  * the License.
  */
 
-#include "WriterSwing.h"
-#include <gmock\gmock.h>
-
-using namespace com::github::a2g::generator;
-
-
-
-TEST(WriterSwingTest,Try)
-{
-    ASSERT_TRUE(true);
-}
+#pragma once
+#include <QString>
+static const QString Res = "Res";// camel case because most common usage is class name 

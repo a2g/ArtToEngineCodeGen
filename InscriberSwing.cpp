@@ -14,14 +14,14 @@
  * the License.
  */
 
-#pragma once
-#include <QVector.h>
-#include "DomAnimation.h"
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
-NAMESPACE_BEGIN
-static QString convertSwingLoader(const QString& swingLoader)
+#include "InscriberSwing.h"
+#include <gmock\gmock.h>
+
+using namespace com::github::a2g::generator;
+
+
+
+TEST(InscriberSwingTest,Try)
 {
-    return "";
+    ASSERT_TRUE(true);
 }
-NAMESPACE_END

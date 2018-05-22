@@ -15,7 +15,7 @@
 */
 
 #include <convertSwingSingleBundleLoader.h>
-#include <writeSwingClass.h>
+#include <writeClass.h>
 #include <DomLocation.h>
 #include "gtest/gtest.h"
 

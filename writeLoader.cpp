@@ -14,7 +14,7 @@
 * the License.
 */
 
-#include "WriteSwingLoader.h"
+#include "WriteLoader.h"
 #include <DomLocation.h>
 #include "gtest/gtest.h"
 
@@ -24,7 +24,7 @@ namespace  //anonymous for linker errors
     const char* EXPECTED =
         "package com.visuals.canoe.canoe;\n"
         "\n"
-        "import com.github.a2g.core.interfaces.IOnQueueResources;\n"
+        "import com.github.a2g.core.interfaces.IOnEnqueueResources;\n"
         "import com.github.a2g.core.interfaces.internal.IBundleLoader;\n"
         "import com.github.a2g.core.interfaces.internal.ISingleBundle;\n"
         "import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n"
@@ -62,7 +62,7 @@ namespace  //anonymous for linker errors
 
 
 
-    TEST(WriteSwingLoaderTest, Try)
+    TEST(WriteLoaderTest, Try)
     {
         // arrange
         Dom2Location location;
@@ -79,7 +79,7 @@ namespace  //anonymous for linker errors
         sha.addNewBundle("MAN_JUMPING").addFrame(10,0,0,90,54,"MAN","WALKING","blah.png");
 
 
-        std::string blah = com::github::a2g::generator::writeSwingLoader(nml).toUtf8().data();
+        std::string blah = com::github::a2g::generator::writeLoader(nml, false).toUtf8().data();
 
         QStringList actual = QString(blah.c_str()).split("\n");
         QStringList expected = QString(EXPECTED).split("\n");

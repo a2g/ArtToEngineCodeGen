@@ -14,14 +14,14 @@
 * the License.
 */
 
-#include "WriterGwt.h"
+#include "InscriberGwt.h"
 #include <gmock\gmock.h>
 
 using namespace com::github::a2g::generator;
 
 
 
-TEST(WriterGwtTest,Try)
+TEST(InscriberGwtTest,Try)
 {
     ASSERT_TRUE(true);
 }

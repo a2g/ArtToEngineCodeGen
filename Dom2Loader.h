@@ -19,9 +19,10 @@
 #include <QFile>
 #include <QList>
 #include <QMap>
-#include "Dom2Bundle.h"
 #include <assert.h>
-#include "INITIALS.h"
+#include "Dom2Bundle.h"
+#include "allcaps\INITIALS.h"
+#include "getWidthAndHeightFromImageName.h"
 namespace com
 {
     namespace github
@@ -32,28 +33,24 @@ namespace com
             {
                 enum LoaderTypeEnum
                 {
-                    NORMAL =1,
                     SHARED = 0,
+                    NORMAL =1,
                     INVENTORY = 2
                     
                 };
-                struct IWriter;
+                struct IInscriber;
                 class Dom2Location;
                 class Dom2Loader
                 {
                 public:
                     Dom2Loader(Dom2Location& parent)
                         :theParent(&parent)
-                        ,resolutionX(320)
-                        ,resolutionY(180)
                         ,type(LoaderTypeEnum::SHARED)
                         {
                         
                     }
 
                     
-                    int resolutionX;
-                    int resolutionY;
                     QString loaderSeg;
                     LoaderTypeEnum type;
                     
@@ -75,11 +72,29 @@ namespace com
                     int getBundleCount() const{ return map.size(); }
                     void addNewId(QString name,int id){ mapOfIds[name.toUpper()] = id; }
                     const QMap<QString,int>& getIds() const { return mapOfIds; } 
+                    void removeBundle(const QString& bundleName)
+                    {
+                        map.remove(bundleName);
+                    }
+                    QPoint getResolutionOfFirstImageFound() const
+                    {
+                        QPoint point(320,180);
+                        if(map.size()>0)
+                        {
+                            auto& bundle = map.begin().value();
+                            if(bundle.getFrameCount()>0)
+                            {
+                                auto& frame = bundle.getFrameAt(0);
+                                point = getWidthAndHeightFromImageName(frame.fullimagePath);
+                            }
+                        }
+                        return point;
+                    }
                 private:
                     QMap<QString,int> mapOfIds;
                     QMap<QString, Dom2Bundle> map;//private to ensure parents are set on Dom2Bundle
                     Dom2Location* theParent;
-                    friend QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const Dom2Location& location,const IWriter& w);
+                    friend QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const Dom2Location& location,const IInscriber& w);
                 };
             }
         }

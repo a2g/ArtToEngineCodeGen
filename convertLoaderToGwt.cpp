@@ -13,9 +13,8 @@
 * License for the specific language governing permissions and limitations under
 * the License.
 */
-#include <convertSwingLoader.h>
-#include <writeSwingPerAnimationLoader.h>
-
+#include <convertLoaderToGwt.h> 
+#include <writeLoader.h>
 #include <DomLocation.h>
 #include "gtest/gtest.h"
 
@@ -80,8 +79,8 @@ namespace  //anonymous for linker errors
             a1.addFrame(f2);
         }
 
-        QString s1 = com::github::a2g::generator::writeSwingPerAnimationLoader(c);
-        QString s = com::github::a2g::generator::convertSwingLoader(s1);
+        QString s1 = com::github::a2g::generator::writeLoader(c, true);
+        QString s = com::github::a2g::generator::convertLoaderToGwt(s1);
 
         QStringList actual = s.split("\n");
         QStringList expected = QString(EXPECTED).split("\n");

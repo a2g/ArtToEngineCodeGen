@@ -15,4 +15,7 @@
  */
 
 #pragma once
-static const QString VISUALS = "VISUALS";
+#include <QString>
+static const QString LOADERFORINVENTORY = "LoaderForInventory";//folder for AFile
+
+

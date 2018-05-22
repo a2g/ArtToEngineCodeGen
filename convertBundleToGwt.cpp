@@ -13,8 +13,8 @@
 * License for the specific language governing permissions and limitations under
 * the License.
 */
-#include <convertSwingBundle.h>
-#include <writeSwingBundle.h>
+#include <convertBundleToGwt.h>
+#include <writeBundle.h>
 
 #include <gtest/gtest.h>
 #include <DomLocation.h>
@@ -73,8 +73,8 @@ namespace  //anonymous for linker errors
         }
 
 
-        QString s1 = com::github::a2g::generator::writeSwingPerAnimationBundle(a1);
-        QString s = com::github::a2g::generator::convertSwingBundle(s1);
+        QString s1 = com::github::a2g::generator::writeBundle(a1);
+        QString s = com::github::a2g::generator::convertBundleToGwt(s1);
 
         QStringList actual = s.split("\n");
         QStringList expected = QString(EXPECTED).split("\n");

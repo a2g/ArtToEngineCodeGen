@@ -15,37 +15,38 @@
  */
 
 #pragma once
-#include "Dom2Location.h"
-#include "allcaps\AFile.h"
-#include <QSet.h>
-#include "getObjectPlusAnim.h"
+#include <QVector.h>
+#include "DomAnimation.h"
 #include "allcaps\NAMESPACE_BEGIN.h"
 #include "allcaps\NAMESPACE_END.h"
 NAMESPACE_BEGIN
-static QString writeAFile(const Dom2Location& l)
+
+static QString convertLoaderToGwt(const QString& swingLoader)
 {
-
-
-    QString fullLocationPackage = l.fullLocationPackage;
     QString s;
-    s += QString("package %1.%2;\n").arg(fullLocationPackage).arg(AFILE.toLower());
-    s += QString("public class A\n");
-    s += ("{\n");
-
-    for(auto iter = l.set.begin(); iter != l.set.end(); iter++)
+    
+    auto lines = swingLoader.split("\n");
+    for(int i = 0; i < lines.size(); i++)
     {
-        s += QString("  public final static String %1 =\"%1\";\n").arg(*iter);
+        auto line = lines[i].trimmed();
+        if(line.contains("import javax.swing.Timer"))
+        {
+        
+            s+="import com.google.gwt.core.client.Scheduler;\n";
+        }
+        else if(line.contains("java.awt.event.ActionListener"))
+        {
+            s+="import com.google.gwt.core.client.GWT;\n";
+        }
+        else if(line.contains("java.awt.event.ActionEvent"))
+        {
+            s+="import com.google.gwt.core.client.RunAsyncCallback;\n";
+        }
+        else
+        {
+            s+=line+"\n";
+        }
     }
-
-    s += ("}\n");
-
     return s;
 }
-
 NAMESPACE_END
-
-
-
-
-
-

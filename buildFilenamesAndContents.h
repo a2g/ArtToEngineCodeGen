@@ -20,18 +20,20 @@
 #include <QVector>
 #include <FileSystem.h>
 #include <Dom2Location.h>
-#include "IWriter.h"
-#include "buildFilenamesAndContents.h"
-#include "_00_ANIMATIONS.h"
-#include "getObjectPlusAnim.h"
-#include "getInventoryBundleName.h"
-#include "getPackage.h"
-#include "LOADERFORINVENTORY.h"
-#include <convertSwingBundle.h>
-#include "INITIALS.h"
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
 #include <debugapi.h>
+#include "IInscriber.h"
+#include "buildFilenamesAndContents.h"
+#include "getObjectPlusAnim.h"
+ 
+#include "getPackage.h"
+#include "convertBundleToGwt.h"
+
+#include "allcaps\LOADERFORINVENTORY.h"
+#include "allcaps\INITIALS.h"
+#include "allcaps\NAMESPACE_BEGIN.h"
+#include "allcaps\NAMESPACE_END.h"
+#include "allcaps\AFILE.h"
+
 NAMESPACE_BEGIN
  
 
@@ -61,7 +63,7 @@ static void output(QMap<QString, Dom2Bundle>::Iterator& iter)
     OutputDebugStringA("\n");
 }
 
-static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const Dom2Location& location, const IWriter& w)
+static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const Dom2Location& location, const IInscriber& w)
 {
     QVector<QPair<std::string,std::string>> builtFiles;
     auto locPath = location.locationPath.toLower();
@@ -69,7 +71,7 @@ static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const D
     {
         // A.java
         auto afile = w.writeAFile(location);
-        builtFiles.push_back(getPair(afile,locPath+"/"+_00_ANIMATIONS.toLower()+"/A.java"));
+        builtFiles.push_back(getPair(afile,locPath+"/"+AFILE.toLower()+"/A.java"));
     }
 
   
@@ -82,14 +84,15 @@ static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const D
         OutputDebugStringA("\n");
 
         {
+            // InitialEnum.java
+            auto afile = w.writeInitialEnumFile(loader);
+            builtFiles.push_back(getPair(afile,locPath + "/" + loaderSeg +"/InitialEnum.java"));
+        }
+
+        if(loader.getBundleCount()>0){
             // write the loader file
             auto loaderFile = w.writeLoader(loader);
             builtFiles.push_back(getPair(loaderFile,locPath + "/" + loaderSeg + "/Loader.java"));
-        }
-        {
-            // INITIAL.java
-            auto afile = w.writeInitialEnumFile(loader);
-            builtFiles.push_back(getPair(afile,locPath + "/" + loaderSeg +"/InitialEnum.java"));
         }
 
 
@@ -100,9 +103,12 @@ static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const D
             auto b = iter.value();
             output(iter);
 
-            //write each bundle file
-            auto bundleFile = w.writeBundle(b);
-            builtFiles.push_back(getPair(bundleFile,locPath + "/" + loaderSeg + "/" + b.bundleName + ".java"));
+            // write each bundle file
+            if(b.getFrameCount()>0)// ignore zero bundles (they generate to many warnings with unused imports)
+            {
+                auto bundleFile = w.writeBundle(b);
+                builtFiles.push_back(getPair(bundleFile,locPath + "/" + loaderSeg + "/" + b.bundleName + ".java"));
+            }
         }
 
         // and maye an I or an O file

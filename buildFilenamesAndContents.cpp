@@ -16,7 +16,7 @@
 #include "buildFilenamesAndContents.h"
 #include "DomLocation.h"
 #include "gtest/gtest.h"
-#include "WriterNull.h"
+#include "InscriberNull.h"
 #include <ostream>
 using namespace com::github::a2g::generator;
 using namespace std;
@@ -84,8 +84,8 @@ namespace {
         int a = location.getLoaderAt(0).getBundleCount();
         int b = location.getLoaderAt(1).getBundleCount();
         int c = location.getLoaderAt(2).getBundleCount();
-        WriterNull writer;
-        auto files = buildFilenamesAndContents(location,writer);
+        InscriberNull Inscriber;
+        auto files = buildFilenamesAndContents(location,Inscriber);
         for(int i=0;i<files.size();i++)
         {
             cerr << files.at(i).second <<"\n";

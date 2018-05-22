@@ -17,12 +17,12 @@
 #pragma once
 #include <QString>
 #include "DomLocation.h"
-#include "IWriter.h"
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
+#include "IInscriber.h"
+#include "allcaps\NAMESPACE_BEGIN.h"
+#include "allcaps\NAMESPACE_END.h"
 NAMESPACE_BEGIN
 
-class WriterNull: public IWriter
+class InscriberNull: public IInscriber
 {
     QString writeAFile(const Dom2Location& location) const override{ return "";}
     QString writeInitialEnumFile(const Dom2Loader& loader) const override{ return ""; }
@@ -30,7 +30,7 @@ class WriterNull: public IWriter
     QString writeOFile(const Dom2Loader& camera) const override{ return "";}
     QString writeLoader(const Dom2Loader& loader) const override{ return "";}
     QString writeBundle(const Dom2Bundle& bundle) const override{ return "";}
-    QString writeLoaderClass(const QString& package,const QString& className,int numberOfImages,QPoint res,int type) const override{ return "";}
+    QString writeLoaderClass(const QString& package,const QString& className,const QString& loaderSeg, int numberOfImages,QPoint res,int type) const override{ return "";}
 };
 
 NAMESPACE_END

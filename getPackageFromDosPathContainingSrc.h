@@ -17,7 +17,7 @@
 #pragma once
 
 #include <QString>
-#include "SRC.h"
+#include "allcaps\SRC.h"
 
 inline QString getPackageFromDosPathContainingSrc(const QString& subFolderContainingSRC)
 {

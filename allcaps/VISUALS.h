@@ -15,5 +15,5 @@
  */
 
 #pragma once
-
-static const QString Res = "Res";// camel case because most common usage is class name 
+#include <QString>
+static const QString VISUALS = "VISUALS";

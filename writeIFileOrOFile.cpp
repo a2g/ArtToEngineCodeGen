@@ -14,7 +14,7 @@
 * the License.
 */
 
-#include "WriteIdFile.h"
+#include "WriteIFileOrOFile.h"
 #include <DomLocation.h>
 #include "gtest/gtest.h"
 
@@ -70,7 +70,7 @@ namespace  //anonymous for linker errors
         c.addNewId("NECKLACE_S", 104);
         c.addNewId("WALRUS" ,105);
 
-        QString s = com::github::a2g::generator::writeIdFile(c);
+        QString s = com::github::a2g::generator::writeIFileOrOFile('I',c);
 
         QStringList actual = s.split("\n");
         QStringList expected = QString(EXPECTED).split("\n");

@@ -17,8 +17,8 @@
 #pragma once
 #include <QString>
 #include "FileSystem.h"
-#include "SOURCEIMAGES.h"
-#include "_00_ANIMATIONS.h"
+#include "allcaps\SOURCEIMAGES.h"
+#include "allcaps\AFILE.h"
 namespace com
 { 
     namespace github
@@ -40,7 +40,7 @@ namespace com
                         for(int i=0;i<subFolders.count();i++)
                         {
                             QString subFolder = subFolders.at(i);
-                            if(subFolder.contains(_00_ANIMATIONS))
+                            if(subFolder.contains(AFILE))
                                 continue;//
                             toReturn.append(subFolder);
                         }

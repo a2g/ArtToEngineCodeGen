@@ -16,10 +16,10 @@
 
 #pragma once
 #include <memory>
-#include "NAMESPACE_BEGIN.h"
-#include "NAMESPACE_END.h"
+#include "allcaps\NAMESPACE_BEGIN.h"
+#include "allcaps\NAMESPACE_END.h"
 #include "Dom2Location.h"
-#include "INITIALS.h"
+#include "allcaps\INITIALS.h"
 #include "DomLocation.h"
 #include "Idgenerator.h"
 #include "getRealObjectSeg.h"
@@ -67,6 +67,10 @@ static std::auto_ptr<Dom2Location> buildDom2(const DomLocation& location)
                 loader.addNewId(objectName,id);
             }
         }
+        else
+        {
+            loader.type = LoaderTypeEnum::SHARED;
+        }
        
 
         Dom2Bundle& initialsBundle = loader.addNewBundle(INITIALS);
@@ -102,6 +106,11 @@ static std::auto_ptr<Dom2Location> buildDom2(const DomLocation& location)
 
                     theBundle.addFrame(o.prefix,x,y,w,h,realObjectSegToUpper,animSegtoUpper, f.getPngSaveTo());
                 }
+            }
+
+            if(initialsBundle.getFrameCount()==0)
+            {
+                loader.removeBundle(INITIALS);
             }
         }
     }

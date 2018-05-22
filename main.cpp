@@ -17,23 +17,24 @@
 
 
 #include <QDir>
+#include <time.h> //clock_t clock (); time_t time(time_t*), double difftime (time_t, time_t);
+#include <debugapi.h>
 #include "getFoldersToProcess.h"
-#include "SOURCEIMAGES.h"
-#include "VISUALS.h"
-#include "time.h" //clock_t clock (); time_t time(time_t*), double difftime (time_t, time_t);
+#include "allcaps\SOURCEIMAGES.h"
+#include "allcaps\VISUALS.h"
 #include "IsPngOrBmp.h"
 #include "QDebug.h"
 #include <QtGlobal> //qInstallMessageHandler
 #include <QApplication>
 #include "isPngOrBmp.h"
-#include "WriterSwing.h"
-#include "WriterGwt.h"
+#include "InscriberSwing.h"
+#include "InscriberGwt.h"
 #include "buildDom.h"
 #include "buildDom2.h"
 #include "cropAllFramesAndUpdateImagePaths.h"
 #include "buildFilenamesAndContents.h"
 #include "saveOutFilenamesAndContents.h"
-#include "debugapi.h"
+
 using namespace com::github::a2g::generator;
 
 
@@ -103,6 +104,12 @@ int main(int argc, char *argv[])
     if(!dir.exists(arg))
         return 0; //quick exit. don't want to unit test this because it deals with files on disk
 
+    //if(!dirAndParentDir.first.contains(SRC))
+    //    return  SrcIsNotFoundInPathParameter;
+    //if(dirAndParentDir.first.endsWith(SOURCEIMAGES) && dirAndParentDir.second.endsWith(SOURCEIMAGES))
+    //    return FailedToFindSourceimagesInDirOrParentDir;
+    //return IsOk;
+
     {
         clock_t t1 = clock();
 
@@ -120,7 +127,7 @@ int main(int argc, char *argv[])
         for(int i=0;i<foldersSize;i++)
         {
 
-            bool isGwt = !folders[i].contains("Swing");
+            bool isGwt = !folders[i].toUpper().contains("SWING");
             auto dom1 = buildDom(folders[i],fileSystem);
            
          
@@ -130,11 +137,11 @@ int main(int argc, char *argv[])
             dom1.get()->locationPath.replace(SOURCEIMAGES.toUpper(),VISUALS.toUpper());//update location - maybe do in the crop phase?
             dom1.get()->fullLocationPackage.replace(SOURCEIMAGES.toLower(),VISUALS.toLower());//update location - maybe do in the crop phase?
 
-            static const WriterSwing swing;
-            static const WriterGwt gwt;
+            static const InscriberSwing swing;
+            static const InscriberGwt gwt;
 
             auto dom2 = buildDom2(dom1->asRef());
-            auto x = buildFilenamesAndContents(dom2->asRef(),true? (IWriter&)swing : (IWriter&)gwt);
+            auto x = buildFilenamesAndContents(dom2->asRef(),isGwt? (IInscriber&)gwt : (IInscriber&)swing);
           
 
             int size = x.size();

@@ -15,7 +15,7 @@
  */
 
 #pragma once
-
-static const QString LOADERFORINVENTORY = "LoaderForInventory";//folder for AFile
+#include <QString>
+static const QString FIRST = "First";// camel case because most common usage is class name 
 
 

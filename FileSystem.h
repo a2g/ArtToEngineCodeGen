@@ -17,8 +17,8 @@
 #pragma once
 #include <QStringList>
 #include <QDir>
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
+#include <allcaps\NAMESPACE_BEGIN.h>
+#include <allcaps\NAMESPACE_END.h>
 NAMESPACE_BEGIN
 class FileSystem
 {

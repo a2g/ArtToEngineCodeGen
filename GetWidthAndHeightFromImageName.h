@@ -16,8 +16,8 @@
 #pragma once
 #include <QPoint>
 #include <QString>
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
+#include "allcaps\NAMESPACE_BEGIN.h"
+#include "allcaps\NAMESPACE_END.h"
 NAMESPACE_BEGIN
 static QPoint getWidthAndHeightFromImageName(QString imageName)
 {
@@ -30,7 +30,7 @@ static QPoint getWidthAndHeightFromImageName(QString imageName)
     int i = imageName.indexOf("x");
     if(i!=-1)
     {
-        QString first = imageName.mid(1,i-1);
+        QString first = imageName.mid(9,i-1);
         //                            ^
         //                         this is the underscore preceding width, gwt needs underscore
         QString last = imageName.mid(i+1);

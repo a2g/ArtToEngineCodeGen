@@ -16,17 +16,7 @@
 
 #pragma once
 #include <QString>
-#include <QPair>
-#include "FolderTraverserResult.h"
-#include "SRC.h"
-#include "SOURCEIMAGES.h"
 
-FolderTraverserResult getErrorFromDirAndParentDir(const QPair<std::string,std::string>& dirAndParentDir)
-{
-    if(!dirAndParentDir.first.contains(SRC))
-        return  SrcIsNotFoundInPathParameter;
-    if(dirAndParentDir.first.endsWith(SOURCEIMAGES) && dirAndParentDir.second.endsWith(SOURCEIMAGES))
-        return FailedToFindSourceimagesInDirOrParentDir;
-    return IsOk;
-}
-                                        
+static const QString AFILE = "afile";//folder for AFile
+
+

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-#include <WriteSwingBundle.h>
+#include <WriteBundle.h>
 #include <gtest/gtest.h>
 #include <DomLocation.h>
 
@@ -65,7 +65,7 @@ namespace  //anonymous for linker errors
         sha.addNewBundle("MAN_JUMPING").addFrame(10,0,0,90,54,"MAN","WALKING","blah.png");
 
 
-        std::string temp = com::github::a2g::generator::writeSwingBundle(bun).toUtf8().data();
+        std::string temp = com::github::a2g::generator::writeBundle(bun).toUtf8().data();
 
         QStringList actual = QString(temp.c_str()).split("\n");
         QStringList expected = QString(EXPECTED).split("\n");

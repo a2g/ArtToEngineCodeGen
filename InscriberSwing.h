@@ -17,19 +17,13 @@
 #pragma once
 #include <QString>
 #include "DomLocation.h"
-#include "IWriter.h"
+#include "IInscriber.h"
 #include "writeAFile.h"
 #include "writeInitialEnumFile.h"
-#include "writeIdFile.h"
-#include "writeSwingClass.h"
-#include "convertSwingLoader.h"
-#include "convertSwingBundle.h"
-#include "convertSwingSingleBundleLoader.h"
-#include "getObjectPlusAnim.h"
-#include "writeGwtClass.h"
-#include "writeSwingLoader.h"
-#include "writeSwingBundle.h" 
-#include "writeSwingClass.h"
+#include "writeIFileOrOFile.h"
+#include "writeLoader.h"
+#include "writeBundle.h" 
+#include "writeClass.h"
 #include "Dom2Location.h"
 namespace com
 {
@@ -39,38 +33,36 @@ namespace com
         {
             namespace generator
             {
-                class WriterGwt: public IWriter
+                class InscriberSwing : public IInscriber
                 {
+                    static const bool isGwt = false;
                     QString writeAFile(const Dom2Location& location) const override
                     {
                         return generator::writeAFile(location);
                     }
-
                     QString writeInitialEnumFile(const Dom2Loader& loader) const override
                     {
                         return generator::writeInitialEnumFile(loader);
                     }
-
                     QString writeIFile(const Dom2Loader& camera) const override
                     {
-                        return generator::writeIdFile('I',camera);
+                        return generator::writeIFileOrOFile('I',camera);
                     }
                     QString writeOFile(const Dom2Loader& camera) const override
                     {
-                        return generator::writeIdFile('O',camera);
+                        return generator::writeIFileOrOFile('O',camera);
                     }
-
                     QString writeLoader(const Dom2Loader& loader) const override
                     {
-                        return generator::writeSwingLoader(loader);
+                        return generator::writeLoader(loader, isGwt);
                     }
                     QString writeBundle(const Dom2Bundle& camera) const override
                     {
-                        return generator::writeSwingBundle(camera);
+                        return generator::writeBundle(camera);
                     }
-                    QString writeLoaderClass(const QString& package,const QString& className,int numberOfImages,QPoint res,int type) const override
+                    QString writeClass(const QString& package,const QString& className,const QString& loaderSeg, int numberOfImages, QPoint res, int type) const override
                     {
-                        return generator::writeSwingClass(package,className,numberOfImages,res,type);
+                        return generator::writeClass(isGwt, package,className, loaderSeg, numberOfImages, res, type);
                     }
                 };
             }

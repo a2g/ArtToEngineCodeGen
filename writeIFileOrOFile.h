@@ -25,10 +25,10 @@
 #include "IdGenerator.h"
 #include "getRealObjectSeg.h"
 #include "Dom2Location.h"
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
+#include "allcaps\NAMESPACE_BEGIN.h"
+#include "allcaps\NAMESPACE_END.h"
 NAMESPACE_BEGIN
-static QString writeIdFile(const char ch, const Dom2Loader& l)
+static QString writeIFileOrOFile(const char ch, const Dom2Loader& l)
 {
     // write file.
     QString fullLocationPackage = l.parent().fullLocationPackage.toLower();

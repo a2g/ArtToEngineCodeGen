@@ -24,7 +24,7 @@
 #include <QTextStream>
 #include <QDomDocument>
 #include <QXmlStreamWriter>
-#include "A2GASSERT.h"
+#include "allcaps\A2GASSERT.h"
 
 
 const char* STR_IMAGE = "croppedImage";
@@ -53,9 +53,6 @@ namespace com
         {
             namespace generator
             {
-
-
-
                 QRect getBoundingNonBlackRectangle(QImage image)
                 {
                     int lastCol = image.width()-1;
@@ -105,8 +102,8 @@ namespace com
                             // - pixel is transparent (alpha = opacity) so if alpha == 0, then 0% opaque.
                             // - either the pixel is black (ie 3dsmax always renders a background color, and it
                             //   looks best if its black if we insist if its black)
-                            isToKeepShrinkingTop &= (colorTop&RGB_MASK==0)||(::qAlpha(colorTop)==0);
-                            isToKeepShrinkingBottom &= (colorBottom&RGB_MASK==0)||(::qAlpha(colorBottom)==0);
+                            isToKeepShrinkingTop &= (colorTop&RGB_MASK)==0  ||  ::qAlpha(colorTop)==0;
+                            isToKeepShrinkingBottom &= (colorBottom&RGB_MASK)==0  ||  ::qAlpha(colorBottom)==0;
                             // we put the black test first, because > 90% will be max renders
                         }
 
@@ -117,8 +114,8 @@ namespace com
                         {
                             int colorLeft = image.pixel(left,y);
                             int colorRight = image.pixel(right,y);
-                            isToKeepShrinkingRight &= (colorRight&RGB_MASK==0)||(::qAlpha(colorRight)==0);
-                            isToKeepShrinkingLeft &= (colorLeft&RGB_MASK==0)||(::qAlpha(colorLeft)==0);
+                            isToKeepShrinkingRight &= (colorRight&RGB_MASK)==0  ||  ::qAlpha(colorRight)==0;
+                            isToKeepShrinkingLeft &= (colorLeft&RGB_MASK)==0  ||  ::qAlpha(colorLeft)==0;
                         }
 
                         left += isToKeepShrinkingLeft;
@@ -164,6 +161,11 @@ namespace com
 
                 QRect getCachedRectIfValidOneExists(QString pngFile)
                 {
+                    QByteArray debug = pngFile.toUtf8();
+                    if(strcmpi(debug.data(),"G:/Conan/dventure105/src/com/sourceimages/mission/interiors_Side/_50_side_door/initial/_640x360_orig_0000.png")==0)
+                    {
+                        debug.append(" ");
+                    }
                     QRect rect;
                     if(QFile::exists(getXmlFileForPng(pngFile)))
                     {
@@ -204,12 +206,16 @@ namespace com
                                         {
                                             if(pngSaveTime.time().minute()==timeFromXml.time().minute())
                                             {
-                                                if(pngSaveTime.time().second()==timeFromXml.time().second())
+                                                if(pngSaveTime.time().second()-timeFromXml.time().second()<30)
                                                 {
-                                                    rect.setTop(root.attribute(TOP).toInt());
-                                                    rect.setLeft(root.attribute(LEFT).toInt());
-                                                    rect.setWidth(root.attribute(WIDTH).toInt());
-                                                    rect.setHeight(root.attribute(HEIGHT).toInt());
+                                                    int top = root.attribute(TOP).toInt();
+                                                    int left = root.attribute(LEFT).toInt();
+                                                    int width = root.attribute(WIDTH).toInt();
+                                                    int height = root.attribute(HEIGHT).toInt();
+                                                    rect.setTop(top);
+                                                    rect.setLeft(left);
+                                                    rect.setWidth(width);
+                                                    rect.setHeight(height);
                                                 }
                                             }
                                         }
@@ -300,7 +306,7 @@ namespace com
                     if(!isLoaded)
                         return QRect();// failure.
 
-                                       // getting the rect takes a long time - so skip it if we got a valid rect from the cache
+                    // getting the rect takes a long time - so skip it if we got a valid rect from the cache
                     if(rect.isEmpty())
                     {
                         rect = getBoundingNonBlackRectangle(temp);

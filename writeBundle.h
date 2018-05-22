@@ -25,12 +25,12 @@
 #include <vector>
 #include "getObjectPlusAnim.h"
 #include "getObjectPlusAnimPlusNumber.h"
-#include <NAMESPACE_BEGIN.h>
-#include <NAMESPACE_END.h>
+#include "allcaps\NAMESPACE_BEGIN.h"
+#include "allcaps\NAMESPACE_END.h"
 #include <Dom2Location.h>
 #include <IdGenerator.h>
 NAMESPACE_BEGIN
-static  QString  writeSwingBundle(const Dom2Bundle& b)
+static  QString  writeBundle(const Dom2Bundle& b)
 {
     QString fullPackage = b.parent().parent().fullLocationPackage;
     QString loaderSeg = b.parent().loaderSeg;
@@ -53,9 +53,8 @@ static  QString  writeSwingBundle(const Dom2Bundle& b)
         const Dom2Frame& f = b.getFrameAt(k);
         auto objectPlusAnimToUpper = f.realObjectSegToUpper + "_" + f.animSegToUpper;
         auto objectPlusAnimToLower = objectPlusAnimToUpper.toLower();
-        // s += QString("        @Source(\"%1\")\n").arg(f.getPngSaveTo());
-        //s += QString("        abstract ImageResource %1_%2();\n").arg(objectSegToLower).arg(k);
-        s += QString("        public String %1_%2(){ return \"%3\"; }\n").arg(objectPlusAnimToLower).arg(k).arg(f.fullimagePath);
+        s += QString("        public String %1_%2(){ return \"%3\"\n").arg(objectPlusAnimToLower).arg(k).arg(f.fullimagePath);
+        s += QString("        ;}\n");
     }
 
     s += QString("    }\n");

@@ -21,7 +21,7 @@
 #include <DomLocation.h>
 #include <crop.h>
 #include "getObjectPlusanim.h" 
-#include "SOURCEIMAGES.h"
+#include "allcaps\SOURCEIMAGES.h"
 namespace com
 {
     namespace github

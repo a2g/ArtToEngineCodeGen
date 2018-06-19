@@ -25,6 +25,7 @@
 #include <QDomDocument>
 #include <QXmlStreamWriter>
 #include "allcaps\A2GASSERT.h"
+#include <iostream>
 
 
 const char* STR_IMAGE = "croppedImage";
@@ -162,10 +163,7 @@ namespace com
                 QRect getCachedRectIfValidOneExists(QString pngFile)
                 {
                     QByteArray debug = pngFile.toUtf8();
-                    if(strcmpi(debug.data(),"G:/Conan/dventure105/src/com/sourceimages/mission/interiors_Side/_50_side_door/initial/_640x360_orig_0000.png")==0)
-                    {
-                        debug.append(" ");
-                    }
+
                     QRect rect;
                     if(QFile::exists(getXmlFileForPng(pngFile)))
                     {
@@ -289,15 +287,27 @@ namespace com
                             QMessageBox::warning(NULL," couldnt remove",fullPathToSaveTo);
                         }
                     }
+                    
 
                     // check the cache
                     QRect rect = getCachedRectIfValidOneExists(fullPathToLoadFrom);
 
+
+                    static double g_skipped =0;
+                    static double g_total = 1;
+                    double percent =  g_skipped/g_total *100;
+
+                    // reporting percentages
+                    g_total++;
                     // we can skip if both cached rect is valid, and the output exists
                     if(!rect.isEmpty() && QFile::exists(fullPathToSaveTo))
                     {
+                        g_skipped++;
+                        qDebug() << "(" << percent << ")skipped " << fullPathToLoadFrom.toUtf8().data() << "\n";
                         return rect;//success!
                     }
+
+                    qDebug() << "(" << percent << ")processed " << fullPathToLoadFrom.toUtf8().data() << "\n";
 
                     //load the image
                     QImage temp;

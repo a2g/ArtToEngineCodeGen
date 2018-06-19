@@ -34,6 +34,7 @@
 #include "cropAllFramesAndUpdateImagePaths.h"
 #include "buildFilenamesAndContents.h"
 #include "saveOutFilenamesAndContents.h"
+#include <iostream>
 
 using namespace com::github::a2g::generator;
 
@@ -102,36 +103,36 @@ int main(int argc, char *argv[])
 
     QDir dir(arg);
     if(!dir.exists(arg))
-        return 0; //quick exit. don't want to unit test this because it deals with files on disk
-
-    //if(!dirAndParentDir.first.contains(SRC))
-    //    return  SrcIsNotFoundInPathParameter;
-    //if(dirAndParentDir.first.endsWith(SOURCEIMAGES) && dirAndParentDir.second.endsWith(SOURCEIMAGES))
-    //    return FailedToFindSourceimagesInDirOrParentDir;
-    //return IsOk;
+    {
+        std::cout << "Dir not exist " << arg.toUtf8().data() <<"\n";
+        return 0;
+    }
+ 
 
     {
-        clock_t t1 = clock();
+      
 
         FileSystem fileSystem;
         populateFileSystemFromRealSystemRecursively(&fileSystem,arg);
 
-        qInfo() << "blah\n";
-        clock_t t2 = clock();
-        qDebug() << "Adding folders " << (t2-t1)/1000.0 << " seconds\n";
-
+       
+      
+     
 
 
         QStringList folders = getFoldersToProcess(arg,fileSystem);
         int foldersSize = folders.size();
         for(int i=0;i<foldersSize;i++)
         {
-
+            clock_t t1 = clock();
             bool isGwt = !folders[i].toUpper().contains("SWING");
             auto dom1 = buildDom(folders[i],fileSystem);
            
+            clock_t t2 = clock();
          
             cropAllFramesAndUpdateImagePaths(dom1->asRef());
+
+            clock_t t3 = clock();
 
             std::string bit = dom1.get()->locationPath.toStdString();
             dom1.get()->locationPath.replace(SOURCEIMAGES.toUpper(),VISUALS.toUpper());//update location - maybe do in the crop phase?
@@ -140,9 +141,12 @@ int main(int argc, char *argv[])
             static const InscriberSwing swing;
             static const InscriberGwt gwt;
 
+            clock_t t4 = clock();
+
             auto dom2 = buildDom2(dom1->asRef());
             auto x = buildFilenamesAndContents(dom2->asRef(),isGwt? (IInscriber&)gwt : (IInscriber&)swing);
           
+            clock_t t5 = clock();
 
             int size = x.size();
             for(int i=0;i<size;i++)
@@ -151,24 +155,20 @@ int main(int argc, char *argv[])
             }
 
             saveOutFilenamesAndContents(x);
+
+            clock_t t6 = clock();
+           
+            qDebug() << "Buliding dom " << (t2-t1)/1000.0 << " seconds\n";
+            qDebug() << "CropAllFramesAndUpdateImagePaths " << (t3-t2)/1000.0 << " seconds \n";
+            qDebug() << "Build filenames and contents " << (t5-t4)/1000.0 << " seconds \n";
+            qDebug() << "Save filenames and contents " << (t6-t5)/1000.0 << " seconds \n";
+            qDebug() << "-----------------------------------------------\n";
+            qDebug() << "Total " << (t6-t1)/1000.0 << " seconds \n";
+            qDebug() << "( for path: " << folders[i] << " )\n";
         }
-        clock_t t3 = clock();
-        qDebug() << "Planning output " << (t3-t2)/1000.0 << " seconds \n";
 
-
-        //                 ^              ^
-        //               search        replace
-        clock_t t4 = clock();
-        qDebug() << "Writing output " << (t4-t3)/1000.0 << " seconds \n";
-        qDebug() << "-----------------------------------------------\n";
-        qDebug() << "Total " << (t4-t1)/1000.0 << " seconds \n";
-        qDebug() << "( for path: " << arg.toStdString().c_str() << " )\n";
-
-        // dont need to dump the filesystem
-        //for(int i=0;i<fileSystem.getNumberOfItems();i++)
-        //{
-        //    qDebug() <<  fileSystem.getItem(i).toUtf8().data() << "\n";
-        //}
+ 
+ 
     }
     return 0;
 }

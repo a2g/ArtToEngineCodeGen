@@ -47,6 +47,7 @@ namespace com
                                     for(int j = 0; j < a.getFrames().size(); j++)
                                     {
                                         const DomFrame& f = a.getFrames().at(j);
+                                        std::string debug = f.getPngSaveTo();
                                         QStringList list = QString(f.getPngSaveTo()).split("/");
                                         QString root;
                                         int i = 0;
@@ -55,7 +56,9 @@ namespace com
                                             root += list[i] + "/";
                                         }
 
-                                        QString locationFolder = QDir(root).canonicalPath();
+                                        std::string debug2 = root.toUtf8().data();
+                                        QString locationFolder = QDir(root).absolutePath();
+                                        std::string debug3 = locationFolder.toUtf8().data();
                                         QString cameraSeg = list[i - 4];
                                         QString pixelSeg = list[i - 3];
                                         QString objectSeg = list[i - 2];
@@ -86,6 +89,8 @@ namespace com
                                         }
                                         DomFrame& writeable = const_cast<DomFrame&>(f);
                                         writeable.setRect(rect);
+                                        std::string debug10 = pngSaveTo.toUtf8().data();
+
                                         writeable.setPngPath(pngSaveTo.toUtf8().data());
                                     }
                                 }

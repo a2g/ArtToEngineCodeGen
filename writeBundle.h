@@ -53,6 +53,8 @@ static  QString  writeBundle(const Dom2Bundle& b)
         const Dom2Frame& f = b.getFrameAt(k);
         auto objectPlusAnimToUpper = f.realObjectSegToUpper + "_" + f.animSegToUpper;
         auto objectPlusAnimToLower = objectPlusAnimToUpper.toLower();
+        std::string debug = f.fullimagePath.toUtf8().data();
+
         s += QString("        public String %1_%2(){ return \"%3\"\n").arg(objectPlusAnimToLower).arg(k).arg(f.fullimagePath);
         s += QString("        ;}\n");
     }

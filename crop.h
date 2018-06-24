@@ -300,7 +300,7 @@ namespace com
                     // reporting percentages
                     g_total++;
                     // we can skip if both cached rect is valid, and the output exists
-                    if(!rect.isEmpty() && QFile::exists(fullPathToSaveTo))
+                    if(/*!rect.isEmpty() &&*/ QFile::exists(fullPathToSaveTo))
                     {
                         g_skipped++;
                         qDebug() << "(" << percent << ")skipped " << fullPathToLoadFrom.toUtf8().data() << "\n";

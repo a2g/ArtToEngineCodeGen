@@ -23,7 +23,7 @@ namespace  //anonymous for linker errors
     const char* EXPECTED =
         "       package com.visuals.canoe.canoe;\n"
         "\n"
-        "   import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n"
+        "   import com.github.a2g.core.interfaces.nongame.presenter.IMasterPresenterFromBundle;\n"
         "   import com.github.a2g.core.platforms.swing.dependencies.PackagedImageForSwing;\n"
         "   import com.google.gwt.event.dom.client.LoadHandler;\n"
         "\n"

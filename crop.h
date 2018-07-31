@@ -160,7 +160,7 @@ namespace com
                     return pngFile+".xml";
                 }
 
-                QRect getCachedRectIfValidOneExists(QString pngFile)
+                QRect getCachedRectFromXml(QString pngFile)
                 {
                     QByteArray debug = pngFile.toUtf8();
 
@@ -175,7 +175,7 @@ namespace com
                         if(doc.setContent(&file))
                         {
                             QDomElement root = doc.documentElement();
-
+                            /*
                             int year = root.attribute(YEAR).toInt();
                             int month = root.attribute(MONTH).toInt();
                             int day = root.attribute(DAY).toInt();
@@ -189,41 +189,57 @@ namespace com
 
                             // datetime from XML
                             QDateTime timeFromXml(lastDate,lastTime);
+                            */
 
-                            // datetime from actual png
-                            QDateTime pngSaveTime = getSaveTime(pngFile);
+                            int top = root.attribute(TOP).toInt();
+                            int left = root.attribute(LEFT).toInt();
+                            int width = root.attribute(WIDTH).toInt();
+                            int height = root.attribute(HEIGHT).toInt();
+                            rect.setTop(top);
+                            rect.setLeft(left);
+                            rect.setWidth(width);
+                            rect.setHeight(height);
+                        }
+                        file.close();
+                    }
+                    return rect;
+                }
 
-                            // if the time matches thenit hasn't been modified since last time.
-                            if(pngSaveTime.date().year()==timeFromXml.date().year())
+                bool isTimestampOfXmlMatchingTimestampOfPng(QString pngFile)
+                {
+                    QByteArray debug = pngFile.toUtf8();
+
+                    if(QFile::exists(getXmlFileForPng(pngFile)))
+                    {
+                        // datetime from XML
+                        QDateTime timeFromXml = getSaveTime(getXmlFileForPng(pngFile));
+
+                        // datetime from actual png
+                        QDateTime pngSaveTime = getSaveTime(pngFile);
+
+                        // if the time matches thenit hasn't been modified since last time.
+                        if(pngSaveTime.date().year()==timeFromXml.date().year())
+                        {
+                            if(pngSaveTime.date().month()==timeFromXml.date().month())
                             {
-                                if(pngSaveTime.date().month()==timeFromXml.date().month())
+                                if(pngSaveTime.date().day()==timeFromXml.date().day())
                                 {
-                                    if(pngSaveTime.date().day()==timeFromXml.date().day())
+                                    if(pngSaveTime.time().hour()==timeFromXml.time().hour())
                                     {
-                                        if(pngSaveTime.time().hour()==timeFromXml.time().hour())
+                                        if(pngSaveTime.time().minute()==timeFromXml.time().minute())
                                         {
-                                            if(pngSaveTime.time().minute()==timeFromXml.time().minute())
+                                            if(pngSaveTime.time().second()-timeFromXml.time().second()<30)
                                             {
-                                                if(pngSaveTime.time().second()-timeFromXml.time().second()<30)
-                                                {
-                                                    int top = root.attribute(TOP).toInt();
-                                                    int left = root.attribute(LEFT).toInt();
-                                                    int width = root.attribute(WIDTH).toInt();
-                                                    int height = root.attribute(HEIGHT).toInt();
-                                                    rect.setTop(top);
-                                                    rect.setLeft(left);
-                                                    rect.setWidth(width);
-                                                    rect.setHeight(height);
-                                                }
+                                                return true;
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                        file.close();
+
                     }
-                    return rect;
+                    return false;
                 }
 
                 void saveTimestampXml(QString pngFile,QRect rect)
@@ -289,19 +305,18 @@ namespace com
                     }
                     
 
-                    // check the cache
-                    QRect rect = getCachedRectIfValidOneExists(fullPathToLoadFrom);
-
-
                     static double g_skipped =0;
                     static double g_total = 1;
                     double percent =  g_skipped/g_total *100;
 
                     // reporting percentages
                     g_total++;
-                    // we can skip if both cached rect is valid, and the output exists
-                    if(/*!rect.isEmpty() &&*/ QFile::exists(fullPathToSaveTo))
+                    // we can skip if the timestamp of Xml matches the timestamp of png
+                    if(isTimestampOfXmlMatchingTimestampOfPng(fullPathToLoadFrom))
                     {
+                        // check the cache
+                        QRect rect = getCachedRectFromXml(fullPathToLoadFrom);
+
                         g_skipped++;
                         qDebug() << "(" << percent << ")skipped " << fullPathToLoadFrom.toUtf8().data() << "\n";
                         return rect;//success!
@@ -317,10 +332,8 @@ namespace com
                         return QRect();// failure.
 
                     // getting the rect takes a long time - so skip it if we got a valid rect from the cache
-                    if(rect.isEmpty())
-                    {
-                        rect = getBoundingNonBlackRectangle(temp);
-                    }
+                     
+                    QRect rect = getBoundingNonBlackRectangle(temp);
 
                     QImage image;
                     if(rect.bottomRight().x() == -1)

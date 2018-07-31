@@ -30,12 +30,12 @@ static QString convertBundleToGwt(const QString& swingBundle)
     for(int i = 0; i < lines.size(); i++)
     {
         auto line = lines[i].trimmed(); 
-        if(line=="import com.github.a2g.core.platforms.swing.dependencies.PackagedImageForSwing;")
+        if(line=="import com.github.a2g.core.platforms.swing.dependencies.PlatformPackagedImageForSwing;")
         {
             s+="import com.google.gwt.resources.client.ClientBundle;\n";
             s+="import com.google.gwt.resources.client.ImageResource;\n";
             s+="import com.google.gwt.core.client.GWT;\n";
-            s+="import com.github.a2g.core.platforms.html4.dependencies.PackagedImageForHtml4;\n";
+            s+="import com.github.a2g.core.platforms.html4.dependencies.PlatformPackagedImageForHtml4;\n";
         }
         else if(line.startsWith("public class"))
         {

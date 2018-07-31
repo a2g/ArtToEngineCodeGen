@@ -22,8 +22,8 @@ using namespace com::github::a2g::generator;
 namespace  //anonymous for linker errors
 {
     const char* EXPECTED =
-        "public static ISingleBundle WATERFALL_FALLING(){return new Loader().new WATERFALL_FALLING();}\n"
-        "public class WATERFALL_FALLING implements ISingleBundle\n"
+        "public static IPlatformResourceBundle WATERFALL_FALLING(){return new Loader().new WATERFALL_FALLING();}\n"
+        "public class WATERFALL_FALLING implements IPlatformResourceBundle\n"
         "{\n"
         "    Timer timer;\n"
         "    public WATERFALL_FALLING() {}\n"
@@ -86,8 +86,8 @@ namespace  //anonymous for linker errors
     }
 
     const char* GWTEXPECTED =
-        "public static ISingleBundle WATERFALL_FAILLING(){return new Loader().new WATERFALL_FAILLING();}\n"
-        "   public class WATERFALL_FAILLING implements ISingleBundle\n"
+        "public static IPlatformResourceBundle WATERFALL_FAILLING(){return new Loader().new WATERFALL_FAILLING();}\n"
+        "   public class WATERFALL_FAILLING implements IPlatformResourceBundle\n"
         "   {\n"
         "       public WATERFALL_FAILLING() {}\n"
         "       @Override public int getBundleNumber() { return 0; }\n"

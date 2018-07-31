@@ -21,8 +21,7 @@
 #include <FileSystem.h>
 #include <Dom2Location.h>
 #include <debugapi.h>
-#include "IInscriber.h"
-#include "buildFilenamesAndContents.h"
+#include "IInscriber.h" 
 #include "getObjectPlusAnim.h"
  
 #include "getPackage.h"

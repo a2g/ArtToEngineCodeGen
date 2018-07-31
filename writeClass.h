@@ -29,11 +29,11 @@ static QString writeClass(bool isGwt, const QString& package,const QString& bund
     QString f;
     if(isGwt)
     {
-        f += QString("public static ISingleBundle %1(){return new Loader().new %1();}\n").arg(bundleName);
-        f += QString("public class %1 implements ISingleBundle\n").arg(bundleName);
+        f += QString("public static IPlatformResourceBundle %1(){return new Loader().new %1();}\n").arg(bundleName);
+        f += QString("public class %1 implements IPlatformResourceBundle\n").arg(bundleName);
         f += QString("{\n");
         f += QString("  public %1() {}\n").arg(bundleName);
-        f += QString("  @Override public int getLoaderEnum() { return %1; }\n").arg(type);
+        f += QString("  @Override public int getTypeOfLoader() { return %1; }\n").arg(type);
         f += QString("  @Override public String toString() { return \"%1\"; }\n").arg(bundleName + "_" + loaderSeg);
         f += QString("  @Override public int getSize() { return %1; }\n").arg(numberOfImages);
         f += QString("  @Override public PointI getImageResolution(){ return new PointI(%1,%2);}\n").arg(resolution.x()).arg(resolution.y());
@@ -75,11 +75,11 @@ static QString writeClass(bool isGwt, const QString& package,const QString& bund
     }
     else
     {
-        f += QString("public class %1 implements ISingleBundle\n").arg(bundleName);
+        f += QString("public class %1 implements IPlatformResourceBundle\n").arg(bundleName);
         f += QString("{\n");
         f += QString("  Timer timer;\n");
         f += QString("  public %1() {}\n").arg(bundleName);
-        f += QString("  @Override public int getLoaderEnum() { return %1; }\n").arg(type);
+        f += QString("  @Override public int getTypeOfLoader() { return %1; }\n").arg(type);
         f += QString("  @Override public String toString() { return \"%1\"; }\n").arg(bundleName + "_" + loaderSeg);
         f += QString("  @Override public int getSize() { return %1; }\n").arg(numberOfImages);
         f += QString("  @Override public PointI getImageResolution(){ return new PointI(%1,%2);}\n").arg(resolution.x()).arg(resolution.y());

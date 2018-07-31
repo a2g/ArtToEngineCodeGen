@@ -37,10 +37,10 @@ static QString writeLoader(const Dom2Loader& l,bool isGwt)
 
     s += QString("\n"); 
     s += QString("import com.github.a2g.core.primitive.PointI;\n");
-    s += QString("import com.github.a2g.core.interfaces.IOnEnqueueResources;\n");
-    s += QString("import com.github.a2g.core.interfaces.internal.IBundleLoader;\n");
-    s += QString("import com.github.a2g.core.interfaces.internal.ISingleBundle;\n");
-    s += QString("import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n");
+    s += QString("import com.github.a2g.core.interfaces.game.IOnEnqueueResources;\n");
+    s += QString("import com.github.a2g.core.interfaces.nongame.platform.IBundleLoader;\n");
+    s += QString("import com.github.a2g.core.interfaces.nongame.platform.IPlatformResourceBundle;\n");
+    s += QString("import com.github.a2g.core.interfaces.nongame.presenter.IMasterPresenterFromBundle;\n");
     s += QString("import com.google.gwt.event.dom.client.LoadHandler;\n");
     s += QString("import %1.%2.InitialEnum;\n").arg(fullLocationPackage).arg(loaderSeg);
     s += QString("import javax.swing.Timer;\n");
@@ -69,7 +69,7 @@ static QString writeLoader(const Dom2Loader& l,bool isGwt)
     s += QString("    return 0;\n");
     s += QString("  }\n");
     s += QString("  @Override\n");
-    s += QString("  public ISingleBundle getSingleBundle(int n)\n");
+    s += QString("  public IPlatformResourceBundle getSingleBundle(int n)\n");
     s += QString("  {\n");
     s += QString("    if (n == -2) {}\n");
     for(int j = 0; j < l.getBundleCount(); j++)

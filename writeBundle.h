@@ -39,9 +39,9 @@ static  QString  writeBundle(const Dom2Bundle& b)
     QString s;
     s += QString("package %1.%2;\n").arg(fullPackage).arg(loaderSeg);
     s += QString("\n");
-    s += QString("import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n");
-    s += QString("import com.github.a2g.core.platforms.swing.dependencies.PackagedImageForSwing;\n");
     s += QString("import com.google.gwt.event.dom.client.LoadHandler;\n");
+    s += QString("import com.github.a2g.core.interfaces.nongame.presenter.IMasterPresenterFromBundle;\n");
+    s += QString("import com.github.a2g.core.platforms.swing.dependencies.PlatformPackagedImageForSwing;\n");
     s += QString("\n");
     s += QString("public class %1\n").arg(b.bundleName);
     s += QString("{\n");
@@ -75,7 +75,7 @@ static  QString  writeBundle(const Dom2Bundle& b)
         auto ocode = loader.getIds()[realObjectSegToUpper];
 
         s += QString("else if (i == %1)").arg(i);
-        s += QString(" return api.addImageForEitherInventoryOrScene(lh, %1,%2,%3,%4,%5, \"%6\",\"%7\",(short)%8,\"%9\",new PackagedImageForSwing(res.%10_%11()));\n").arg(f.objectPrefix).arg(f.x).arg(f.y).arg(f.w).arg(f.h).arg(realObjectSegToUpper).arg(f.animSegToUpper).arg(ocode).arg(objectPlusAnimToUpper).arg(objectPlusAnimToLower).arg(i);
+        s += QString(" return api.addImageForEitherInventoryOrScene(lh, %1,%2,%3,%4,%5, \"%6\",\"%7\",(short)%8,\"%9\",new PlatformPackagedImageForSwing(res.%10_%11()));\n").arg(f.objectPrefix).arg(f.x).arg(f.y).arg(f.w).arg(f.h).arg(realObjectSegToUpper).arg(f.animSegToUpper).arg(ocode).arg(objectPlusAnimToUpper).arg(objectPlusAnimToLower).arg(i);
     }
 
     s += QString("        return false;"                                                              "\n");

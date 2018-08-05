@@ -26,7 +26,7 @@ namespace  //anonymous for linker errors
         "package com.visuals.canoeLoc.canoeCam;\n"
         "\n"
         "    import com.github.a2g.core.platforms.html4.PackagedImageForHtml4;\n"
-        "    import com.github.a2g.core.interfaces.internal.IMasterPresenterFromBundle;\n"
+        "    import com.github.a2g.core.interfaces.nongame.presenter.IMasterPresenterFromBundle;\n"
         "    import com.google.gwt.resources.client.ClientBundle;\n"
         "    import com.google.gwt.event.dom.client.LoadHandler;\n"
         "    import com.google.gwt.core.client.GWT;\n"

@@ -311,6 +311,7 @@ namespace com
 
                     // reporting percentages
                     g_total++;
+
                     // we can skip if the timestamp of Xml matches the timestamp of png
                     if(isTimestampOfXmlMatchingTimestampOfPng(fullPathToLoadFrom))
                     {
@@ -321,9 +322,10 @@ namespace com
                         qDebug() << "(" << percent << ")skipped " << fullPathToLoadFrom.toUtf8().data() << "\n";
                         return rect;//success!
                     }
-
-                    qDebug() << "(" << percent << ")processed " << fullPathToLoadFrom.toUtf8().data() << "\n";
-
+                    else
+                    {
+                        qDebug() << "(" << percent << ")processed " << fullPathToLoadFrom.toUtf8().data() << "\n";
+                    }
                     //load the image
                     QImage temp;
                     bool isLoaded = temp.load(fullPathToLoadFrom);

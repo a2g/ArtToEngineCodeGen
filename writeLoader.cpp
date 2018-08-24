@@ -24,7 +24,7 @@ namespace  //anonymous for linker errors
     const char* EXPECTED =
         "package com.visuals.canoe.canoe;\n"
         "\n"
-        "import com.github.a2g.core.interfaces.IOnEnqueueResources;\n"
+        "import com.github.a2g.core.interfaces.game.handlers.IOnEnqueueResources;\n"
         "import com.github.a2g.core.interfaces.nongame.platform.IBundleLoader;\n"
         "import com.github.a2g.core.interfaces.nongame.platform.IPlatformResourceBundle;\n"
         "import com.github.a2g.core.interfaces.nongame.presenter.IMasterPresenterFromBundle;\n"

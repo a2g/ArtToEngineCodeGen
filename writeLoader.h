@@ -34,10 +34,9 @@ static QString writeLoader(const Dom2Loader& l,bool isGwt)
     QPoint rez = l.getResolutionOfFirstImageFound();
     QString s;
     s += QString("package %1.%2;\n").arg(fullLocationPackage).arg(loaderSeg);
-
     s += QString("\n"); 
     s += QString("import com.github.a2g.core.primitive.PointI;\n");
-    s += QString("import com.github.a2g.core.interfaces.game.IOnEnqueueResources;\n");
+    s += QString("import com.github.a2g.core.interfaces.game.handlers.IOnEnqueueResources;\n");
     s += QString("import com.github.a2g.core.interfaces.nongame.platform.IBundleLoader;\n");
     s += QString("import com.github.a2g.core.interfaces.nongame.platform.IPlatformResourceBundle;\n");
     s += QString("import com.github.a2g.core.interfaces.nongame.presenter.IMasterPresenterFromBundle;\n");
@@ -87,9 +86,9 @@ static QString writeLoader(const Dom2Loader& l,bool isGwt)
     {
         auto b = iter.at(j);
         if(b.bundleName==INITIALS)
-            s += QString("public static InitialEnum INITIALS(IOnEnqueueResources api){api.queueSingleBundle( new Loader().new INITIALS()); return new InitialEnum();}\n").arg(b.bundleName);
+            s += QString("public static InitialEnum INITIALS(IOnEnqueueResources api){api.enqueueSingleBundle( new Loader().new INITIALS()); return new InitialEnum();}\n").arg(b.bundleName);
         else
-            s += QString("public static String %1(IOnEnqueueResources api){api.queueSingleBundle( new Loader().new %1()); return \"%1\";}\n").arg(b.bundleName);
+            s += QString("public static String %1(IOnEnqueueResources api){api.enqueueSingleBundle( new Loader().new %1()); return \"%1\";}\n").arg(b.bundleName);
         s += writeClass(isGwt, getPackage(l),b.bundleName,b.parent().loaderSeg, b.getFrameCount(), QPoint(rez.x(), rez.y()), l.type);
     }
     s += QString("}\n");// deliberately leave off closing the class, since we need to add loader classes

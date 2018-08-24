@@ -107,11 +107,11 @@ static std::auto_ptr<Dom2Location> buildDom2(const DomLocation& location)
                     theBundle.addFrame(o.prefix,x,y,w,h,realObjectSegToUpper,animSegtoUpper, f.getPngSaveTo());
                 }
             }
+        }
 
-            if(initialsBundle.getFrameCount()==0)
-            {
-                loader.removeBundle(INITIALS);
-            }
+        if(initialsBundle.getFrameCount()==0)
+        {
+            loader.removeBundle(INITIALS);
         }
     }
     return toReturn;

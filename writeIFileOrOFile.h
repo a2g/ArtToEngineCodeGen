@@ -46,7 +46,9 @@ static QString writeIFileOrOFile(const char ch, const Dom2Loader& l)
         s += QString("        %1(%2),\n").arg(iter.key().toUpper()).arg(iter.value());
     }
     s += ("        ;\n");
+    s += ("        public int code;");
     s += ("        Enum(int code) {\n");
+    s += ("         this.code=code;\n");
     s += ("        }\n");
     s += ("    }\n");
     s += ("    public static Enum getEnum(int value)\n");

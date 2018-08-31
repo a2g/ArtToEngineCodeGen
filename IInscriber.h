@@ -35,6 +35,8 @@ namespace com
                     virtual QString writeLoader(const Dom2Loader& loader) const = 0;
                     virtual QString writeBundle(const Dom2Bundle& bundle) const = 0;
                     virtual QString writeClass(const QString& package,const QString& className,const QString& loaderSeg,int numberOfImages,QPoint res,int type) const =0;
+                    virtual QString writeInvOnInvFile(const Dom2Loader& camera) const=0;
+                    virtual QString writeHotspotFile(const Dom2Loader& camera) const =0;
                 };
             }
         }

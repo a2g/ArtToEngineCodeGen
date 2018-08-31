@@ -28,6 +28,8 @@
 #include "writeBundle.h" 
 #include "writeClass.h"
 #include "Dom2Location.h"
+#include "writeInvOnInvFile.h"
+#include "writeHotspotFile.h"
 namespace com
 {
     namespace github
@@ -71,6 +73,14 @@ namespace com
                     QString writeClass(const QString& package,const QString& className,const QString& loaderSeg, int numberOfImages,QPoint res,int type) const override
                     {
                         return generator::writeClass(isGwt, package,className,loaderSeg, numberOfImages,res,type);
+                    }
+                    QString writeInvOnInvFile(const Dom2Loader& camera) const override
+                    {
+                        return generator::writeInvOnInvFile(camera);
+                    }
+                    QString writeHotspotFile(const Dom2Loader& camera) const override
+                    {
+                        return generator::writeHotspotFile(camera);
                     }
                 };
             }

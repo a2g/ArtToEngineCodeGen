@@ -116,6 +116,10 @@ static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const D
             // I.java
             auto ifile = w.writeIFile(loader);
             builtFiles.push_back(getPair(ifile,locPath + "/" + loaderSeg + "/I.java"));
+
+            // InvOnInv.java
+            auto ioifile = w.writeInvOnInvFile(loader);
+            builtFiles.push_back(getPair(ioifile,locPath + "/" + loaderSeg + "/InvOnInv.java"));
         }
         else
         {
@@ -124,6 +128,10 @@ static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const D
                 // O.java
                 auto ofile = w.writeOFile(loader);
                 builtFiles.push_back(getPair(ofile,locPath+"/"+loaderSeg+"/O.java"));
+
+                // H.java
+                auto hfile = w.writeHotspotFile(loader);
+                builtFiles.push_back(getPair(hfile,locPath+"/"+loaderSeg+"/H.java"));
             }
         }
     }

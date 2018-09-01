@@ -37,28 +37,28 @@ static QString writeInvOnInvFile(const Dom2Loader& l)
     QString s;
     s += QString("package %1;\n").arg(package);
     s += QString("\n");
-    s += QString("public class InvOnInv\n");
-    s += QString("{\n");
-    s += QString("     public enum Enum\n");
+    s += QString("     public enum InvOnInv\n");
     s += QString("     {\n");
     int rollingId = 0;
+    QSet<QString> namesAdded;
     for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++)
     {
         for(auto iter2 = l.getIds().begin(); iter2!=l.getIds().end();iter2++)
         {
-            if(iter.key()!=iter2.key())
+            if(iter.key()!=iter2.key() && !namesAdded.contains(iter.key() + "_WITH_"+ iter2.key()))
             {
                 s += QString("        %1(%2),\n").arg(iter.key().toUpper()).arg(iter2.key().toUpper()).arg(rollingId++);
+                namesAdded.insert(iter.key() + "_WITH_"+ iter2.key());
+                namesAdded.insert(iter2.key() + "_WITH_"+  iter.key());
             }
         }
     }
     s += ("        ;\n");
     s += ("        public int code;");
-    s += ("        Enum(int code) {\n");
+    s += ("        InvOnInv(int code) {\n");
     s += ("         this.code=code;\n");
     s += ("        }\n");
     s += ("    }\n");
-    s += ("}\n");
     return s;
 }
 NAMESPACE_END

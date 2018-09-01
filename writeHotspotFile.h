@@ -30,7 +30,6 @@
 NAMESPACE_BEGIN
 static QString writeHotspotFile(const Dom2Loader& l)
 {
-   char ch = 'H';
     // write file.
     QString fullLocationPackage = l.parent().fullLocationPackage.toLower();
 
@@ -38,9 +37,7 @@ static QString writeHotspotFile(const Dom2Loader& l)
     QString s;
     s += QString("package %1;\n").arg(package);
     s += QString("\n");
-    s += QString("public class %1\n").arg(ch);
-    s += QString("{\n");
-    s += QString("     public enum Enum\n");
+    s += QString("     public enum H\n");
     s += QString("     {\n");
     for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++)
     {
@@ -50,28 +47,12 @@ static QString writeHotspotFile(const Dom2Loader& l)
         }
     }
     s += ("        ;\n");
-    s += ("        public int code;");
-    s += ("        Enum(int code) {\n");
-    s += ("         this.code=code;\n");
+    s += ("        public short code;");
+    s += ("        H(int code) {\n");
+    s += ("         this.code=(short)code;\n");
     s += ("        }\n");
     s += ("    }\n");
-    s += ("    public static Enum getEnum(int value)\n");
-    s += ("    {                               \n");
-    s += ("        switch(value)               \n");
-    s += ("        {                           \n");
-    int i = 0;
-    for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++, i++)
-    {
-        s += QString("            case %2: return Enum.%1;\n").arg(iter.key().toUpper()).arg(iter.value());
-    }
-    s += ("        };\n");
-    s += ("        return null;\n");
-    s += ("    }\n");
-    for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++)
-    {
-        s += QString("    public static final short %1 = %2;\n").arg(iter.key().toUpper()).arg(iter.value());
-    }
-    s += ("}\n");
+  
     return s;
 }
 NAMESPACE_END

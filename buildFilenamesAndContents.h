@@ -31,7 +31,7 @@
 #include "allcaps\INITIALS.h"
 #include "allcaps\NAMESPACE_BEGIN.h"
 #include "allcaps\NAMESPACE_END.h"
-#include "allcaps\AFILE.h"
+
 
 NAMESPACE_BEGIN
  
@@ -67,12 +67,12 @@ static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const D
     QVector<QPair<std::string,std::string>> builtFiles;
     auto locPath = location.locationPath.toLower();
 
-    {
+ /*   {
         // A.java
         auto afile = w.writeAFile(location);
         builtFiles.push_back(getPair(afile,locPath+"/"+AFILE.toLower()+"/A.java"));
     }
-
+    */
   
 
     for(int i = 0; i < location.getLoaderCount(); i++)
@@ -117,9 +117,9 @@ static QVector<QPair<std::string,std::string>> buildFilenamesAndContents(const D
             auto ifile = w.writeIFile(loader);
             builtFiles.push_back(getPair(ifile,locPath + "/" + loaderSeg + "/I.java"));
 
-            // InvOnInv.java
-            auto ioifile = w.writeInvOnInvFile(loader);
-            builtFiles.push_back(getPair(ioifile,locPath + "/" + loaderSeg + "/InvOnInv.java"));
+            // ICombinations.java
+            auto icombinations = w.writeICombinationsFile(loader);
+            builtFiles.push_back(getPair(icombinations,locPath + "/" + loaderSeg + "/ICombinations.java"));
         }
         else
         {

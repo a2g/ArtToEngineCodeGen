@@ -28,46 +28,61 @@
 #include "allcaps\NAMESPACE_BEGIN.h"
 #include "allcaps\NAMESPACE_END.h"
 NAMESPACE_BEGIN
-static QString writeIFileOrOFile(const char ch, const Dom2Loader& l)
+static QString writeICombinationsFile(const Dom2Loader& l)
 {
+    QMap<int,QString> productsToAdd;
+    for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++)
+    {
+        for(auto iter2 = l.getIds().begin(); iter2!=l.getIds().end();iter2++)
+        {
+            int product = iter.value() * iter2.value();
+            if(iter.key()!=iter2.key() && !productsToAdd.contains(product))
+            {
+                QString toAdd = QString("USE_%1_WITH_%2").arg(iter.key().toUpper()).arg(iter2.key().toUpper());
+                productsToAdd.insert(product,toAdd);
+            }
+        }
+    }
+
     // write file.
     QString fullLocationPackage = l.parent().fullLocationPackage.toLower();
 
     QString package = QString("%1.%2").arg(fullLocationPackage).arg(l.loaderSeg.toLower());
     QString s;
     s += QString("package %1;\n").arg(package);
+    s += QString("import com.github.a2g.core.interfaces.game.scene.ConstantsForAPI;\n");
     s += QString("\n");
-    s += QString("public class %1\n").arg(ch);
-    s += QString("{\n");
+    s += QString("   public class ICombinations implements ConstantsForAPI\n");
+    s += QString("   {\n");
     s += QString("     public enum Enum\n");
     s += QString("     {\n");
-    for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++)
+    for(auto iter = productsToAdd.begin(); iter!=productsToAdd.end();iter++)
     {
-        s += QString("        %1(%2),\n").arg(iter.key().toUpper()).arg(iter.value());
+        s += QString("        %1(USE+%2),\n").arg(iter.value().toUpper()).arg(iter.key());
     }
     s += ("        ;\n");
-    s += ("        public int code;\n");
+    s += ("        public int code;");
     s += ("        Enum(int code) {\n");
     s += ("         this.code=code;\n");
     s += ("        }\n");
     s += ("    }\n");
-    s += ("    public static Enum getEnum(int value)\n");
+    s += ("    public static ICombinations.Enum getEnum(int value)\n");
     s += ("    {                               \n");
     s += ("        switch(value)               \n");
     s += ("        {                           \n");
     int i = 0;
-    for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++, i++)
+    for(auto iter = productsToAdd.begin(); iter!=productsToAdd.end();iter++)
     {
-        s += QString("            case %2: return Enum.%1;\n").arg(iter.key().toUpper()).arg(iter.value());
+        s += QString("            case USE + %1: return ICombinations.Enum.%2;\n").arg(iter.key()).arg(iter.value().toUpper());
     }
     s += ("        };\n");
     s += ("        return null;\n");
     s += ("    }\n");
-    for(auto iter = l.getIds().begin(); iter!=l.getIds().end();iter++)
+    for(auto iter = productsToAdd.begin(); iter!=productsToAdd.end();iter++)
     {
-        s += QString("    public static final short %1 = %2;\n").arg(iter.key().toUpper()).arg(iter.value());
+        s += QString("    public static final int %1 = USE+%2;\n").arg(iter.value().toUpper()).arg(iter.key());
     }
-    s += ("}\n");
+    s += ("  }\n");
     return s;
 }
 NAMESPACE_END

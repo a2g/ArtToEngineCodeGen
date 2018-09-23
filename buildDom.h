@@ -22,7 +22,7 @@
 #include <DomLocation.h>
 #include "allcaps\NAMESPACE_BEGIN.h"
 #include "allcaps\NAMESPACE_END.h"
-#include "allcaps\AFILE.h"
+
 #include <getPackageFromDosPathContainingSrc.h>
 #include "isShared.h"
 #include "isInventory.h"
@@ -49,8 +49,6 @@ static std::auto_ptr<DomLocation> buildDom(const QString& dosPathOfLocation,cons
     for(QStringList::iterator cameraPath = camerasInLocation.begin(); cameraPath != camerasInLocation.end(); cameraPath++)
     {
         QString cameraSeg = QDir(*cameraPath).dirName();
-        if(cameraSeg == AFILE)
-            continue;
 
         DomCamera& domCamera = domLocation.addNewCamera(cameraSeg);
 

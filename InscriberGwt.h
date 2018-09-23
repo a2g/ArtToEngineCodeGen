@@ -18,7 +18,7 @@
 #include <QString>
 #include "DomLocation.h"
 #include "IInscriber.h"
-#include "writeAFile.h"
+
 #include "writeInitialEnumFile.h"
 #include "writeIFileOrOFile.h"
 #include "convertLoaderToGwt.h"
@@ -28,7 +28,7 @@
 #include "writeBundle.h" 
 #include "writeClass.h"
 #include "Dom2Location.h"
-#include "writeInvOnInvFile.h"
+#include "writeICombinationsFile.h"
 #include "writeHotspotFile.h"
 namespace com
 {
@@ -41,10 +41,6 @@ namespace com
                 class InscriberGwt: public IInscriber
                 {
                     static const bool isGwt = true;
-                    QString writeAFile(const Dom2Location& location) const override
-                    {
-                        return generator::writeAFile(location);
-                    }
 
                     QString writeInitialEnumFile(const Dom2Loader& loader) const override
                     {
@@ -74,9 +70,9 @@ namespace com
                     {
                         return generator::writeClass(isGwt, package,className,loaderSeg, numberOfImages,res,type);
                     }
-                    QString writeInvOnInvFile(const Dom2Loader& camera) const override
+                    QString writeICombinationsFile(const Dom2Loader& camera) const override
                     {
-                        return generator::writeInvOnInvFile(camera);
+                        return generator::writeICombinationsFile(camera);
                     }
                     QString writeHotspotFile(const Dom2Loader& camera) const override
                     {

@@ -28,15 +28,15 @@ namespace com
             {
                 struct IInscriber
                 {
-                    virtual QString writeAFile(const Dom2Location& location) const = 0;
+  
                     virtual QString writeIFile(const Dom2Loader& camera) const = 0;
                     virtual QString writeInitialEnumFile(const Dom2Loader& loader) const = 0;
                     virtual QString writeOFile(const Dom2Loader& camera) const = 0;
                     virtual QString writeLoader(const Dom2Loader& loader) const = 0;
                     virtual QString writeBundle(const Dom2Bundle& bundle) const = 0;
                     virtual QString writeClass(const QString& package,const QString& className,const QString& loaderSeg,int numberOfImages,QPoint res,int type) const =0;
-                    virtual QString writeInvOnInvFile(const Dom2Loader& camera) const=0;
                     virtual QString writeHotspotFile(const Dom2Loader& camera) const =0;
+                    virtual QString writeICombinationsFile(const Dom2Loader& camera) const =0;
                 };
             }
         }

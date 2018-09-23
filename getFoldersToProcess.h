@@ -18,7 +18,7 @@
 #include <QString>
 #include "FileSystem.h"
 #include "allcaps\SOURCEIMAGES.h"
-#include "allcaps\AFILE.h"
+
 namespace com
 { 
     namespace github
@@ -40,13 +40,12 @@ namespace com
                         for(int i=0;i<subFolders.count();i++)
                         {
                             QString subFolder = subFolders.at(i);
-                            if(subFolder.contains(AFILE))
-                                continue;//
                             toReturn.append(subFolder);
                         }
                         return toReturn;
 
                     }
+
                     folder.cdUp();
                     if(folder.dirName() == SOURCEIMAGES)
                     {

@@ -15,8 +15,7 @@
  */
 
 #pragma once
-#include "Dom2Location.h"
-#include "allcaps\AFile.h"
+#include "Dom2Location.h" 
 #include <QSet.h>
 #include "getObjectPlusAnim.h"
 #include "allcaps\NAMESPACE_BEGIN.h"

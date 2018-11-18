@@ -115,18 +115,13 @@ int main(int argc, char *argv[])
         FileSystem fileSystem;
         populateFileSystemFromRealSystemRecursively(&fileSystem,arg);
 
-       
-      
-     
-
-
         QStringList folders = getFoldersToProcess(arg,fileSystem);
         int foldersSize = folders.size();
-        for(int i=0;i<foldersSize;i++)
+        for(int j=0;j<foldersSize;j++)
         {
             clock_t t1 = clock();
-            bool isGwt = !folders[i].toUpper().contains("SWING");
-            auto dom1 = buildDom(folders[i],fileSystem);
+            bool isGwt = !folders[j].toUpper().contains("SWING");
+            auto dom1 = buildDom(folders[j],fileSystem);
            
             clock_t t2 = clock();
          
@@ -164,7 +159,9 @@ int main(int argc, char *argv[])
             qDebug() << "Save filenames and contents " << (t6-t5)/1000.0 << " seconds \n";
             qDebug() << "-----------------------------------------------\n";
             qDebug() << "Total " << (t6-t1)/1000.0 << " seconds \n";
-            qDebug() << "( for path: " << folders[i] << " )\n";
+            qDebug() << "( for path: " << folders[j] << " )\n";
+            qDebug() << "(" << QTime::currentTime().toString() << ")";
+
         }
 
  

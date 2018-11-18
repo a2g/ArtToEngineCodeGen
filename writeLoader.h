@@ -41,7 +41,8 @@ static QString writeLoader(const Dom2Loader& l,bool isGwt)
     s += QString("import com.github.a2g.core.interfaces.nongame.platform.IPlatformResourceBundle;\n");
     s += QString("import com.github.a2g.core.interfaces.nongame.presenter.IMasterPresenterFromBundle;\n");
     s += QString("import com.google.gwt.event.dom.client.LoadHandler;\n");
-    s += QString("import %1.%2.InitialEnum;\n").arg(fullLocationPackage).arg(loaderSeg);
+    if(!loaderSeg.toUpper().contains("SHARED"))
+        s += QString("import %1.%2.InitialEnum;\n").arg(fullLocationPackage).arg(loaderSeg);
     s += QString("import javax.swing.Timer;\n");
     s += QString("import java.awt.event.ActionEvent;\n");
     s += QString("import java.awt.event.ActionListener;\n");

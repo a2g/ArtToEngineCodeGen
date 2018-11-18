@@ -29,7 +29,6 @@ static QString writeClass(bool isGwt, const QString& package,const QString& bund
     QString f;
     if(isGwt)
     {
-        f += QString("public static IPlatformResourceBundle %1(){return new Loader().new %1();}\n").arg(bundleName);
         f += QString("public class %1 implements IPlatformResourceBundle\n").arg(bundleName);
         f += QString("{\n");
         f += QString("  public %1() {}\n").arg(bundleName);

@@ -20,6 +20,7 @@
 #include <QDir>
 #include <DomLocation.h>
 #include <crop.h>
+#include "makePath.h"
 #include "getObjectPlusanim.h" 
 #include "allcaps\SOURCEIMAGES.h"
 namespace com
@@ -74,12 +75,13 @@ namespace com
                                         QString pngSaveTo = locationFolder + "/" + pngByItself;
 
                                         pngSaveTo = pngSaveTo.replace(SOURCEIMAGES.toLower(),VISUALS.toLower());
+                                        makePath(pngSaveTo);
 
                                         // do the cropping
                                         QRect rect;
-                                        if(!cameraSeg.toUpper().contains("INV"))
+                                        if(!cameraSeg.toUpper().contains("INV")&&!pixelSeg.toUpper().contains("INV")&&!objectSeg.toUpper().contains("INV"))
                                         {
-                                           rect = crop(pngPath,pngSaveTo,Qt::red);
+                                           rect = Crop::crop(pngPath,pngSaveTo,Qt::red);
                                         }
                                         else
                                         {
